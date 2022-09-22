@@ -1,13 +1,13 @@
-package com.fatmakahveci.webproject;
+package com.fatmakahveci.blog;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class WebprojectApplication {
+public class BlogApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(WebprojectApplication.class, args);
+		SpringApplication.run(BlogApplication.class, args);
 	}
 
 }
