@@ -1,7 +1,7 @@
 package com.fatmakahveci.blog.controller;
 
-import com.fatmakahveci.blog.model.Tag;
-import com.fatmakahveci.blog.service.TagService;
+import com.fatmakahveci.blog.model.Post;
+import com.fatmakahveci.blog.service.PostService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,27 +13,27 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @RestController
-@RequestMapping(path = "/tags")
-public class TagController {
-    private TagService tagService;
+@RequestMapping(path = "/posts")
+public class PostController {
+    private PostService postService;
 
     @Autowired
-    public TagController(TagService tagService) {
-        this.tagService = tagService;
-    }
-    
-    @PostMapping(path = "/add")
-    public Tag addNewTag(@RequestBody Tag tag) {
-        return tagService.save(tag);
+    public PostController(PostService postService) {
+        this.postService = postService;
     }
 
-    @GetMapping(path = "/tag/{id}")
-    public Tag findById(@PathVariable Integer id) {
-        return tagService.findById(id);
+    @PostMapping(path = "/add")
+    public Post addNewPost(@RequestBody Post post) {
+        return postService.save(post);
+    }
+
+    @GetMapping(path = "/post/{id}")
+    public Post getSingle(@PathVariable Integer id) {
+        return postService.findById(id);
     }
 
     @GetMapping(path = "/all")
-    public @ResponseBody Iterable<Tag> findAllTags() {
-        return tagService.findAll();
+    public @ResponseBody Iterable<Post> findAll() {
+        return postService.findAll();
     }
 }

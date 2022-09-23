@@ -11,24 +11,26 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 
 @Entity
-public class Blog {
+@Table(name = "posts")
+public class Post {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String title;
     private String content;
     
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name="blogTags", joinColumns = @JoinColumn(name="blog_id"), inverseJoinColumns = @JoinColumn(name="tag_id"))
+    @JoinTable(name="post_tags", joinColumns = @JoinColumn(name="post_id"), inverseJoinColumns = @JoinColumn(name="tag_id"))
     Set<Tag> tags;
 
-    public Blog() {
+    public Post() {
         
     }
 
-    public Blog (Integer id, String title, String content, Set<Tag> tags) {
+    public Post (Integer id, String title, String content, Set<Tag> tags) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -65,5 +67,10 @@ public class Blog {
 
     public void setTags(Set<Tag> tags) {
         this.tags = tags;
+    }
+
+    @Override
+    public String toString() {
+        return "Post [content=" + content + ", id=" + id + ", tags=" + tags + ", title=" + title + "]";
     }
 }
