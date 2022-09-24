@@ -1,8 +1,8 @@
+/Users/macos/eclipse-workspace/webproject/src/main/java/com/fatmakahveci/blog/service/impl/PostServiceImpl.java
 /Users/macos/eclipse-workspace/webproject/src/main/java/com/fatmakahveci/blog/service/TagService.java
+/Users/macos/eclipse-workspace/webproject/src/main/java/com/fatmakahveci/blog/service/impl/TagServiceImpl.java
 /Users/macos/eclipse-workspace/webproject/src/main/java/com/fatmakahveci/blog/controller/PostController.java
 /Users/macos/eclipse-workspace/webproject/src/main/java/com/fatmakahveci/blog/model/Post.java
-/Users/macos/eclipse-workspace/webproject/src/main/java/com/fatmakahveci/blog/service/IPostService.java
-/Users/macos/eclipse-workspace/webproject/src/main/java/com/fatmakahveci/blog/service/ITagService.java
 /Users/macos/eclipse-workspace/webproject/src/main/java/com/fatmakahveci/blog/controller/TagController.java
 /Users/macos/eclipse-workspace/webproject/src/main/java/com/fatmakahveci/blog/model/Tag.java
 /Users/macos/eclipse-workspace/webproject/src/main/java/com/fatmakahveci/blog/TagNotFoundException.java

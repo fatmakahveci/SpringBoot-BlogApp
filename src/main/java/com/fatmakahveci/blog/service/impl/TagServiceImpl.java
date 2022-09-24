@@ -1,4 +1,4 @@
-package com.fatmakahveci.blog.service;
+package com.fatmakahveci.blog.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,14 +8,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.fatmakahveci.blog.TagNotFoundException;
 import com.fatmakahveci.blog.dao.TagRepository;
 import com.fatmakahveci.blog.model.Tag;
+import com.fatmakahveci.blog.service.TagService;
 
 @Service
-public class ITagService implements TagService {
+public class TagServiceImpl implements TagService {
 
     private TagRepository tagRepository;
 
     @Autowired
-    public ITagService(TagRepository tagRepository) {
+    public TagServiceImpl(TagRepository tagRepository) {
         this.tagRepository = tagRepository;
     }
     
