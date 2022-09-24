@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @RestController
@@ -22,18 +23,23 @@ public class PostController {
         this.postService = postService;
     }
 
-    @PostMapping(path = "/add")
+    @PostMapping
     public Post addNewPost(@RequestBody Post post) {
         return postService.save(post);
     }
 
-    @GetMapping(path = "/post/{id}")
-    public Post getSingle(@PathVariable Integer id) {
+    @GetMapping
+    public @ResponseBody Iterable<Post> getAllPosts() {
+        return postService.findAll();
+    }
+
+    @GetMapping(path = "/{id}")
+    public Post getPostById(@PathVariable Integer id) {
         return postService.findById(id);
     }
 
-    @GetMapping(path = "/all")
-    public @ResponseBody Iterable<Post> findAll() {
-        return postService.findAll();
+    @GetMapping(path = "/post")
+    public String getTitleById(@RequestParam(name="id") Integer id) {
+        return postService.findTitleById(id);
     }
 }

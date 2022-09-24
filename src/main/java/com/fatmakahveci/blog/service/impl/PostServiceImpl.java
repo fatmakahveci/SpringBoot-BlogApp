@@ -1,4 +1,4 @@
-package com.fatmakahveci.blog.service;
+package com.fatmakahveci.blog.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,14 +9,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fatmakahveci.blog.PostNotFoundException;
 import com.fatmakahveci.blog.dao.PostRepository;
 import com.fatmakahveci.blog.model.Post;
+import com.fatmakahveci.blog.service.PostService;
 
 @Service
-public class IPostService implements PostService {
+public class PostServiceImpl implements PostService {
 
     private PostRepository postRepository;
 
     @Autowired
-    public IPostService(PostRepository postRepository) {
+    public PostServiceImpl(PostRepository postRepository) {
         this.postRepository = postRepository;
     }
 
@@ -33,5 +34,10 @@ public class IPostService implements PostService {
     @Override
     public @ResponseBody Iterable<Post> findAll() {
         return postRepository.findAll();
+    }
+
+    @Override
+    public String findTitleById(Integer id) throws PostNotFoundException {
+        return postRepository.findTitleById(id);
     }
 }
