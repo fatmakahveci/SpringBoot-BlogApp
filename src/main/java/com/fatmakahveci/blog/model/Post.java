@@ -1,6 +1,6 @@
 package com.fatmakahveci.blog.model;
 
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -27,13 +27,13 @@ public class Post {
     
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name="post_tags", joinColumns = @JoinColumn(name="post_id"), inverseJoinColumns = @JoinColumn(name="tag_id"))
-    Set<Tag> tags;
+    List<Tag> tags;
 
     public Post() {
         
     }
 
-    public Post (Integer id, String title, String content, Set<Tag> tags) {
+    public Post (Integer id, String title, String content, List<Tag> tags) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -64,11 +64,11 @@ public class Post {
         this.content = content;
     }
 
-    public Set<Tag> getTags() {
+    public List<Tag> getTags() {
         return tags;
     }
 
-    public void setTags(Set<Tag> tags) {
+    public void setTags(List<Tag> tags) {
         this.tags = tags;
     }
 

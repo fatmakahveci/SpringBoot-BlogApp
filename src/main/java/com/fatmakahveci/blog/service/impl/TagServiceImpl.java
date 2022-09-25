@@ -2,8 +2,6 @@ package com.fatmakahveci.blog.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import com.fatmakahveci.blog.TagNotFoundException;
 import com.fatmakahveci.blog.dao.TagRepository;
@@ -21,12 +19,12 @@ public class TagServiceImpl implements TagService {
     }
     
     @Override
-    public Tag save(@RequestBody Tag tag) {
+    public Tag save(Tag tag) {
         return tagRepository.save(tag);
     }
 
     @Override
-    public Tag findById(@PathVariable Integer id) {
+    public Tag findById(Integer id) {
         return tagRepository.findById(id).orElseThrow(() -> new TagNotFoundException(id));
     }
 
@@ -36,7 +34,18 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public String findNameById(Integer id) throws TagNotFoundException {
-        return tagRepository.findNameById(id);
+    public Tag findTagByName(String name) {
+        return tagRepository.findTagByName(name);
+    }
+
+    @Override 
+    public Tag getOrCreateTagByName(String name) {
+        Tag tag = tagRepository.findTagByName(name);
+        if (tag != null) {
+            return tag;
+        }
+        tag = new Tag();
+        tag.setName(name);
+        return tagRepository.save(tag);
     }
 }
