@@ -9,5 +9,4 @@ public interface PostService {
     Iterable<Post> findAll();
     Post findById(Integer id) throws PostNotFoundException;
     Post save(@RequestBody Post post);
-    String findTitleById(Integer id) throws PostNotFoundException;
 }
