@@ -39,7 +39,7 @@ public class TagController {
     }
 
     @GetMapping(path = "/tag")
-    public String getNameById(@RequestParam(name="id") Integer id) {
-        return tagService.findNameById(id);
+    public Tag findTagByName(@RequestParam(name="name") String name) {
+        return tagService.findTagByName(name);
     }
 }

@@ -7,5 +7,6 @@ public interface TagService {
     Iterable<Tag> findAll();
     Tag findById(Integer id) throws TagNotFoundException;
     Tag save(Tag tag);
-    String findNameById(Integer id) throws TagNotFoundException;
+    Tag findTagByName(String name);
+    Tag getOrCreateTagByName(String name);
 }

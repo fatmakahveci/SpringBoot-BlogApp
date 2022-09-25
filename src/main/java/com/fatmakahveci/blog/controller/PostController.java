@@ -29,11 +29,6 @@ public class PostController {
         return postService.save(post);
     }
 
-    // @GetMapping
-    // public @ResponseBody Iterable<Post> getAllPosts() {
-    //     return postService.findAll();
-    // }
-
     @GetMapping(path = "/{id}")
     public Post getPostById(@PathVariable Integer id) {
         return postService.findById(id);
