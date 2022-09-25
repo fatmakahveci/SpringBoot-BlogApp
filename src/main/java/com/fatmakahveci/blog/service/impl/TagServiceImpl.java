@@ -34,4 +34,9 @@ public class TagServiceImpl implements TagService {
     public Iterable<Tag> findAll(){
         return tagRepository.findAll();
     }
+
+    @Override
+    public String findNameById(Integer id) throws TagNotFoundException {
+        return tagRepository.findNameById(id);
+    }
 }

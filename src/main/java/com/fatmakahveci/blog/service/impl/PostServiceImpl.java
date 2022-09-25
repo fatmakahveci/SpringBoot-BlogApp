@@ -35,9 +35,4 @@ public class PostServiceImpl implements PostService {
     public @ResponseBody Iterable<Post> findAll() {
         return postRepository.findAll();
     }
-
-    @Override
-    public String findTitleById(Integer id) throws PostNotFoundException {
-        return postRepository.findTitleById(id);
-    }
 }

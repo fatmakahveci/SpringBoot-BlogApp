@@ -1,8 +1,7 @@
 package com.fatmakahveci.blog.dao;
 
-import java.util.List;
-
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.fatmakahveci.blog.model.Tag;
@@ -12,5 +11,7 @@ import com.fatmakahveci.blog.model.Tag;
 
 @Repository
 public interface TagRepository extends JpaRepository<Tag, Integer> {
-    List<Tag> findByName(String name);
+
+    @Query(value = "SELECT p.title FROM posts p where p.id = id", nativeQuery = true)
+    String findNameById(Integer id);
 }
