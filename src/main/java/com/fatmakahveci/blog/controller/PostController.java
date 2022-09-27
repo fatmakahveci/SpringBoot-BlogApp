@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RestController
 @RequestMapping(path = "/posts")
 public class PostController {
+
     private PostService postService;
 
     @Autowired
@@ -24,17 +25,24 @@ public class PostController {
     }
 
     @PostMapping
-    public void addNewPost(@RequestBody Post post) {
+    public void savePost(@RequestBody Post post) {
         postService.save(post);
     }
 
     @GetMapping(path = "/{id}")
-    public Post getPostById(@PathVariable Integer id) {
+    public Post viewPostById(@PathVariable Integer id) {
         return postService.findById(id);
     }
 
     @GetMapping(path = {"","/"})
-    public List<Post> getAllPosts() {
+    public List<Post> viewAllPosts() {
         return postService.findAll();
     }
+
+    // @TODO: write viewNewForm method
+
+    // @TODO: write editPost method
+
+    // @TODO: write deletePost method
+
 }
