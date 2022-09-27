@@ -24,8 +24,8 @@ public class TagController {
     }
     
     @PostMapping
-    public Tag addNewTag(@RequestBody Tag tag) {
-        return tagService.save(tag);
+    public void addNewTag(@RequestBody Tag tag) {
+        tagService.save(tag);
     }
 
     @GetMapping
