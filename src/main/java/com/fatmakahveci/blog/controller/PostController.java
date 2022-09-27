@@ -3,11 +3,10 @@ package com.fatmakahveci.blog.controller;
 import com.fatmakahveci.blog.model.Post;
 import com.fatmakahveci.blog.service.PostService;
 
-import java.util.HashMap;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,8 +24,8 @@ public class PostController {
     }
 
     @PostMapping
-    public Post addNewPost(@RequestBody Post post) {
-        return postService.save(post);
+    public void addNewPost(@RequestBody Post post) {
+        postService.save(post);
     }
 
     @GetMapping(path = "/{id}")
@@ -34,12 +33,8 @@ public class PostController {
         return postService.findById(id);
     }
 
-    @GetMapping
-    public ModelAndView getPosts() {
-        var posts = postService.findAll();
-        var params = new HashMap<String, Object>();
-        params.put("posts", posts);
-
-        return new ModelAndView("post", params);
+    @GetMapping(path = {"","/"})
+    public List<Post> getAllPosts() {
+        return postService.findAll();
     }
 }
