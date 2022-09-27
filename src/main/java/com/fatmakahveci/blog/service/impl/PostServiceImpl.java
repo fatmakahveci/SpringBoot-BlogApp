@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fatmakahveci.blog.PostNotFoundException;
 import com.fatmakahveci.blog.dao.PostRepository;
@@ -28,13 +27,13 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post save(Post post) {
+    public void save(Post post) {
         List<Tag> tags = new ArrayList<>();
         for (Tag tag : post.getTags()) {
             tags.add(tagService.getOrCreateTagByName(tag.getName()));
         }
         post.setTags(tags);
-        return postRepository.save(post);
+        postRepository.save(post);
     }
 
     @Override
@@ -43,7 +42,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public @ResponseBody Iterable<Post> findAll() {
+    public List<Post> findAll() {
         return postRepository.findAll();
     }
 }

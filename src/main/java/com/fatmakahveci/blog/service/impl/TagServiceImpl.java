@@ -1,5 +1,7 @@
 package com.fatmakahveci.blog.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +31,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public Iterable<Tag> findAll(){
+    public List<Tag> findAll(){
         return tagRepository.findAll();
     }
 

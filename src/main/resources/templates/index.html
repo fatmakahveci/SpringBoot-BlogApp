@@ -1,13 +1,33 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Home page</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
-        <p>
-            <a href="posts">Show posts</a>
-        </p>
-    </body>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="ISO-8859-1">
+		<title>Blog</title>
+		<link rel="stylesheet"
+			href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+			integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+			crossorigin="anonymous">
+	</head>
+	<body>
+		<div class="container my-2" align="center">
+			<h3>Posts</h3>
+			<a th:href="@{/addnew}" class="btn btn-primary btn-sm mb-3" >Add new blog</a>
+			<table style="width:80%" border="1" class = "table table-striped table-responsive-md">
+				<thead>
+					<tr>
+						<th>Title</th>
+						<th>Content</th>
+						<th>Tags</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="post:${posts}">
+							<td th:text="${post.title}"></td>
+							<td th:text="${post.content}"></td>
+							<td th:text="${post.tags}"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</body>
 </html>
