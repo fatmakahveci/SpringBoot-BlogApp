@@ -27,13 +27,14 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void save(Post post) {
+    public Post save(Post post) {
+        post.setId(null);
         List<Tag> tags = new ArrayList<>();
         for (Tag tag : post.getTags()) {
             tags.add(tagService.getOrCreateTagByName(tag.getName()));
         }
         post.setTags(tags);
-        postRepository.save(post);
+        return postRepository.save(post);
     }
 
     @Override
