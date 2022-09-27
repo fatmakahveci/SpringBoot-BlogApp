@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <title>Bootstrap Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+    <script src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/webjars/jquery/jquery.min.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <p></p>
+            <h2>Create new post</h2>
+            <!-- <div class="container"><br/>
+                <div class="alert alert-success">         
+                    <strong>Success!</strong> New post is created.
+                </div>
+            </div> -->
+            <form>
+                <div class="form-outline mb-4">
+                    <label class="form-label" for="form4Example1">Title</label>
+                    <input type="text" id="form4Example1" class="form-control" placeholder="Enter title"/>
+                </div>
+                <div class="form-outline mb-4">
+                    <label class="form-label" for="form4Example3">Content</label>
+                    <textarea class="form-control" id="form4Example3" rows="4" placeholder="Write content here..."></textarea>
+                </div>
+                <button type="Create new post" class="btn btn-primary btn-block mb-4">Send</button>
+            </form>
+        </div>
+    </body>
+</html>
