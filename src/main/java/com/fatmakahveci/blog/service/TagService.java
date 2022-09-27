@@ -8,7 +8,7 @@ import com.fatmakahveci.blog.model.Tag;
 public interface TagService {
     List<Tag> findAll();
     Tag findById(Integer id) throws TagNotFoundException;
-    Tag save(Tag tag);
+    void save(Tag tag);
     Tag findTagByName(String name);
     Tag getOrCreateTagByName(String name);
 }
