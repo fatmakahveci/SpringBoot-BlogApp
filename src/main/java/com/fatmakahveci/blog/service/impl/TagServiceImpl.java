@@ -22,6 +22,7 @@ public class TagServiceImpl implements TagService {
     
     @Override
     public Tag save(Tag tag) {
+        tag.setId(null);
         return tagRepository.save(tag);
     }
 
