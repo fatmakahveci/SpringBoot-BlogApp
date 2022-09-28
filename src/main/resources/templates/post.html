@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-    <title>Bootstrap Example</title>
+    <title>Post</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
@@ -12,14 +12,18 @@
         <div class="container">
             <p></p>
             <h2>Create new post</h2>
-            <form>
+            <form action="#" th:action="@{/post}" th:object="${post}" method="post">
                 <div class="form-outline mb-4">
                     <label class="form-label" for="form4Example1">Title</label>
-                    <input type="text" id="form4Example1" class="form-control" placeholder="Enter title"/>
+                    <input type="text" id="form4Example1" th:field="*{title}" class="form-control" placeholder="Write title here..."/>
                 </div>
                 <div class="form-outline mb-4">
-                    <label class="form-label" for="form4Example3">Content</label>
-                    <textarea class="form-control" id="form4Example3" rows="4" placeholder="Write content here..."></textarea>
+                    <label class="form-label" for="form4Example2">Content</label>
+                    <textarea class="form-control" th:field="*{content}" id="form4Example2" rows="4" placeholder="Write content here..."></textarea>
+                </div>
+                <div class="form-outline mb-4">
+                    <label class="form-label" for="form4Example3">Tags</label>
+                    <textarea class="form-control" th:field="*{tags}" id="form4Example3" rows="4" placeholder="Write tags here..."></textarea>
                 </div>
                 <button type="Create new post" class="btn btn-primary btn-block mb-4">Send</button>
             </form>
