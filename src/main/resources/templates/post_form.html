@@ -12,7 +12,7 @@
         <div class="container">
             <p></p>
             <h2>Create new post</h2>
-            <form action="#" th:action="@{/savePost}" th:object="${post}" method="POST">
+            <form action="#" th:action="@{/posts/savePost}" th:object="${post}" method="POST">
                 <div class="form-outline mb-4">
                     <label class="form-label" for="form4Example1">Title</label>
                     <input type="text" id="form4Example1" th:field="*{title}" class="form-control" placeholder="Write title here..."/>
