@@ -42,7 +42,7 @@ public class MainController {
     }
 
     @PostMapping("/post")
-    public String greetingSubmit(@ModelAttribute Post post, Model model) {
+    public String postSubmit(@ModelAttribute Post post, Model model) {
       model.addAttribute("post", post);
       postService.save(post);
       return "post";
@@ -55,7 +55,7 @@ public class MainController {
     }
 
     @PostMapping("/tag")
-    public String greetingSubmit(@ModelAttribute Tag tag, Model model) {
+    public String tagSubmit(@ModelAttribute Tag tag, Model model) {
       model.addAttribute("tag", tag);
       tagService.save(tag);
       return "tag";
