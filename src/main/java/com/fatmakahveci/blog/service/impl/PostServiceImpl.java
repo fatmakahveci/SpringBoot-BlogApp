@@ -2,6 +2,7 @@ package com.fatmakahveci.blog.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,5 +50,10 @@ public class PostServiceImpl implements PostService {
     @Override
     public void deleteById(Integer id) {
         postRepository.deleteById(id);
+    }
+
+    @Override
+    public Optional<Post> findByTitle(String title) {
+        return postRepository.findByTitle(title);
     }
 }
