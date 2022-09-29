@@ -3,6 +3,8 @@ package com.fatmakahveci.blog.controller;
 import com.fatmakahveci.blog.model.Post;
 import com.fatmakahveci.blog.service.PostService;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
@@ -37,7 +39,16 @@ public class PostController {
     
     @PostMapping("/save")
     public ModelAndView savePost(@ModelAttribute Post post) {
-        postService.save(post);
+        Optional<Post> optionalPost = postService.findByTitle(post.getTitle());
+        if (!optionalPost.isPresent()) {
+            postService.save(post);
+        } else {
+            Post newPost = optionalPost.get();
+            newPost.setTitle(post.getTitle());
+            newPost.setContent(post.getContent());
+            newPost.setTags(post.getTags());
+            postService.save(newPost);
+        }
         return new ModelAndView("redirect:/");
     }
 
