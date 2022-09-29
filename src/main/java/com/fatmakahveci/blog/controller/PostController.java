@@ -1,8 +1,10 @@
 package com.fatmakahveci.blog.controller;
 
 import com.fatmakahveci.blog.model.Post;
+import com.fatmakahveci.blog.model.Tag;
 import com.fatmakahveci.blog.service.PostService;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,7 @@ public class PostController {
     public ModelAndView addPost() {
         ModelAndView mav = new ModelAndView("post_form");
         mav.addObject("post", new Post());
+        mav.addObject("tags", new ArrayList<Tag>());
         return mav;
     }
     
