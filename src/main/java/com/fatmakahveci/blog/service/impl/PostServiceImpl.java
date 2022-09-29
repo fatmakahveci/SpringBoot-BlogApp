@@ -28,10 +28,9 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post save(Post post) {
-        post.setId(null);
         List<Tag> tags = new ArrayList<>();
         for (Tag tag : post.getTags()) {
-            tags.add(tagService.getOrCreateTagByName(tag.getName()));
+            tags.add(tagService.getOrCreateByName(tag.getName()));
         }
         post.setTags(tags);
         return postRepository.save(post);
@@ -45,5 +44,10 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<Post> findAll() {
         return postRepository.findAll();
+    }
+
+    @Override
+    public void deleteById(Integer id) {
+        postRepository.deleteById(id);
     }
 }

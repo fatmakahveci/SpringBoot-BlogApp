@@ -5,7 +5,9 @@ import com.fatmakahveci.blog.service.TagService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,7 +26,7 @@ public class TagController {
     }
     
     @PostMapping
-    public void addNewTag(@RequestBody Tag tag) {
+    public void addTag(@RequestBody Tag tag) {
         tagService.save(tag);
     }
 
@@ -39,13 +41,42 @@ public class TagController {
     }
 
     @GetMapping(path = "/tag")
-    public Tag findTagByName(@RequestParam(name="name") String name) {
-        return tagService.findTagByName(name);
+    public Tag findByName(@RequestParam(name="name") String name) {
+        return tagService.findByName(name);
     }
 
-    // @TODO: write viewNewForm method
+    @GetMapping("/add")
+    public ModelAndView addTag() {
+        ModelAndView mav = new ModelAndView("tag_form");
+        mav.addObject("tag", new Tag());
+        return mav;
+    }
+    
+    @PostMapping("/save")
+    public ModelAndView saveTag(@ModelAttribute Tag tag) {
+        tagService.save(tag);
+        return new ModelAndView("redirect:/");
+    }
 
-    // @TODO: write editTag method
+    // TODO (fatmakahveci) : Update will not be over form, correct it
+    // @GetMapping("/edit/{id}")
+    // public ModelAndView editTag(@PathVariable Integer id) {
+    //     ModelAndView mav = new ModelAndView("update_tag_form");
+    //     mav.addObject("tag", new Tag());
+    //     return mav;
+    // }
 
-    // @TODO: write deleteTag method
+    // TODO (fatmakahveci) : Update will not be over form, correct it
+    // @PostMapping("/update/{id}")
+    // public ModelAndView updateTag(@PathVariable Integer id) {
+    //     ModelAndView mav = new ModelAndView("update_tag_form");
+    //     mav.addObject("tag", new Tag());
+    //     return mav;
+    // }
+
+    @GetMapping("/delete/{id}")
+    public String deleteTag(@PathVariable Integer id) {
+        tagService.deleteById(id);
+        return "redirect:/";
+    }
 }

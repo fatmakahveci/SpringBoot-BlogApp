@@ -9,4 +9,5 @@ public interface PostService {
     List<Post> findAll();
     Post findById(Integer id) throws PostNotFoundException;
     Post save(Post post);
+    void deleteById(Integer id);
 }

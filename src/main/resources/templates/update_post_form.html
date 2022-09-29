@@ -11,8 +11,8 @@
     <body>
         <div class="container">
             <p></p>
-            <h2>Create new post</h2>
-            <form action="#" th:action="@{/posts/save}" th:object="${post}" method="POST">
+            <h2>Update post</h2>
+            <form action="#" th:action="@{/posts/update/{id}(id=${post.id})}" th:object="${post}" method="POST">
                 <div class="form-outline mb-4">
                     <label class="form-label" for="form4Example1">Title</label>
                     <input type="text" id="form4Example1" th:field="*{title}" class="form-control" placeholder="Write title here..."/>
@@ -28,7 +28,7 @@
                 <div class="form-outline mb-4">
 				    <a th:href="@{/tags/save}" name="save_tag" class="btn btn-primary btn-sm mb-3">Create new tag</a>
                 </div>
-                <button type="Create new post" name="save_post" class="btn btn-primary btn-block mb-4">Create</button>
+                <button type="Update post" name="update_post" class="btn btn-primary btn-block mb-4">Update</button>
             </form>
         </div>
     </body>

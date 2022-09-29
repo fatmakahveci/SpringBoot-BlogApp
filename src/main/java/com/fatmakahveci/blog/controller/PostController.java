@@ -28,21 +28,40 @@ public class PostController {
         return postService.findById(id);
     }
 
-    @GetMapping("/addNewPost")
-    public ModelAndView addNewPost() {
+    @GetMapping("/add")
+    public ModelAndView addPost() {
         ModelAndView mav = new ModelAndView("post_form");
         mav.addObject("post", new Post());
         return mav;
     }
     
-    @PostMapping("/savePost")
+    @PostMapping("/save")
     public ModelAndView savePost(@ModelAttribute Post post) {
         postService.save(post);
         return new ModelAndView("redirect:/");
     }
 
-    // @TODO: write editPost method
+    @GetMapping("/delete/{id}")
+    public ModelAndView deletePost(@PathVariable Integer id) {
+        postService.deleteById(id);
+        return new ModelAndView("redirect:/");
+    }
 
-    // @TODO: write deletePost method
+    @GetMapping("/edit/{id}")
+    public ModelAndView editPost(@PathVariable Integer id) {
+        Post post = postService.findById(id);
+        ModelAndView mav = new ModelAndView("update_post_form");
+        mav.addObject("post", post);
+        return mav;
+    }
 
+    @PostMapping("/update/{id}")
+	public ModelAndView updatePost(@PathVariable Integer id, Post post) {
+        Post existingPost = postService.findById(id);
+        existingPost.setTitle(post.getTitle());
+        existingPost.setContent(post.getContent());
+        existingPost.setTags(post.getTags());
+        postService.save(existingPost);
+        return new ModelAndView("redirect:/");
+	}
 }
