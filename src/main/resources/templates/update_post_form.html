@@ -12,18 +12,18 @@
         <div class="container">
             <p></p>
             <h2>Update post</h2>
-            <form action="#" th:action="@{/posts/update/{id}(id=${post.id})}" th:object="${post}" method="POST">
+            <form action="#" th:action="@{/posts/update/{id}(id=${post.id})}" method="POST">
                 <div class="form-outline mb-4">
                     <label class="form-label" for="form4Example1">Title</label>
-                    <input type="text" id="form4Example1" th:field="*{title}" class="form-control" placeholder="Write title here..."/>
+                    <input type="text" id="form4Example1" th:field="${post.title}" class="form-control" placeholder="Write title here..."/>
                 </div>
                 <div class="form-outline mb-4">
                     <label class="form-label" for="form4Example2">Content</label>
-                    <textarea class="form-control" th:field="*{content}" id="form4Example2" rows="4" placeholder="Write content here..."></textarea>
+                    <textarea class="form-control" th:field="${post.content}" id="form4Example2" rows="4" placeholder="Write content here..."></textarea>
                 </div>
                 <div class="form-outline mb-4">
                     <label class="form-label" for="form4Example3">Tags</label>
-                    <textarea class="form-control" th:field="*{tags}" id="form4Example3" rows="4" placeholder="Write tags here..."></textarea>
+                    <textarea class="form-control" th:field="${post.tags}" id="form4Example3" rows="4" placeholder="Write tags here..."></textarea>
                 </div>
                 <div class="form-outline mb-4">
 				    <a th:href="@{/tags/save}" name="save_tag" class="btn btn-primary btn-sm mb-3">Create new tag</a>
