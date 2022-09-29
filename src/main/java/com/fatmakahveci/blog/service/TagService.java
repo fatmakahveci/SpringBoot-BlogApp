@@ -9,6 +9,7 @@ public interface TagService {
     List<Tag> findAll();
     Tag findById(Integer id) throws TagNotFoundException;
     Tag save(Tag tag);
-    Tag findTagByName(String name);
-    Tag getOrCreateTagByName(String name);
+    Tag findByName(String name);
+    Tag getOrCreateByName(String name);
+    void deleteById(Integer id);
 }

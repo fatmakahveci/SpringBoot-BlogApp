@@ -7,26 +7,34 @@
 	</head>
 	<body>
 		<div class="container fluid text-center">
-			<h3>Welcome to my blog</h3>
+			<div class="container fluid text-center">
+				<br><h3>Welcome to my blog</h3><br>
+			</div>
+			<div style="text-align: right;">
+				<a th:href="@{/posts/add}" class="btn btn-primary btn-sm mb-3">Create new post</a>
+			</div>
+
 			<table class="table table-hover">
 				<thead>
 					<tr>
 						<th>Title</th>
 						<th>Content</th>
 						<th>Tags</th>
+						<th>Actions</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr th:each="post:${posts}">
-							<td th:text="${post.title}"></td>
-							<td th:text="${post.content}"></td>
-							<td th:text="${post.tags}"></td>
+						<td th:text="${post.title}"></td>
+						<td th:text="${post.content}"></td>
+						<td th:text="${post.tags}"></td>
+						<td>
+							<a th:href="@{/posts/edit/{postId}(postId=${post.id})}" class="btn btn-primary btn-sm mb-3">Update</a>
+							<a th:href="@{/posts/delete/{postId}(postId=${post.id})}" class="btn btn-primary btn-sm mb-3">Delete</a>
+						</td>
 					</tr>
 				</tbody>
 			</table>
-			<div class="row">
-				<a th:href="@{/posts/addNewPost}" class="btn btn-primary btn-sm mb-3">Create new post</a>
-			</div>
 		</div>
 	</body>
 </html>

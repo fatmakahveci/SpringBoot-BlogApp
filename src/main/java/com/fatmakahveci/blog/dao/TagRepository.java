@@ -13,5 +13,5 @@ import com.fatmakahveci.blog.model.Tag;
 @Repository
 public interface TagRepository extends JpaRepository<Tag, Integer> {
     @Query(value = "SELECT * FROM tags t where t.name = :name", nativeQuery = true)
-    Tag findTagByName(@Param("name") String name);
+    Tag findByName(@Param("name") String name);
 }

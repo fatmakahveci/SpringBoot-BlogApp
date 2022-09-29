@@ -37,18 +37,23 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public Tag findTagByName(String name) {
-        return tagRepository.findTagByName(name);
+    public Tag findByName(String name) {
+        return tagRepository.findByName(name);
     }
 
     @Override 
-    public Tag getOrCreateTagByName(String name) {
-        Tag tag = tagRepository.findTagByName(name);
+    public Tag getOrCreateByName(String name) {
+        Tag tag = tagRepository.findByName(name);
         if (tag != null) {
             return tag;
         }
         tag = new Tag();
         tag.setName(name);
         return tagRepository.save(tag);
+    }
+
+    @Override
+    public void deleteById(Integer id) {
+        tagRepository.deleteById(id);
     }
 }
