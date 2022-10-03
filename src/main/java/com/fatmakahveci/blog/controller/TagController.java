@@ -3,6 +3,8 @@ package com.fatmakahveci.blog.controller;
 import com.fatmakahveci.blog.model.Tag;
 import com.fatmakahveci.blog.service.TagService;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
@@ -31,7 +33,7 @@ public class TagController {
     }
 
     @GetMapping
-    public @ResponseBody Iterable<Tag> getAllTags() {
+    public @ResponseBody List<Tag> getAllTags() {
         return tagService.findAll();
     }
 
@@ -58,25 +60,9 @@ public class TagController {
         return new ModelAndView("redirect:/");
     }
 
-    // TODO (fatmakahveci) : Update will not be over form, correct it
-    // @GetMapping("/edit/{id}")
-    // public ModelAndView editTag(@PathVariable Integer id) {
-    //     ModelAndView mav = new ModelAndView("update_tag_form");
-    //     mav.addObject("tag", new Tag());
-    //     return mav;
-    // }
-
-    // TODO (fatmakahveci) : Update will not be over form, correct it
-    // @PostMapping("/update/{id}")
-    // public ModelAndView updateTag(@PathVariable Integer id) {
-    //     ModelAndView mav = new ModelAndView("update_tag_form");
-    //     mav.addObject("tag", new Tag());
-    //     return mav;
-    // }
-
     @GetMapping("/delete/{id}")
-    public String deleteTag(@PathVariable Integer id) {
+    public ModelAndView deleteTag(@PathVariable Integer id) {
         tagService.deleteById(id);
-        return "redirect:/";
+        return new ModelAndView("redirect:/");
     }
 }

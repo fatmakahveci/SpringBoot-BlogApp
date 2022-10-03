@@ -7,6 +7,8 @@
     <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
     <script src="/webjars/bootstrap/js/bootstrap.min.js"></script>
     <script src="/webjars/jquery/jquery.min.js"></script>
+    <script src="/webjars/jquery/jquery-ui.js"></script>
+
     </head>
     <body>
         <div class="container">
@@ -23,9 +25,7 @@
                 </div>
                 <div class="form-outline mb-4">
                     <label class="form-label" for="form4Example3">Tags</label>
-                    <textarea class="form-control" th:field="${post.tags}" id="form4Example3" rows="4" placeholder="Write tags here..."></textarea>
-                </div>
-                <div class="form-outline mb-4">
+                    <input type="text" id="form4Example3" th:field="${post.tags}" class="form-control" placeholder="Write title here..."/>
 				    <a th:href="@{/tags/save}" name="save_tag" class="btn btn-primary btn-sm mb-3">Create new tag</a>
                 </div>
                 <button type="Create new post" name="save_post" class="btn btn-primary btn-block mb-4">Create</button>

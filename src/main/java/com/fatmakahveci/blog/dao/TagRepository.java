@@ -7,9 +7,6 @@ import org.springframework.stereotype.Repository;
 
 import com.fatmakahveci.blog.model.Tag;
 
-// This will be AUTO IMPLEMENTED by Spring into a Bean called userRepository
-// CRUD refers Create, Read, Update, Delete
-
 @Repository
 public interface TagRepository extends JpaRepository<Tag, Integer> {
     @Query(value = "SELECT * FROM tags t where t.name = :name", nativeQuery = true)
