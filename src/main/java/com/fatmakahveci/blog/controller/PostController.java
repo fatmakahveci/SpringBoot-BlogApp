@@ -71,7 +71,7 @@ public class PostController {
         return mav;
     }
 
-    @PutMapping("/posts/update/{id}")
+    @PostMapping("/posts/update/{id}")
 	public ModelAndView updatePost(@PathVariable Integer id, Post post) {
         Post existingPost = postService.findById(id);
         existingPost.setTitle(post.getTitle());
