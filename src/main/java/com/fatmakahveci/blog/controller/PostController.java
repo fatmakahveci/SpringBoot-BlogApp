@@ -1,10 +1,9 @@
 package com.fatmakahveci.blog.controller;
 
 import com.fatmakahveci.blog.model.Post;
-import com.fatmakahveci.blog.model.Tag;
 import com.fatmakahveci.blog.service.PostService;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +13,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
-@RequestMapping(path = "/posts")
 public class PostController {
 
     private PostService postService;
@@ -27,20 +25,24 @@ public class PostController {
         this.postService = postService;
     }
 
-    @GetMapping(path = "/{id}")
+    @GetMapping(path = "/posts")
+    public List<Post> getAllUsers() {
+        return postService.findAll();
+    }
+
+    @GetMapping(path = "/posts/{id}")
     public Post viewPostById(@PathVariable Integer id) {
         return postService.findById(id);
     }
 
-    @GetMapping("/add")
+    @GetMapping("/posts/add")
     public ModelAndView addPost() {
         ModelAndView mav = new ModelAndView("post_form");
         mav.addObject("post", new Post());
-        mav.addObject("tags", new ArrayList<Tag>());
         return mav;
     }
     
-    @PostMapping("/save")
+    @PostMapping("/posts/save")
     public ModelAndView savePost(@ModelAttribute Post post) {
         Optional<Post> optionalPost = postService.findByTitle(post.getTitle());
         if (!optionalPost.isPresent()) {
@@ -55,13 +57,13 @@ public class PostController {
         return new ModelAndView("redirect:/");
     }
 
-    @GetMapping("/delete/{id}")
+    @GetMapping("/posts/delete/{id}")
     public ModelAndView deletePost(@PathVariable Integer id) {
         postService.deleteById(id);
         return new ModelAndView("redirect:/");
     }
 
-    @GetMapping("/edit/{id}")
+    @GetMapping("/posts/edit/{id}")
     public ModelAndView editPost(@PathVariable Integer id) {
         Post post = postService.findById(id);
         ModelAndView mav = new ModelAndView("update_post_form");
@@ -69,7 +71,7 @@ public class PostController {
         return mav;
     }
 
-    @PostMapping("/update/{id}")
+    @PutMapping("/posts/update/{id}")
 	public ModelAndView updatePost(@PathVariable Integer id, Post post) {
         Post existingPost = postService.findById(id);
         existingPost.setTitle(post.getTitle());
