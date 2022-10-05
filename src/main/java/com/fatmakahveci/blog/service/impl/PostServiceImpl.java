@@ -7,7 +7,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fatmakahveci.blog.PostNotFoundException;
 import com.fatmakahveci.blog.dao.PostRepository;
 import com.fatmakahveci.blog.model.Post;
 import com.fatmakahveci.blog.model.Tag;
@@ -38,7 +37,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Optional<Post> findById(Integer id) throws PostNotFoundException {
+    public Optional<Post> findById(Integer id) {
         return postRepository.findById(id);
     }
 

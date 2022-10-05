@@ -1,15 +1,15 @@
 package com.fatmakahveci.blog.service;
 
 import java.util.List;
+import java.util.Optional;
 
-import com.fatmakahveci.blog.TagNotFoundException;
 import com.fatmakahveci.blog.model.Tag;
 
 public interface TagService {
     List<Tag> findAll();
-    Tag findById(Integer id) throws TagNotFoundException;
+    Optional<Tag> findById(Integer id);
+    Optional<Tag> findByName(String name);
     Tag save(Tag tag);
-    Tag findByName(String name);
     Tag getOrCreateByName(String name);
     void deleteById(Integer id);
 }
