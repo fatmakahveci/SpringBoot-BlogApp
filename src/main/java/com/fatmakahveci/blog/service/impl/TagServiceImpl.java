@@ -1,11 +1,11 @@
 package com.fatmakahveci.blog.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fatmakahveci.blog.TagNotFoundException;
 import com.fatmakahveci.blog.dao.TagRepository;
 import com.fatmakahveci.blog.model.Tag;
 import com.fatmakahveci.blog.service.TagService;
@@ -22,13 +22,12 @@ public class TagServiceImpl implements TagService {
     
     @Override
     public Tag save(Tag tag) {
-        tag.setId(null);
         return tagRepository.save(tag);
     }
 
     @Override
-    public Tag findById(Integer id) {
-        return tagRepository.findById(id).orElseThrow(() -> new TagNotFoundException(id));
+    public Optional<Tag> findById(Integer id) {
+        return tagRepository.findById(id);
     }
 
     @Override
@@ -37,19 +36,19 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public Tag findByName(String name) {
+    public Optional<Tag> findByName(String name) {
         return tagRepository.findByName(name);
     }
 
     @Override 
     public Tag getOrCreateByName(String name) {
-        Tag tag = tagRepository.findByName(name);
-        if (tag != null) {
-            return tag;
+        Optional<Tag> optionalTag = tagRepository.findByName(name);
+        if (!optionalTag.isPresent()) {
+            Tag newTag = new Tag();
+            newTag.setName(name);
+            return tagRepository.save(newTag);
         }
-        tag = new Tag();
-        tag.setName(name);
-        return tagRepository.save(tag);
+        return tagRepository.save(optionalTag.get());
     }
 
     @Override
