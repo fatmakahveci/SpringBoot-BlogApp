@@ -5,31 +5,48 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
-    <script src="/webjars/bootstrap/js/bootstrap.min.js"></script>
     <script src="/webjars/jquery/jquery.min.js"></script>
+    <script src="/webjars/jquery/jquery-ui.js"></script>
+    <script src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+
     </head>
     <body>
         <div class="container">
-            <p></p>
-            <h2>Update post</h2>
+            <div class="form-row justify-content-center">
+                <p></p><p></p><p></p>
+                <h1>Update post</h1>
+                <p></p>
+            </div>
             <form action="#" th:action="@{/posts/update/{id}(id=${post.id})}" method="POST">
-                <div class="form-outline mb-4">
-                    <label class="form-label" for="form4Example1">Title</label>
-                    <input type="text" id="form4Example1" th:field="${post.title}" class="form-control" placeholder="Write title here..."/>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label class="form-label" for="form1">Title</label>
+                    </div>
+                    <div class="form-group col-md-8">
+                        <input type="text" id="form1" th:field="${post.title}" class="form-control" placeholder="Write title here..."/>
+                    </div>
                 </div>
-                <div class="form-outline mb-4">
-                    <label class="form-label" for="form4Example2">Content</label>
-                    <textarea class="form-control" th:field="${post.content}" id="form4Example2" rows="4" placeholder="Write content here..."></textarea>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label class="form-label" for="form2">Content</label>
+                    </div>
+                    <div class="form-group col-md-8">
+                        <textarea class="form-control" th:field="${post.content}" id="form2" rows="15" placeholder="Write content here..."></textarea>
+                    </div>
                 </div>
-                <div class="form-outline mb-4">
-                    <label class="form-label" for="form4Example3">Tags</label>
-                    <textarea class="form-control" th:field="${post.tags}" id="form4Example3" rows="4" placeholder="Write tags here..."></textarea>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label class="form-label" for="form3">Tags</label>
+                    </div>
+                    <div class="form-group col-md-8">
+                        <input type="text" id="form3" th:field="${post.tags}" class="form-control" placeholder="Write tags here..."/>
+                    </div>
                 </div>
-                <div class="form-outline mb-4">
-				    <a th:href="@{/tags/save}" name="save_tag" class="btn btn-primary btn-sm mb-3">Create new tag</a>
+                <div class="form-group">
+                    <button type="submit" name="save_post" class="btn btn-primary mb-4">Update post</button>
                 </div>
-                <button type="Update post" name="update_post" class="btn btn-primary btn-block mb-4">Update</button>
-            </form>
+             </form>
         </div>
     </body>
 </html>
+
