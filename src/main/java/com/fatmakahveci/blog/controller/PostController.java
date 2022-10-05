@@ -1,5 +1,6 @@
 package com.fatmakahveci.blog.controller;
 
+import com.fatmakahveci.blog.PostNotFoundException;
 import com.fatmakahveci.blog.model.Post;
 import com.fatmakahveci.blog.service.PostService;
 
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 public class PostController {
@@ -32,7 +32,7 @@ public class PostController {
 
     @GetMapping(path = "/posts/{id}")
     public Post viewPostById(@PathVariable Integer id) {
-        return postService.findById(id);
+        return postService.findById(id).orElseThrow(() -> new PostNotFoundException(id));
     }
 
     @GetMapping("/posts/add")
@@ -65,7 +65,7 @@ public class PostController {
 
     @GetMapping("/posts/edit/{id}")
     public ModelAndView editPost(@PathVariable Integer id) {
-        Post post = postService.findById(id);
+        Post post = postService.findById(id).orElseThrow(() -> new PostNotFoundException(id));
         ModelAndView mav = new ModelAndView("update_post_form");
         mav.addObject("post", post);
         return mav;
@@ -73,7 +73,7 @@ public class PostController {
 
     @PostMapping("/posts/update/{id}")
 	public ModelAndView updatePost(@PathVariable Integer id, Post post) {
-        Post existingPost = postService.findById(id);
+        Post existingPost = postService.findById(id).orElseThrow(() -> new PostNotFoundException(id));
         existingPost.setTitle(post.getTitle());
         existingPost.setContent(post.getContent());
         existingPost.setTags(post.getTags());
