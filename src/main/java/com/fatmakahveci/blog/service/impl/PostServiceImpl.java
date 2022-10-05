@@ -38,8 +38,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post findById(Integer id) throws PostNotFoundException {
-        return postRepository.findById(id).orElseThrow(() -> new PostNotFoundException(id));
+    public Optional<Post> findById(Integer id) throws PostNotFoundException {
+        return postRepository.findById(id);
     }
 
     @Override
