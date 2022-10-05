@@ -10,9 +10,6 @@
 			<div class="container fluid text-center">
 				<br><h3>Welcome to my blog</h3><br>
 			</div>
-			<div style="text-align: right;">
-				<a th:href="@{/posts/add}" class="btn btn-primary btn-sm mb-3">Create new post</a>
-			</div>
 
 			<table class="table table-hover">
 				<thead>
@@ -35,6 +32,15 @@
 					</tr>
 				</tbody>
 			</table>
+			
+			<hr class="mt-5 mb-5">
+
+			<div style="text-align: right;">
+				<a th:href="@{/posts/add}" class="btn btn-primary btn-sm mb-3">Create new post</a>
+			</div>
+
+			<hr class="mt-5 mb-5">
+
 		</div>
 	</body>
 </html>
