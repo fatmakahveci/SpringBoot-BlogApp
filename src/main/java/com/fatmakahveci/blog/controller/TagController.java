@@ -1,19 +1,17 @@
 package com.fatmakahveci.blog.controller;
 
-import com.fatmakahveci.blog.TagNotFoundException;
 import com.fatmakahveci.blog.model.Tag;
 import com.fatmakahveci.blog.service.TagService;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 @RestController
 public class TagController {
@@ -25,31 +23,24 @@ public class TagController {
     }
 
     @GetMapping(path = "/tags")
-    public @ResponseBody List<Tag> getAllTags() {
+    public List<Tag> getAllTags() {
         return tagService.findAll();
     }
 
-    @GetMapping(path = "/tags/{id}")
-    public Tag findById(@PathVariable Integer id) {
-        return tagService.findById(id).orElseThrow(() -> new TagNotFoundException(id));
-    }
-
-    @GetMapping("/tags/add")
-    public ModelAndView addTag() {
-        ModelAndView mav = new ModelAndView("tag_form");
-        mav.addObject("tag", new Tag());
-        return mav;
-    }
-    
-    @PostMapping("/tags/save")
+    @PostMapping(value="/tags/save")
     public ModelAndView saveTag(@ModelAttribute Tag tag) {
-        tagService.save(tag);
-        return new ModelAndView("redirect:/");
+        Tag newTag = tagService.getOrCreateByName(tag.getName());
+        tagService.save(newTag);
+        return new ModelAndView("redirect:/posts/add");
     }
 
-    @GetMapping("/tags/delete/{id}")
-    public ModelAndView deleteTag(@PathVariable Integer id) {
-        tagService.deleteById(id);
-        return new ModelAndView("redirect:/");
+    @GetMapping(value="/tags/delete")
+    public ModelAndView deleteTag(@ModelAttribute Tag tag) {
+        Optional<Tag> optionalTag = tagService.findByName(tag.getName());
+        if (optionalTag.isPresent()) {
+            Tag newTag = optionalTag.get();
+            tagService.deleteById(newTag.getId());
+        }
+        return new ModelAndView("redirect:/posts/add");
     }
 }
