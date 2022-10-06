@@ -2,6 +2,7 @@ package com.fatmakahveci.blog.controller;
 
 import com.fatmakahveci.blog.PostNotFoundException;
 import com.fatmakahveci.blog.model.Post;
+import com.fatmakahveci.blog.model.Tag;
 import com.fatmakahveci.blog.service.PostService;
 
 import java.util.List;
@@ -39,10 +40,11 @@ public class PostController {
     public ModelAndView addPost() {
         ModelAndView mav = new ModelAndView("post_form");
         mav.addObject("post", new Post());
+        mav.addObject("tag", new Tag());
         return mav;
     }
     
-    @PostMapping("/posts/save")
+    @PostMapping(value="/posts/save")
     public ModelAndView savePost(@ModelAttribute Post post) {
         Optional<Post> optionalPost = postService.findByTitle(post.getTitle());
         if (!optionalPost.isPresent()) {
@@ -68,6 +70,7 @@ public class PostController {
         Post post = postService.findById(id).orElseThrow(() -> new PostNotFoundException(id));
         ModelAndView mav = new ModelAndView("update_post_form");
         mav.addObject("post", post);
+        mav.addObject("tag", new Tag());
         return mav;
     }
 

@@ -46,9 +46,9 @@ public class TagServiceImpl implements TagService {
         if (!optionalTag.isPresent()) {
             Tag newTag = new Tag();
             newTag.setName(name);
-            return tagRepository.save(newTag);
+            return newTag;
         }
-        return tagRepository.save(optionalTag.get());
+        return optionalTag.get();
     }
 
     @Override
