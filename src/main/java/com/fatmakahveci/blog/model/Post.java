@@ -1,5 +1,6 @@
 package com.fatmakahveci.blog.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -30,7 +31,7 @@ public class Post {
     
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name="post_tags", joinColumns = @JoinColumn(name="post_id"), inverseJoinColumns = @JoinColumn(name="tag_id"))
-    private List<Tag> tags;
+    private List<Tag> tags = new ArrayList<>();
 
     public Post() {
         

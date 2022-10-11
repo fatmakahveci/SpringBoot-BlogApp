@@ -24,7 +24,7 @@
 					<tr th:each="post:${posts}">
 						<td th:text="${post.title}"></td>
 						<td th:text="${post.content}"></td>
-						<td th:text="${post.tags}"></td>
+						<td th:text="${#strings.listJoin(post.tags.![name], ',')}"></td>
 						<td>
 							<a th:href="@{/posts/edit/{postId}(postId=${post.id})}" class="btn btn-primary btn-sm mb-3">Update</a>
 							<a th:href="@{/posts/delete/{postId}(postId=${post.id})}" class="btn btn-primary btn-sm mb-3">Delete</a>
