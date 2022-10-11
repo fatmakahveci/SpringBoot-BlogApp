@@ -43,4 +43,14 @@ public class TagController {
         }
         return new ModelAndView("redirect:/posts/add");
     }
+
+    @PostMapping(value="/tags/delete")
+    public ModelAndView removeTag(@ModelAttribute Tag tag) {
+        Optional<Tag> optionalTag = tagService.findByName(tag.getName());
+        if (optionalTag.isPresent()) {
+            Tag newTag = optionalTag.get();
+            tagService.deleteById(newTag.getId());
+        }
+        return new ModelAndView("redirect:/posts/add");
+    }
 }
