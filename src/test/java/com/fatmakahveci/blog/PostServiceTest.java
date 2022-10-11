@@ -37,8 +37,8 @@ public class PostServiceTest {
 
 	@Test
     public void saveTest() throws Exception {
-        Post newPost = new Post(null, "title", "content", Collections.emptyList());
-        Post savedPost = new Post(1, "title", "content", Collections.emptyList());
+        Post newPost = new Post(null, "title", "content", Collections.emptySet());
+        Post savedPost = new Post(1, "title", "content", Collections.emptySet());
         when(postRepository.save(eq(newPost))).thenReturn(savedPost);
 
         Post returnedPost = postService.save(newPost);
@@ -48,7 +48,4 @@ public class PostServiceTest {
         
         assertThat(returnedPost).isEqualTo(savedPost);
     }
-
-    // TODO (fatmakahveci) : write test for post with tags
-    // TODO (fatmakahveci) : post with given id will be null and test for id given by db
 }

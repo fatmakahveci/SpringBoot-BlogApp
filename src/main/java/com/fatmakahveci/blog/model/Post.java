@@ -1,9 +1,8 @@
 package com.fatmakahveci.blog.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -29,19 +28,29 @@ public class Post {
 
     private String content;
     
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="post_tags", joinColumns = @JoinColumn(name="post_id"), inverseJoinColumns = @JoinColumn(name="tag_id"))
-    private List<Tag> tags = new ArrayList<>();
+    private Set<Tag> tags = new HashSet<>();
 
     public Post() {
         
     }
 
-    public Post (Integer id, String title, String content, List<Tag> tags) {
+    public Post (Integer id, String title, String content, Set<Tag> tags) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.tags = tags;
+    }
+
+    public void addTag(Tag tag) {
+        this.tags.add(tag);
+        tag.getPosts().add(this);
+    }
+ 
+    public void removeTag(Tag tag) {
+        this.tags.remove(tag);
+        tag.getPosts().remove(this);
     }
 
     public Integer getId() {
@@ -68,11 +77,11 @@ public class Post {
         this.content = content;
     }
 
-    public List<Tag> getTags() {
+    public Set<Tag> getTags() {
         return tags;
     }
 
-    public void setTags(List<Tag> tag) {
+    public void setTags(Set<Tag> tag) {
         this.tags = tag;
     }
 
@@ -81,14 +90,11 @@ public class Post {
         return "Post [content=" + content + ", id=" + id + ", tags=" + tags + ", title=" + title + "]";
     }
 
-
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((content == null) ? 0 : content.hashCode());
         result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((tags == null) ? 0 : tags.hashCode());
         result = prime * result + ((title == null) ? 0 : title.hashCode());
         return result;
     }
@@ -102,20 +108,10 @@ public class Post {
         if (getClass() != obj.getClass())
             return false;
         Post other = (Post) obj;
-        if (content == null) {
-            if (other.content != null)
-                return false;
-        } else if (!content.equals(other.content))
-            return false;
         if (id == null) {
             if (other.id != null)
                 return false;
         } else if (!id.equals(other.id))
-            return false;
-        if (tags == null) {
-            if (other.tags != null)
-                return false;
-        } else if (!tags.equals(other.tags))
             return false;
         if (title == null) {
             if (other.title != null)
