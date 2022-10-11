@@ -1,5 +1,5 @@
-package com.fatmakahveci.blog;
+// package com.fatmakahveci.blog;
 
-public class UserServiceTest {
+// public class UserServiceTest {
     
-}
+// }
