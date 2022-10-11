@@ -4,6 +4,7 @@ import com.fatmakahveci.blog.PostNotFoundException;
 import com.fatmakahveci.blog.model.Post;
 import com.fatmakahveci.blog.model.Tag;
 import com.fatmakahveci.blog.service.PostService;
+import com.fatmakahveci.blog.service.TagService;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,10 +21,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class PostController {
 
     private PostService postService;
+    private TagService tagService;
 
     @Autowired
-    public PostController(PostService postService) {
+    public PostController(PostService postService, TagService tagService) {
         this.postService = postService;
+        this.tagService = tagService;
     }
 
     @GetMapping(path = "/posts")
@@ -41,6 +44,7 @@ public class PostController {
         ModelAndView mav = new ModelAndView("post_form");
         mav.addObject("post", new Post());
         mav.addObject("tag", new Tag());
+        mav.addObject("tags", tagService.findAll());
         return mav;
     }
     
@@ -71,6 +75,7 @@ public class PostController {
         ModelAndView mav = new ModelAndView("update_post_form");
         mav.addObject("post", post);
         mav.addObject("tag", new Tag());
+        mav.addObject("tags", tagService.findAll());
         return mav;
     }
 
