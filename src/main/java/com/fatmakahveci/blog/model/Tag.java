@@ -1,15 +1,10 @@
 package com.fatmakahveci.blog.model;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -21,9 +16,6 @@ public class Tag {
 
     @Column(unique=true)
     private String name;
-
-    @ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY)
-    private Set<Post> posts = new HashSet<>();
 
     public Tag() {
     }
@@ -52,14 +44,6 @@ public class Tag {
     @Override
     public String toString() {
         return "Tag: " + name + "\n";
-    }
-
-    public Set<Post> getPosts() {
-        return posts;
-    }
-
-    public void setPosts(Set<Post> posts) {
-        this.posts = posts;
     }
 
     @Override

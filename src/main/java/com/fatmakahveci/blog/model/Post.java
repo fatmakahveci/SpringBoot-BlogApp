@@ -43,16 +43,6 @@ public class Post {
         this.tags = tags;
     }
 
-    public void addTag(Tag tag) {
-        this.tags.add(tag);
-        tag.getPosts().add(this);
-    }
- 
-    public void removeTag(Tag tag) {
-        this.tags.remove(tag);
-        tag.getPosts().remove(this);
-    }
-
     public Integer getId() {
         return id;
     }
