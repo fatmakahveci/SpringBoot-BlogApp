@@ -1,10 +1,14 @@
 package com.fatmakahveci.blog.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -17,12 +21,16 @@ public class Tag {
     @Column(unique=true)
     private String name;
 
+    @ManyToMany(mappedBy = "tags")
+    private Set<Post> posts = new HashSet<Post>();
+
     public Tag() {
     }
 
-    public Tag(Integer id, String name) {
+    public Tag(Integer id, String name, Set<Post> posts) {
         this.id = id;
         this.name = name;
+        this.posts = posts;
     }
 
     public Integer getId() {
@@ -39,6 +47,20 @@ public class Tag {
 
     public void setName(String name) {
         this.name = name;
+    }
+  
+    public Set<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(Set<Post> posts) {
+        this.posts = posts;
+    }
+
+    public void deleteTagFromPosts() {
+        for (Post post : this.getPosts()) {
+            post.getTags().remove(this);
+        }
     }
 
     @Override
