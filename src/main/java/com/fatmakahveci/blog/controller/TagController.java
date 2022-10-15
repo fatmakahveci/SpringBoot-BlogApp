@@ -31,26 +31,18 @@ public class TagController {
     public ModelAndView saveTag(@ModelAttribute Tag tag) {
         Tag newTag = tagService.getOrCreateByName(tag.getName());
         tagService.save(newTag);
-        return new ModelAndView("redirect:/posts/add");
-    }
-
-    @GetMapping(value="/tags/delete")
-    public ModelAndView deleteTag(@ModelAttribute Tag tag) {
-        Optional<Tag> optionalTag = tagService.findByName(tag.getName());
-        if (optionalTag.isPresent()) {
-            Tag newTag = optionalTag.get();
-            tagService.deleteById(newTag.getId());
-        }
-        return new ModelAndView("redirect:/posts/add");
+        return new ModelAndView("redirect:/");
     }
 
     @PostMapping(value="/tags/delete")
-    public ModelAndView removeTag(@ModelAttribute Tag tag) {
+    public ModelAndView deleteTag(@ModelAttribute Tag tag) {
         Optional<Tag> optionalTag = tagService.findByName(tag.getName());
+        Tag tagToBeDeleted;
         if (optionalTag.isPresent()) {
-            Tag newTag = optionalTag.get();
-            tagService.deleteById(newTag.getId());
-        }
-        return new ModelAndView("redirect:/posts/add");
+            tagToBeDeleted = optionalTag.get();
+            tagToBeDeleted.deleteTagFromPosts();
+            tagService.deleteById(tagToBeDeleted.getId());
+       }
+       return new ModelAndView("redirect:/");
     }
 }

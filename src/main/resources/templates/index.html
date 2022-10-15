@@ -11,6 +11,24 @@
 				<br><h3>Welcome to my blog</h3><br>
 			</div>
 
+			<form action="#" th:action="@{/tags/save}" method="POST">
+				<div class="form-row">
+					<div class="form-group col-md-8">
+						<input type="text" id="form3" th:field="${tag.name}" class="form-control" placeholder="Write tags here..."/>
+					</div>
+					<div class="form-group col-md-2" style="text-align:right">
+						<button type="submit" value="save_tag" th:formaction="@{/tags/save}" class="btn btn-primary mb-4">Create new tag</button>
+					</div>
+					<div class="form-group col-md-2" style="text-align:right">
+						<button type="submit" value="delete_tag" th:formaction="@{/tags/delete}" class="btn btn-primary mb-4">Delete tag</button>
+					</div>
+				</div>
+			</form>
+
+			<div style="text-align: right;">
+				<a th:href="@{/posts/add}" class="btn btn-primary btn-sm mb-3">Create new post</a>
+			</div>
+
 			<table class="table table-hover">
 				<thead>
 					<tr>
@@ -32,12 +50,6 @@
 					</tr>
 				</tbody>
 			</table>
-			
-			<hr class="mt-5 mb-5">
-
-			<div style="text-align: right;">
-				<a th:href="@{/posts/add}" class="btn btn-primary btn-sm mb-3">Create new post</a>
-			</div>
 		</div>
 	</body>
 </html>

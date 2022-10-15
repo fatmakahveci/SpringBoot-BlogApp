@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.fatmakahveci.blog.model.Tag;
 import com.fatmakahveci.blog.service.PostService;
 
 @Controller
@@ -20,6 +21,7 @@ public class MainController {
     public ModelAndView viewHomePage() {
         ModelAndView mav = new ModelAndView("index");
 		mav.addObject("posts", postService.findAll());
+        mav.addObject("tag", new Tag());
         return mav;
     }
 }

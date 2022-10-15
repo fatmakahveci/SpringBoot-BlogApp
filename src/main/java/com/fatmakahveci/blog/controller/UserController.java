@@ -29,24 +29,4 @@ public class UserController {
     public User viewUserById(@PathVariable Integer id) {
         return userService.findById(id).orElseThrow(() -> new UserNotFoundException(id));
     }
-
-    // @GetMapping("/users/add")
-    // public ModelAndView addUser() {
-    // }
-    
-    // @PostMapping(value="/users/save")
-    // public ModelAndView saveUser(@ModelAttribute User user) {
-    // }
-
-    // @GetMapping("/users/delete/{id}")
-    // public ModelAndView deleteUser(@PathVariable Integer id) {
-    // }
-
-    // @GetMapping("/users/edit/{id}")
-    // public ModelAndView editUser(@PathVariable Integer id) {
-    // }
-
-    // @PostMapping("/users/update/{id}")
-	// public ModelAndView updateUser(@PathVariable Integer id, User user) {
-	// }
 }
