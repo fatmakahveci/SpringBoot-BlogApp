@@ -38,10 +38,10 @@
                     <div class="form-group col-md-4">
                         <label class="form-label" for="form3">Tags</label>
                     </div>
-                    <div class="form-check form-check-inline col-md-6">
+                    <div class="form-group col-md-8">
                         <div th:each="tag : ${tags}">
                             <input type="checkbox" th:id="${{tag}}" th:value="${{tag}}" th:field="${post.tags}" />
-                            <label th:for="${{tag}}" th:text="${tag.name}">Tag </label>
+                            <label th:for="${{tag}}" th:text="${tag.name}">Tag</label>
                         </div>
                     </div>
                 </div>

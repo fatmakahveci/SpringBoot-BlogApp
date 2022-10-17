@@ -55,9 +55,6 @@ public class PostController {
             postService.save(post);
         } else {
             Post newPost = optionalPost.get();
-            newPost.setTitle(post.getTitle());
-            newPost.setContent(post.getContent());
-            newPost.setTags(post.getTags());
             postService.save(newPost);
         }
         return new ModelAndView("redirect:/");
