@@ -6,6 +6,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Collections;
+import java.util.Optional;
 
 import org.junit.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,16 +37,23 @@ public class PostServiceTest {
     private PostServiceImpl postService;
 
 	@Test
-    public void saveTest() throws Exception {
+    public void savePostSuccess() throws Exception {
         Post newPost = new Post(null, "title", "content", Collections.emptySet());
         Post savedPost = new Post(1, "title", "content", Collections.emptySet());
+
         when(postRepository.save(eq(newPost))).thenReturn(savedPost);
-
         Post returnedPost = postService.save(newPost);
-
         verify(postRepository, times(1)).save(eq(newPost));
         assertNotNull(returnedPost.getId());
-        
         assertThat(returnedPost).isEqualTo(savedPost);
+    }
+
+    @Test
+    public void deletePostSuccess() {
+        Post post = new Post(null, "title", "content", Collections.emptySet());
+        postRepository.save(post);
+        postRepository.deleteById(post.getId());
+        Optional<Post> postOptional = postRepository.findById(post.getId());
+        assertThat(postOptional).isEmpty();
     }
 }

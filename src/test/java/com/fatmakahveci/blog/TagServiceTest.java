@@ -8,6 +8,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Collections;
+import java.util.Optional;
+
 import org.junit.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
@@ -31,16 +33,26 @@ public class TagServiceTest {
     private TagServiceImpl tagService;
 
     @Test
-    public void saveTest() throws Exception {
+    public void saveTagSuccess() throws Exception {
         Tag newTag = new Tag(null, "tag", Collections.emptySet());
         Tag savedTag = new Tag(1, "tag", Collections.emptySet());
-        when(tagRepository.save(eq(newTag))).thenReturn(savedTag);
 
+        when(tagRepository.save(eq(newTag))).thenReturn(savedTag);
         Tag returnedTag = tagService.save(newTag);
 
         verify(tagRepository, times(1)).save(eq(newTag));
         assertNotNull(returnedTag.getId());
-        
+
         assertThat(returnedTag).isEqualTo(savedTag);
     }
+
+    @Test
+    public void deleteTagSuccess() {
+        Tag tag = new Tag(1, "tag", Collections.emptySet());
+        tagRepository.save(tag);
+        tagRepository.deleteById(tag.getId());
+        Optional<Tag> tagOptional = tagRepository.findById(tag.getId());
+        assertThat(tagOptional).isEmpty();
+    }
+
 }
