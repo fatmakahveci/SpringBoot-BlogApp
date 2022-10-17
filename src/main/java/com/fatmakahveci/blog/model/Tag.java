@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "tags")
 public class Tag {
@@ -21,6 +23,7 @@ public class Tag {
     @Column(unique=true)
     private String name;
 
+    @JsonBackReference
     @ManyToMany(mappedBy = "tags")
     private Set<Post> posts = new HashSet<Post>();
 
