@@ -1,57 +1,46 @@
-// package com.fatmakahveci.blog;
+package com.fatmakahveci.blog;
 
-// import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-// import java.util.List;
+import java.util.Collections;
+import org.junit.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-// import org.junit.jupiter.api.BeforeEach;
-// import org.junit.jupiter.api.Test;
-// import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-// import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-// import org.springframework.test.annotation.Rollback;
+import com.fatmakahveci.blog.dao.TagRepository;
+import com.fatmakahveci.blog.model.Tag;
+import com.fatmakahveci.blog.service.impl.TagServiceImpl;
 
-// import com.fatmakahveci.blog.model.Tag;
-// // import com.fatmakahveci.blog.service.TagService;
+@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+public class TagServiceTest {
 
-// @DataJpaTest
-// @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-// @Rollback(false)
-// public class TagServiceTest {
-//     // private TagService tagService;
-//     Tag tag;
+    @Mock
+    private TagRepository tagRepository;
 
-//     @BeforeEach
-//     void setUp() {
-//         tag = new Tag();
-//         tag.setName("First Tag");
-//     }
-//     @Test
-//     public void test() {
-//         assertTrue(true);
-//     }
+    @InjectMocks
+    private TagServiceImpl tagService;
 
-//     @Test
-//     public List<Tag> findAll() {
-//         return null;
-//     }
+    @Test
+    public void saveTest() throws Exception {
+        Tag newTag = new Tag(null, "tag", Collections.emptySet());
+        Tag savedTag = new Tag(1, "tag", Collections.emptySet());
+        when(tagRepository.save(eq(newTag))).thenReturn(savedTag);
 
-//     @Test
-//     public Tag findById(Integer id) throws TagNotFoundException {
-//         return null;
-//     }
+        Tag returnedTag = tagService.save(newTag);
 
-//     @Test
-//     public Tag save(Tag tag) {
-//         return null;
-//     }
-
-//     @Test
-//     public Tag findTagByName(String name) {
-//         return null;
-//     }
-
-//     @Test
-//     public Tag getOrCreateTagByName(String name) {
-//         return null;
-//     }
-// }
+        verify(tagRepository, times(1)).save(eq(newTag));
+        assertNotNull(returnedTag.getId());
+        
+        assertThat(returnedTag).isEqualTo(savedTag);
+    }
+}
