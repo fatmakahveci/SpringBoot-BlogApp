@@ -56,4 +56,18 @@ public class PostServiceTest {
         Optional<Post> postOptional = postRepository.findById(post.getId());
         assertThat(postOptional).isEmpty();
     }
+
+    // @Test
+    // public void givenPostObject_whenUpdatePost_thenReturnUpdatedPost(){
+    //     Post post = new Post(1, "title", "content", Collections.emptySet());
+    //     postRepository.save(post);
+
+    //     Post savedPost = postRepository.findById(post.getId()).get();
+    //     savedPost.setTitle("updated title");
+    //     savedPost.setContent("updated content");
+    //     Post updatedPost =  postRepository.save(savedPost);
+
+    //     assertThat(updatedPost.getTitle()).isEqualTo("updated title");
+    //     assertThat(updatedPost.getContent()).isEqualTo("updated content");
+    // }
 }

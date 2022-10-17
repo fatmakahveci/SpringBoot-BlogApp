@@ -54,5 +54,4 @@ public class TagServiceTest {
         Optional<Tag> tagOptional = tagRepository.findById(tag.getId());
         assertThat(tagOptional).isEmpty();
     }
-
 }
