@@ -1,4 +1,4 @@
-package com.fatmakahveci.blog;
+package com.fatmakahveci.blog.exception;
 
 public class TagNotFoundException extends RuntimeException {
     public TagNotFoundException(Integer id) {
