@@ -7,58 +7,29 @@
 	</head>
 	<body>
 		<div class="container fluid text-center">
-			<div class="container fluid text-center">
-				<br><h3>Welcome to my blog</h3><br>
-			</div>
-
+			<h1>Tag</h1>
 			<div class="modal-body row">
-				<div class="col-md-8">
-					<img src="/images/blog.png" class="img-fluid" alt="Responsive image">
-					<div style="text-align: right;">
-						<br>
-						<a th:href="@{/posts/add}" class="btn btn-primary btn-sm mb-3">Create new post</a>
-					</div>
-
-					<table class="table table-hover">
-						<thead>
-							<tr>
-								<th>Title</th>
-								<th>Content</th>
-								<th>Tags</th>
-								<th>Actions</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr th:each="post:${posts}">
-								<td th:text="${post.title}"></td>
-								<td th:text="${post.content}"></td>
-								<td th:text="${#strings.listJoin(post.tags.![name], ',')}"></td>
-								<td>
-									<a th:href="@{/posts/edit/{postId}(postId=${post.id})}" class="btn btn-primary btn-sm mb-3">Update</a>
-									<a th:href="@{/posts/delete/{postId}(postId=${post.id})}" class="btn btn-primary btn-sm mb-3 btn-danger">Delete</a>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-
-				<div class="col-md-4 border">
-					<br>
-					<h4>Tags</h4>
-					<form action="#" th:action="@{/tags/save}" method="POST">
-						<div class="btn-group" role="group" aria-label="Basic example">
-							<input type="text" id="form3" th:field="${tag.name}" class="form-control" placeholder="Write tags here..."/>
-							<button type="submit" value="save_tag" th:formaction="@{/tags/save}" class="btn btn-primary btn-primary btn-sm">Create</button>
-						</div>
-						<br><br>
-						<table class="table">
-							<tr th:each="tag:${tags}">
-								<td><a th:href="@{/tag/{tagId}(tagId=${tag.id})}" class="btn btn-outline-primary btn-sm" th:text="${tag.name}">Success</a></td>
-								<td><a th:href="@{/tags/delete/{tagId}(tagId=${tag.id})}" class="btn btn-primary btn-sm mb-3 btn-danger">Delete</a></td>
-							</tr>
-						</table>
-					</form>
-				</div>
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th>Title</th>
+							<th>Content</th>
+							<th>Tags</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="post:${posts}">
+							<td th:text="${post.title}"></td>
+							<td th:text="${post.content}"></td>
+							<td th:text="${#strings.listJoin(post.tags.![name], ',')}"></td>
+							<td>
+								<a th:href="@{/posts/edit/{postId}(postId=${post.id})}" class="btn btn-primary btn-sm mb-3">Update</a>
+								<a th:href="@{/posts/delete/{postId}(postId=${post.id})}" class="btn btn-primary btn-sm mb-3 btn-danger">Delete</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
 		</div>
 	</body>
