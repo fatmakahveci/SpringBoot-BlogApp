@@ -13,7 +13,9 @@
 
 			<div class="modal-body row">
 				<div class="col-md-8">
+					<img src="/images/blog.png" class="img-fluid" alt="Responsive image">
 					<div style="text-align: right;">
+						<br>
 						<a th:href="@{/posts/add}" class="btn btn-primary btn-sm mb-3">Create new post</a>
 					</div>
 
@@ -51,7 +53,7 @@
 						<br><br>
 						<table class="table">
 							<tr th:each="tag:${tags}">
-								<!-- <td><a th:href="@{/tag/{tagId}(tagId=${tag.id})}" class="btn btn-outline-primary btn-sm" th:text="${tag.name}">Success</a></td> -->
+								<td><a th:href="@{/tag/{tagId}(tagId=${tag.id})}" class="btn btn-outline-primary btn-sm" th:text="${tag.name}">Success</a></td>
 								<td><a th:href="@{/tags/delete/{tagId}(tagId=${tag.id})}" class="btn btn-primary btn-sm mb-3 btn-danger">Delete</a></td>
 							</tr>
 						</table>

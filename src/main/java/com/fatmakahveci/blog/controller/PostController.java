@@ -1,6 +1,6 @@
 package com.fatmakahveci.blog.controller;
 
-import com.fatmakahveci.blog.PostNotFoundException;
+import com.fatmakahveci.blog.exception.PostNotFoundException;
 import com.fatmakahveci.blog.model.Post;
 import com.fatmakahveci.blog.model.Tag;
 import com.fatmakahveci.blog.service.PostService;

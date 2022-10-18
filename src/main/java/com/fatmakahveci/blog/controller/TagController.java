@@ -34,7 +34,7 @@ public class TagController {
         if (optionalTag.isPresent()) {
 
         }
-        return new ModelAndView("tag.html");
+        return new ModelAndView("redirect:/");
     }
 
     @PostMapping(value="/tags/save")
