@@ -2,12 +2,12 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 	<head>
 		<meta charset="ISO-8859-1">
-		<title>Blog</title>
+		<title>Blogs by tag</title>
 		<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
 	</head>
 	<body>
 		<div class="container fluid text-center">
-			<h1>Tag</h1>
+			<h1 th:text="${tag.name}">title</h1>
 			<div class="modal-body row">
 				<table class="table table-hover">
 					<thead>

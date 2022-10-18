@@ -36,10 +36,12 @@ public class TagController {
         ModelAndView mav = new ModelAndView("tag");
         Optional<Tag> optionalTag = tagService.findById(id);
         Set<Post> posts = new HashSet<>();
+        Tag tag = new Tag();
         if (optionalTag.isPresent()) {
-            Tag tag = optionalTag.get();
+            tag = optionalTag.get();
             posts = tag.getPosts();
         }
+        mav.addObject("tag", tag);
         mav.addObject("posts", posts);
         return mav;
     }
