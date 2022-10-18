@@ -28,6 +28,15 @@ public class TagController {
         return tagService.findAll();
     }
 
+    @GetMapping(path = "/tag/{id}")
+    public ModelAndView getTagPosts(@PathVariable Integer id) {
+        Optional<Tag> optionalTag = tagService.findById(id);
+        if (optionalTag.isPresent()) {
+
+        }
+        return new ModelAndView("tag.html");
+    }
+
     @PostMapping(value="/tags/save")
     public ModelAndView saveTag(@ModelAttribute Tag tag) {
         Tag newTag = tagService.getOrCreateByName(tag.getName());
