@@ -1,3 +1,5 @@
+# Spring Boot - Simple Blog Project
+
 ![maven](https://github.com/fatmakahveci/SpringBoot-WebProject/actions/workflows/maven.yml/badge.svg)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
@@ -7,6 +9,12 @@
 ![MySQL](https://img.shields.io/badge/mysql-%2300f.svg?style=for-the-badge&logo=mysql&logoColor=white)
 ![Apache Maven](https://img.shields.io/badge/Apache%20Maven-C71A36?style=for-the-badge&logo=Apache%20Maven&logoColor=white)
 
-# Spring Boot - Blog
+## 1. Getting started
 
-A simple blog project for practicing Spring Boot + Thymeleaf.
+- Java 18+
+
+### 1.1. Maven build
+
+- .
+
+### 1.2. Build java code
