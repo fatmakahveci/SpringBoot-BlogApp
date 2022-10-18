@@ -1,10 +1,13 @@
 package com.fatmakahveci.blog.controller;
 
+import com.fatmakahveci.blog.model.Post;
 import com.fatmakahveci.blog.model.Tag;
 import com.fatmakahveci.blog.service.TagService;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,11 +33,15 @@ public class TagController {
 
     @GetMapping(path = "/tag/{id}")
     public ModelAndView getTagPosts(@PathVariable Integer id) {
+        ModelAndView mav = new ModelAndView("tag");
         Optional<Tag> optionalTag = tagService.findById(id);
+        Set<Post> posts = new HashSet<>();
         if (optionalTag.isPresent()) {
-
+            Tag tag = optionalTag.get();
+            posts = tag.getPosts();
         }
-        return new ModelAndView("redirect:/");
+        mav.addObject("posts", posts);
+        return mav;
     }
 
     @PostMapping(value="/tags/save")
