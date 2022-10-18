@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @RestController
@@ -34,9 +35,9 @@ public class TagController {
         return new ModelAndView("redirect:/");
     }
 
-    @PostMapping(value="/tags/delete")
-    public ModelAndView deleteTag(@ModelAttribute Tag tag) {
-        Optional<Tag> optionalTag = tagService.findByName(tag.getName());
+    @GetMapping(value="/tags/delete/{id}")
+    public ModelAndView deleteTag(@PathVariable Integer id) {
+        Optional<Tag> optionalTag = tagService.findById(id);
         Tag tagToBeDeleted;
         if (optionalTag.isPresent()) {
             tagToBeDeleted = optionalTag.get();
