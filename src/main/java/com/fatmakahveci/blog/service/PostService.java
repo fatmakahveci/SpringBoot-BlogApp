@@ -9,6 +9,6 @@ public interface PostService {
     List<Post> findAll();
     Optional<Post> findById(Integer id);
     Post save(Post post);
-    void deleteById(Integer id);
+    Optional<Post> deleteById(Integer id);
     Optional<Post> findByTitle(String title);
 }
