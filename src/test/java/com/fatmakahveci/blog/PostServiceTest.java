@@ -1,5 +1,6 @@
 package com.fatmakahveci.blog;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -53,21 +54,15 @@ public class PostServiceTest {
         Post post = new Post(null, "title", "content", Collections.emptySet());
         postRepository.save(post);
         postRepository.deleteById(post.getId());
-        Optional<Post> postOptional = postRepository.findById(post.getId());
-        assertThat(postOptional).isEmpty();
+        Optional<Post> optionalPost = postRepository.findById(post.getId());
+        assertThat(optionalPost).isEmpty();
     }
 
-    // @Test
-    // public void givenPostObject_whenUpdatePost_thenReturnUpdatedPost(){
-    //     Post post = new Post(1, "title", "content", Collections.emptySet());
-    //     postRepository.save(post);
-
-    //     Post savedPost = postRepository.findById(post.getId()).get();
-    //     savedPost.setTitle("updated title");
-    //     savedPost.setContent("updated content");
-    //     Post updatedPost =  postRepository.save(savedPost);
-
-    //     assertThat(updatedPost.getTitle()).isEqualTo("updated title");
-    //     assertThat(updatedPost.getContent()).isEqualTo("updated content");
-    // }
+    @Test
+    public void findByTitleSuccess() {
+        Post savedPost = new Post(1, "title", "content", Collections.emptySet());
+        when(postRepository.findByTitle("title")).thenReturn(Optional.of(savedPost));
+        Optional<Post> postWithTitle = postService.findByTitle("title");
+        assertEquals("title", postWithTitle.get().getTitle());
+    }
 }
