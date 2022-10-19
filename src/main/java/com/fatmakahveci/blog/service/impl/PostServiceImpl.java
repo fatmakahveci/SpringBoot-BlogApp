@@ -22,6 +22,15 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post save(Post post) {
+        Optional<Post> optionalPost = findByTitle(post.getTitle());
+        if (optionalPost.isPresent()) {
+            Post existingPost = optionalPost.get();
+            existingPost.setTitle(post.getTitle());
+            existingPost.setContent(post.getContent());
+            existingPost.setTags(post.getTags());
+            post = existingPost;
+        }
+
         return postRepository.save(post);
     }
 

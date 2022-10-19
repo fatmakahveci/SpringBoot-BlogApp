@@ -18,7 +18,7 @@
                 <h3>Update post</h3>
                 <p></p>
             </div>
-            <form action="#" th:action="@{/posts/update/{id}(id=${post.id})}" method="POST">
+            <form action="#" th:action="@{/posts/{id}(id=${post.id})}" method="POST">
                 <div class="form-row">
                     <div class="form-group col-md-4">
                         <label class="form-label" for="form1">Title</label>

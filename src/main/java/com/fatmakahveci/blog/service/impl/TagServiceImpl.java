@@ -43,20 +43,23 @@ public class TagServiceImpl implements TagService {
     @Override 
     public Tag getOrCreateByName(String name) {
         Optional<Tag> optionalTag = tagRepository.findByName(name);
-        Tag tag;
         if (optionalTag.isPresent()) {
-            tag = optionalTag.get();
+            return optionalTag.get();
         } else {
-            tag = new Tag();
+            Tag tag = new Tag();
             tag.setName(name);
+            return save(tag);
         }
-        return tag;
     }
 
     @Override
-    public Optional<Tag> deleteById(Integer id) {
+    public void deleteById(Integer id) {
         Optional<Tag> tag = tagRepository.findById(id);
+        if (tag.isEmpty()) {
+            return;
+        }
+        
+        tag.get().deleteTagFromPosts();
         tagRepository.deleteById(id);
-        return tag;
     }
 }
