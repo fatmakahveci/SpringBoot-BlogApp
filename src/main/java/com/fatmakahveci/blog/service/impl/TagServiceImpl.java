@@ -54,7 +54,9 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public void deleteById(Integer id) {
+    public Optional<Tag> deleteById(Integer id) {
+        Optional<Tag> tag = tagRepository.findById(id);
         tagRepository.deleteById(id);
+        return tag;
     }
 }
