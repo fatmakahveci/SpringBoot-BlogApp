@@ -7,11 +7,11 @@ import com.fatmakahveci.blog.service.PostService;
 import com.fatmakahveci.blog.service.TagService;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,11 +34,6 @@ public class PostController {
         return postService.findAll();
     }
 
-    @GetMapping(path = "/posts/{id}")
-    public Post viewPostById(@PathVariable Integer id) {
-        return postService.findById(id).orElseThrow(() -> new PostNotFoundException(id));
-    }
-
     @GetMapping("/posts/add")
     public ModelAndView addPost() {
         ModelAndView mav = new ModelAndView("post_form");
@@ -48,25 +43,19 @@ public class PostController {
         return mav;
     }
     
-    @PostMapping(value="/posts/save")
+    @PostMapping(value="/posts")
     public ModelAndView savePost(@ModelAttribute Post post) {
-        Optional<Post> optionalPost = postService.findByTitle(post.getTitle());
-        if (!optionalPost.isPresent()) {
-            postService.save(post);
-        } else {
-            Post newPost = optionalPost.get();
-            postService.save(newPost);
-        }
+        postService.save(post);
         return new ModelAndView("redirect:/");
     }
 
-    @GetMapping("/posts/delete/{id}")
+    @DeleteMapping("/posts/{id}")
     public ModelAndView deletePost(@PathVariable Integer id) {
         postService.deleteById(id);
         return new ModelAndView("redirect:/");
     }
 
-    @GetMapping("/posts/edit/{id}")
+    @GetMapping("/posts/{id}")
     public ModelAndView editPost(@PathVariable Integer id) {
         Post post = postService.findById(id).orElseThrow(() -> new PostNotFoundException(id));
         ModelAndView mav = new ModelAndView("update_post_form");
@@ -76,13 +65,9 @@ public class PostController {
         return mav;
     }
 
-    @PostMapping("/posts/update/{id}")
+    @PostMapping("/posts/{id}")
 	public ModelAndView updatePost(@PathVariable Integer id, Post post) {
-        Post existingPost = postService.findById(id).orElseThrow(() -> new PostNotFoundException(id));
-        existingPost.setTitle(post.getTitle());
-        existingPost.setContent(post.getContent());
-        existingPost.setTags(post.getTags());
-        postService.save(existingPost);
+        postService.save(post);
         return new ModelAndView("redirect:/");
 	}
 }

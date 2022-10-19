@@ -11,5 +11,5 @@ public interface TagService {
     Optional<Tag> findByName(String name);
     Tag save(Tag tag);
     Tag getOrCreateByName(String name);
-    Optional<Tag> deleteById(Integer id);
+    void deleteById(Integer id);
 }

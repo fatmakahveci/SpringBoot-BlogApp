@@ -28,7 +28,7 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 @ExtendWith(MockitoExtension.class)
-public class PostServiceTest {
+public class PostServiceTests {
     
     @Mock
     private PostRepository postRepository;

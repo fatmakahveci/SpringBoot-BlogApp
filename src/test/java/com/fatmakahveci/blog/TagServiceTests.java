@@ -26,7 +26,7 @@ import com.fatmakahveci.blog.service.impl.TagServiceImpl;
 
 @RunWith(MockitoJUnitRunner.class)
 @ExtendWith(MockitoExtension.class)
-public class TagServiceTest {
+public class TagServiceTests {
 
     @Mock
     private TagRepository tagRepository;
@@ -80,22 +80,18 @@ public class TagServiceTest {
 
         when(tagRepository.findById(1)).thenReturn(Optional.of(tag));
 
-        Optional<Tag> deletedOptionalTag = tagService.deleteById(1);
+        tagService.deleteById(1);
         verify(tagRepository, times(1)).findById(1);
         verify(tagRepository, times(1)).deleteById(1);
-
-        assertEquals(deletedOptionalTag.get(), tag);
     }
 
     @Test
     public void deleteByIdFail_notExistingTag() {
         when(tagRepository.findById(1)).thenReturn(Optional.empty());
 
-        Optional<Tag> deletedOptionalTag = tagService.deleteById(1);
+        tagService.deleteById(1);
         verify(tagRepository, times(1)).findById(1);
-        verify(tagRepository, times(1)).deleteById(1);
-
-        assertEquals(deletedOptionalTag, Optional.empty());
+        verify(tagRepository, times(0)).deleteById(1);
     }
 
     @Test
@@ -144,12 +140,16 @@ public class TagServiceTest {
 
     @Test
     public void getOrCreateByName_nonExistingTag() {
+        Tag tag = new Tag(null, "tag", Collections.emptySet());
+
         when(tagRepository.findByName("tag")).thenReturn(Optional.empty());
+        when(tagRepository.save(tag)).thenReturn(tag);
 
-        Tag tag = tagService.getOrCreateByName("tag");
+        Tag savedTag = tagService.getOrCreateByName("tag");
         verify(tagRepository, times(1)).findByName("tag");
+        verify(tagRepository, times(1)).save(tag);
 
-        assertEquals(tag.getName(), "tag");
+        assertEquals(savedTag.getName(), "tag");
     }
 
     @Test
