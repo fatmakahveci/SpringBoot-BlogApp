@@ -1,0 +1,22 @@
+a, h3, h4, button, textarea {
+    color:royalblue;
+    font-family: "Lucida Console", "Courier New", monospace;
+    font-weight: bold;
+}
+
+label {
+    font-weight: bold;
+    color:navy;
+    font-family: "Lucida Console", "Courier New", monospace;
+}
+
+input[type=text] {
+    border: 1px solid cornflowerblue;
+    border-radius: 4px;
+    font-family: "Lucida Console", "Courier New", monospace;
+  }
+
+td, th {
+    color:navy;
+    font-family: "Lucida Console", "Courier New", monospace;
+}
