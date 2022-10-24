@@ -23,3 +23,18 @@ mvn clean spring-boot:run
 ```
 
 - View the index page at `http://localhost:8080/`
+
+## Test
+
+```bash
+mvn clean test
+mvn clean test -e # -e := run tests with full stack trace on failures
+```
+
+## Demo
+
+@todo
+
+---
+
+Its source code is available with the Apache license and contributions are welcome.
