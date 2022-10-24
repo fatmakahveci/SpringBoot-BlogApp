@@ -33,7 +33,7 @@ mvn clean test -e # -e := run tests with full stack trace on failures
 
 ## Demo
 
-@todo
+![demo.gif](demo.gif)
 
 ---
 
