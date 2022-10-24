@@ -9,6 +9,8 @@
 ![MySQL](https://img.shields.io/badge/mysql-%2300f.svg?style=for-the-badge&logo=mysql&logoColor=white)
 ![Apache Maven](https://img.shields.io/badge/Apache%20Maven-C71A36?style=for-the-badge&logo=Apache%20Maven&logoColor=white)
 
+![demo.gif](demo.gif)
+
 ## Requirements
 
 - [Java 18+](https://www.oracle.com/java/technologies/javase/jdk18-archive-downloads.html)
@@ -30,10 +32,6 @@ mvn clean spring-boot:run
 mvn clean test
 mvn clean test -e # -e := run tests with full stack trace on failures
 ```
-
-## Demo
-
-![demo.gif](demo.gif)
 
 ---
 
