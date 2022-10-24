@@ -1,4 +1,4 @@
-# Spring Boot - Simple Blog Project
+# Spring Boot and Thymeleaf - A simple blog
 
 ![maven](https://github.com/fatmakahveci/SpringBoot-WebProject/actions/workflows/maven.yml/badge.svg)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
@@ -9,12 +9,17 @@
 ![MySQL](https://img.shields.io/badge/mysql-%2300f.svg?style=for-the-badge&logo=mysql&logoColor=white)
 ![Apache Maven](https://img.shields.io/badge/Apache%20Maven-C71A36?style=for-the-badge&logo=Apache%20Maven&logoColor=white)
 
-## 1. Getting started
+## Requirements
 
-- Java 18+
+- [Java 18+](https://www.oracle.com/java/technologies/javase/jdk18-archive-downloads.html)
+- [Maven 3.8.6](https://maven.apache.org/install.html)
 
-### 1.1. Maven build
+## Installation
 
-- .
+```bash
+git clone https://github.com/fatmakahveci/SpringBoot-WebProject.git
+cd SpringBoot-WebProject
+mvn clean spring-boot:run
+```
 
-### 1.2. Build java code
+- View the index page at `http://localhost:8080/`
