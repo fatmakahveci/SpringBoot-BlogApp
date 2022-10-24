@@ -27,11 +27,6 @@ public class TagController {
         this.tagService = tagService;
     }
 
-    @GetMapping(path = "/tags")
-    public List<Tag> getAllTags() {
-        return tagService.findAll();
-    }
-
     @GetMapping(path = "/tags/{id}")
     public ModelAndView getTagPosts(@PathVariable Integer id) {
         ModelAndView mav = new ModelAndView("tag");
