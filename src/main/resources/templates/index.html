@@ -55,6 +55,7 @@
 							<input type="text" id="form3" th:field="${tag.name}" class="form-control" placeholder="Write tags here..."/>
 							<button type="submit" value="save_tag" th:formaction="@{/tags}" class="btn btn-primary btn-primary btn-sm">Create</button>
 						</div>
+					</form>
 						<br><br>
 						<table class="table">
 							<tr th:each="tag:${tags}">
@@ -65,7 +66,7 @@
 								</td>
 							</tr>
 						</table>
-					</form>
+					
 				</div>
 			</div>
 		</div>
