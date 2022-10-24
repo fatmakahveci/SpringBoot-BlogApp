@@ -25,8 +25,10 @@
 							<td th:text="${post.content}"></td>
 							<td th:text="${#strings.listJoin(post.tags.![name], ',')}"></td>
 							<td>
-								<a th:href="@{/posts/edit/{postId}(postId=${post.id})}" class="btn btn-primary btn-sm mb-3">Update</a>
-								<a th:href="@{/posts/delete/{postId}(postId=${post.id})}" class="btn btn-primary btn-sm mb-3 btn-danger">Delete</a>
+								<a th:href="@{/posts/{postId}(postId=${post.id})}" class="btn btn-primary btn-sm mb-3">Update</a>
+								<form action="" th:method="DELETE">
+									<button type="submit" value="delete_post" th:formaction="@{/posts/{postId}(postId=${post.id})}" class="btn btn-primary btn-primary btn-sm">Delete</button>
+								</form>
 							</td>
 						</tr>
 					</tbody>
