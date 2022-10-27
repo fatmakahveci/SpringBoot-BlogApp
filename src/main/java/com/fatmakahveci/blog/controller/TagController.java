@@ -5,6 +5,7 @@ import com.fatmakahveci.blog.model.Tag;
 import com.fatmakahveci.blog.service.TagService;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -24,6 +25,11 @@ public class TagController {
     @Autowired
     public TagController(TagService tagService) {
         this.tagService = tagService;
+    }
+
+    @GetMapping(path = "/tags")
+    public List<Tag> getAllTags() {
+        return tagService.findAll();
     }
 
     @GetMapping(path = "/tags/{id}")
