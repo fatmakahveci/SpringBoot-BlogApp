@@ -10,6 +10,7 @@ public interface TagService {
     Optional<Tag> findById(Integer id);
     Optional<Tag> findByName(String name);
     Tag save(Tag tag);
+    List<Tag> saveAll(List<Tag> tagList);
     Tag getOrCreateByName(String name);
     void deleteById(Integer id);
 }
