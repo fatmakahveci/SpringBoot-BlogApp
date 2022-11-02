@@ -1,4 +1,4 @@
-package com.fatmakahveci.blog;
+package com.fatmakahveci.blog.controllers;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,38 +18,34 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fatmakahveci.blog.dao.PostRepository;
-import com.fatmakahveci.blog.model.Post;
+import com.fatmakahveci.blog.dao.TagRepository;
+import com.fatmakahveci.blog.model.Tag;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-public class PostControllerIT {
+public class TagControllerITests {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
-    private PostRepository postRepository;
+    private TagRepository tagRepository;
 
     @BeforeEach
     void setup(){
-        postRepository.deleteAll();
+        tagRepository.deleteAll();
     }
 
     @Test
-    public void givenListOfPosts_whenGetAllPosts_thenReturnPostsList() throws Exception{
-        List<Post> posts = new ArrayList<>();
-        Post post1 = new Post(1, "first title", "first content", Collections.emptySet());
-        Post post2 = new Post(2, "second title", "second content", Collections.emptySet());
-        posts.add(post1);
-        posts.add(post2);
-        postRepository.saveAll(posts);
+    public void givenListOfTags_whenGetAllTags_thenReturnTagsList() throws Exception {
+        List<Tag> tags = new ArrayList<>();
+        tags.add(new Tag(1, "first tag", Collections.emptySet()));
+        tagRepository.saveAll(tags);
     
-        ResultActions response = mockMvc.perform(get("/posts"));
+        ResultActions response = mockMvc.perform(get("/tags"));
 
         response.andExpect(status().isOk())
                 .andDo(print())
-                .andExpect(jsonPath("$.size()", is(posts.size())));
-
+                .andExpect(jsonPath("$.size()", is(tags.size())));
     }
 }

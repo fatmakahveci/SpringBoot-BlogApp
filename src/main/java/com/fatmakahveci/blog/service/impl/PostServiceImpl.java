@@ -35,6 +35,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public List<Post> saveAll(List<Post> postList) {
+		List<Post> posts = (List<Post>) postRepository.saveAll(postList);
+		return posts;
+	}
+
+    @Override
     public Optional<Post> findById(Integer id) {
         return postRepository.findById(id);
     }
@@ -49,6 +55,13 @@ public class PostServiceImpl implements PostService {
         Optional<Post> post = postRepository.findById(id);
         postRepository.deleteById(id);
         return post;
+    }
+
+    @Override
+    public List<Post> deleteAll() {
+        List<Post> posts = postRepository.findAll();
+        postRepository.deleteAll();
+        return posts;
     }
 
     @Override
