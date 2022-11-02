@@ -3,10 +3,8 @@ package com.fatmakahveci.blog.controllers;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import org.hamcrest.Matchers;
-import static org.hamcrest.CoreMatchers.is;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
@@ -18,15 +16,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-
-import com.fatmakahveci.blog.dao.PostRepository;
-import com.fatmakahveci.blog.dao.TagRepository;
 import com.fatmakahveci.blog.model.Post;
 import com.fatmakahveci.blog.model.Tag;
 import com.fatmakahveci.blog.service.PostService;
@@ -34,12 +27,9 @@ import com.fatmakahveci.blog.service.TagService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -116,5 +106,4 @@ public class PostControllerITests {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is3xxRedirection());
     }
-
 }
