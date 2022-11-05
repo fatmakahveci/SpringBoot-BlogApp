@@ -30,6 +30,12 @@ mvn clean spring-boot:run
 
 - View the index page at `http://localhost:8080/`
 
+## Test
+
+```bash
+mvn clean test
+```
+
 ---
 
 Its source code is available with the Apache license and contributions are welcome.
