@@ -1,8 +1,10 @@
 ![maven](https://github.com/fatmakahveci/SpringBoot-WebProject/actions/workflows/maven.yml/badge.svg)
-[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Java](https://img.shields.io/badge/java-%2018-brown.svg)](https://www.java.com/de/download/faq/java18.xml)
+![Unit Tests](https://github.com/mr-smithers-excellent/docker-build-push/actions/workflows/ci.yml/badge.svg)
+![Maintainability](https://api.codeclimate.com/v1/badges/ac0bf06dc93ba3110cd3/maintainability)
+![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)
+![Java](https://img.shields.io/badge/java-%2018-brown.svg)
 ![Spring](https://img.shields.io/badge/Spring%20Boot%20Starter-%202.7.3-green.svg)
-[![JUnit](https://img.shields.io/badge/JUnit-%204-orange.svg)](https://junit.org/junit4/)
+![JUnit](https://img.shields.io/badge/JUnit-%204-orange.svg)
 ![maven](https://img.shields.io/badge/tool-maven-0440af.svg)
 
 ![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=java&logoColor=white)
