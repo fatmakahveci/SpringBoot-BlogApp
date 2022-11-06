@@ -6,4 +6,4 @@ WORKDIR /applications
 
 COPY target/springboot.jar /applications/springboot.jar
 
-ENTRYPOINT ["java","-jar", "sample-application.jar"]
+ENTRYPOINT ["java","-jar", "springboot.jar"]
