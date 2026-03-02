@@ -15,18 +15,50 @@
 ![Visual Studio Code](https://img.shields.io/badge/Visual%20Studio%20Code-0078d7.svg?style=for-the-badge&logo=visual-studio-code&logoColor=white)
 ![Markdown](https://img.shields.io/badge/markdown-%23000000.svg?style=for-the-badge&logo=markdown&logoColor=white)
 
-# A Simple Blog (Spring Boot)
+# ✍️ Spring Boot Blog Application
 
-A simple blog to practice Spring Boot, ThymeLeaf, Java, Maven, and JUnit.
+A backend-focused blogging platform exposing RESTful APIs. The goal of this project is to practice layered architecture and build a testable service-oriented backend.
 
 ## Demo
 
 ![demo.gif](demo.gif)
 
+
+## Features
+
+- Create, update, delete blog posts
+- User management
+- RESTful API endpoints
+- Layered architecture
+
+## Tech Stack
+
+- Java
+- Spring Boot
+- Spring Data JPA
+- MySQL
+- Maven
+
+## Architecture
+
+- Controller → Service → Repository
+- The project follows separation of concerns:
+- **Controller:** handles HTTP requests
+- **Service:** business logic
+- **Repository:** database access
+
+## Example Endpoints
+
+- `GET     /posts`
+- `POST    /posts`
+- `PUT     /posts/{id}`
+- `DELETE  /posts/{id}`
+
 ## Requirements
 
 - [Java 18+](https://www.oracle.com/java/technologies/javase/jdk18-archive-downloads.html)
 - [Maven 3.8.6](https://maven.apache.org/install.html)
+- MySQL
 
 ## Installation
 
@@ -59,6 +91,14 @@ docker run -p 8080:8080 fatmakhv/springboot
 ```
 
 - View the index page at `http://localhost:8080/`
+
+## What I Learned
+
+- Designing REST APIs
+- Structuring a backend project
+- Database mapping with JPA
+- Error handling
+- Building maintainable services
 
 ---
 
