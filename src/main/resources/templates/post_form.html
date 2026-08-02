@@ -1,14 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
     <head>
     <title>Post</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
     <link th:href="@{/styles/main.css}" rel="stylesheet" />
-    <script src="/webjars/jquery/jquery.min.js"></script>
-    <script src="/webjars/bootstrap/js/bootstrap.min.js"></script>
-
     </head>
     <body>
         <div class="container">
@@ -17,13 +14,31 @@
                 <h3>Create new post</h3>
                 <p></p>
             </div>
-            <form action="#" th:action="@{/posts}" method="POST">
+            <form action="#" th:action="@{/posts}" th:object="${post}" method="POST" novalidate>
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                 <div class="form-row">
+					<div class="form-group col-md-4"><label class="form-label" for="summary">Summary</label></div>
+					<div class="form-group col-md-8">
+						<textarea id="summary" th:field="*{summary}" class="form-control" th:classappend="${#fields.hasErrors('summary')} ? 'is-invalid'" maxlength="500" rows="3" placeholder="Write a short summary..."></textarea>
+						<div class="invalid-feedback" th:if="${#fields.hasErrors('summary')}" th:errors="*{summary}">Summary error</div>
+					</div>
+				</div>
+				<div class="form-row">
                     <div class="form-group col-md-4">
                         <label class="form-label" for="form1">Title</label>
                     </div>
                     <div class="form-group col-md-8">
-                        <input type="text" id="form1" th:field="${post.title}" class="form-control" placeholder="Write title here..."/>
+                        <input type="text" id="form1" th:field="*{title}" class="form-control" th:classappend="${#fields.hasErrors('title')} ? 'is-invalid'" maxlength="200" required placeholder="Write title here..."/>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">Title error</div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-4"><label class="form-label" for="status">Status</label></div>
+                    <div class="form-group col-md-8">
+                        <select id="status" th:field="*{status}" class="form-select">
+                            <option value="DRAFT">Draft</option>
+                            <option value="PUBLISHED">Published</option>
+                        </select>
                     </div>
                 </div>
                 <div class="form-row">
@@ -31,7 +46,8 @@
                         <label class="form-label" for="form2">Content</label>
                     </div>
                     <div class="form-group col-md-8">
-                        <textarea class="form-control" th:field="${post.content}" id="form2" rows="8" placeholder="Write content here..."></textarea>
+                        <textarea class="form-control" th:field="*{content}" th:classappend="${#fields.hasErrors('content')} ? 'is-invalid'" id="form2" rows="8" maxlength="10000" placeholder="Write content here..."></textarea>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('content')}" th:errors="*{content}">Content error</div>
                     </div>
                 </div>
                 <div class="form-row">
@@ -40,12 +56,13 @@
                     </div>
                     <div class="form-group col-md-8">
                         <div th:each="tag : ${tags}">
-                            <input type="checkbox" th:id="${{tag}}" th:value="${{tag}}" th:field="${post.tags}" />
+                            <input type="checkbox" th:id="${{tag}}" th:value="${{tag}}" th:field="*{tags}" />
                             <label th:for="${{tag}}" th:text="${tag.name}">Tag</label>
                         </div>
                     </div>
                 </div>
                 <div class="form-group" style="text-align: right;">
+                    <a th:href="@{/}" class="btn btn-outline-secondary mb-4">Cancel</a>
                     <button type="submit" value="save_post" class="btn btn-primary mb-4">Create new post</button>
                 </div>
              </form>

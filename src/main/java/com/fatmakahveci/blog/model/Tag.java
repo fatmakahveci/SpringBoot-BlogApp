@@ -1,15 +1,18 @@
 package com.fatmakahveci.blog.model;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -17,15 +20,17 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 @Table(name = "tags")
 public class Tag {
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(unique=true)
+    @NotBlank(message = "Tag name is required.")
+    @Size(max = 50, message = "Tag name must be 50 characters or fewer.")
+    @Column(nullable = false, unique = true, length = 50)
     private String name;
 
     @JsonBackReference
     @ManyToMany(mappedBy = "tags")
-    private Set<Post> posts = new HashSet<Post>();
+    private Set<Post> posts = new HashSet<>();
 
     public Tag() {
     }
@@ -33,7 +38,7 @@ public class Tag {
     public Tag(Integer id, String name, Set<Post> posts) {
         this.id = id;
         this.name = name;
-        this.posts = posts;
+        setPosts(posts);
     }
 
     public Integer getId() {
@@ -57,11 +62,13 @@ public class Tag {
     }
 
     public void setPosts(Set<Post> posts) {
-        this.posts = posts;
+        // Hibernate expects a mutable collection; copy input to avoid shared mutable state.
+        this.posts = posts == null ? new HashSet<>() : new HashSet<>(posts);
     }
 
     public void deleteTagFromPosts() {
-        for (Post post : this.getPosts()) {
+        // Update the owning side of the bidirectional relationship in memory.
+        for (Post post : posts) {
             post.getTags().remove(this);
         }
     }
@@ -73,33 +80,18 @@ public class Tag {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        return result;
+        return Objects.hash(id, name);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (!(obj instanceof Tag other)) {
             return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Tag other = (Tag) obj;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
-        if (name == null) {
-            if (other.name != null)
-                return false;
-        } else if (!name.equals(other.name))
-            return false;
-        return true;
+        }
+        return Objects.equals(id, other.id) && Objects.equals(name, other.name);
     }
 
 }

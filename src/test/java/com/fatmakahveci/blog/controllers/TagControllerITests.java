@@ -2,46 +2,77 @@ package com.fatmakahveci.blog.controllers;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import static org.mockito.BDDMockito.given;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
-
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.util.Optional;
 
-import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fatmakahveci.blog.model.Tag;
+import com.fatmakahveci.blog.exception.DuplicateTagNameException;
+import com.fatmakahveci.blog.service.PostService;
 import com.fatmakahveci.blog.service.TagService;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
-public class TagControllerITests {
+class TagControllerITests {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private TagService tagService;
 
-    @Test
-    public void givenListOfTags_whenGetAllTags_thenReturnTagsList() throws Exception {
-        List<Tag> tags = new ArrayList<>();
-        tags.add(new Tag(1, "first tag", Collections.emptySet()));
-        given(tagService.findAll()).willReturn(tags);
-    
-        ResultActions response = mockMvc.perform(get("/tags"));
+    @MockitoBean
+    private PostService postService;
 
-        response.andExpect(status().isOk())
-                .andDo(print())
-                .andExpect(jsonPath("$.size()", is(tags.size())));
+    @Test
+    void missingTagReturnsNotFound() throws Exception {
+        when(tagService.findById(404)).thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/tags/404"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void blankTagNameIsRejected() throws Exception {
+        mockMvc.perform(post("/tags")
+                .with(csrf())
+                .with(user("author").roles("AUTHOR"))
+                .param("name", " "))
+                .andExpect(status().isOk())
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.view().name("index"))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.model()
+                        .attributeHasFieldErrors("tag", "name"))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.content()
+                        .string(org.hamcrest.Matchers.containsString("Tag name is required.")));
+
+        verify(tagService, never()).createByName(any());
+    }
+
+    @Test
+    void duplicateTagNameReturnsToHomeWithMessage() throws Exception {
+        when(tagService.createByName("java")).thenThrow(new DuplicateTagNameException("java"));
+
+        mockMvc.perform(post("/tags")
+                .with(csrf())
+                .with(user("author").roles("AUTHOR"))
+                .param("name", "java"))
+                .andExpect(status().isOk())
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.view().name("index"))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.model()
+                        .attributeHasFieldErrors("tag", "name"))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.content()
+                        .string(org.hamcrest.Matchers.containsString("A tag named &#39;java&#39; already exists.")));
     }
 }
