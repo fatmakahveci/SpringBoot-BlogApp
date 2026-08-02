@@ -1,0 +1,10 @@
+ALTER TABLE posts ADD COLUMN summary VARCHAR(500);
+ALTER TABLE posts ADD COLUMN slug VARCHAR(220) NOT NULL DEFAULT '';
+ALTER TABLE posts ADD COLUMN status VARCHAR(20) NOT NULL DEFAULT 'PUBLISHED';
+ALTER TABLE posts ADD COLUMN updated_at TIMESTAMP NOT NULL DEFAULT '1970-01-01 00:00:00';
+
+UPDATE posts
+SET slug = 'post-' || id,
+    updated_at = created_at;
+
+CREATE UNIQUE INDEX uk_posts_slug ON posts(slug);

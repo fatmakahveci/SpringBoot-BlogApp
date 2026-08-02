@@ -3,42 +3,44 @@ package com.fatmakahveci.blog.service.impl;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.fatmakahveci.blog.dao.PostRepository;
+import com.fatmakahveci.blog.exception.DuplicatePostTitleException;
 import com.fatmakahveci.blog.model.Post;
+import com.fatmakahveci.blog.model.PostStatus;
 import com.fatmakahveci.blog.service.PostService;
+import com.fatmakahveci.blog.service.SlugGenerator;
 
 @Service
 public class PostServiceImpl implements PostService {
 
-    private PostRepository postRepository;
+    private final PostRepository postRepository;
+    private final SlugGenerator slugGenerator;
 
-    @Autowired
-    public PostServiceImpl(PostRepository postRepository) {
+    public PostServiceImpl(PostRepository postRepository, SlugGenerator slugGenerator) {
         this.postRepository = postRepository;
+        this.slugGenerator = slugGenerator;
     }
 
     @Override
+    @Transactional
     public Post save(Post post) {
-        Optional<Post> optionalPost = findByTitle(post.getTitle());
-        if (optionalPost.isPresent()) {
-            Post existingPost = optionalPost.get();
-            existingPost.setTitle(post.getTitle());
-            existingPost.setContent(post.getContent());
-            existingPost.setTags(post.getTags());
-            post = existingPost;
+        post.setSlug(slugGenerator.fromTitle(post.getTitle()));
+        Optional<Post> postWithTitle = findByTitle(post.getTitle());
+        if (postWithTitle.isPresent()) {
+            Post existingPost = postWithTitle.get();
+            if (post.getId() == null || !existingPost.getId().equals(post.getId())) {
+                throw new DuplicatePostTitleException(post.getTitle());
+            }
+            return postRepository.save(update(existingPost, post));
         }
 
         return postRepository.save(post);
     }
-
-    @Override
-    public List<Post> saveAll(List<Post> postList) {
-		List<Post> posts = (List<Post>) postRepository.saveAll(postList);
-		return posts;
-	}
 
     @Override
     public Optional<Post> findById(Integer id) {
@@ -51,6 +53,23 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public Page<Post> findAll(String query, Pageable pageable, boolean includeDrafts) {
+        String normalizedQuery = query == null ? "" : query.trim();
+        if (includeDrafts && normalizedQuery.isEmpty()) {
+            return postRepository.findAll(pageable);
+        }
+        if (includeDrafts) {
+            return postRepository.findByTitleContainingIgnoreCase(normalizedQuery, pageable);
+        }
+        if (normalizedQuery.isEmpty()) {
+            return postRepository.findByStatus(PostStatus.PUBLISHED, pageable);
+        }
+        return postRepository.findByStatusAndTitleContainingIgnoreCase(
+                PostStatus.PUBLISHED, normalizedQuery, pageable);
+    }
+
+    @Override
+    @Transactional
     public Optional<Post> deleteById(Integer id) {
         Optional<Post> post = postRepository.findById(id);
         postRepository.deleteById(id);
@@ -58,14 +77,22 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> deleteAll() {
-        List<Post> posts = postRepository.findAll();
-        postRepository.deleteAll();
-        return posts;
+    public Optional<Post> findByTitle(String title) {
+        return postRepository.findByTitle(title);
     }
 
     @Override
-    public Optional<Post> findByTitle(String title) {
-        return postRepository.findByTitle(title);
+    public Optional<Post> findBySlug(String slug) {
+        return postRepository.findBySlug(slug);
+    }
+
+    private Post update(Post existingPost, Post submittedPost) {
+        existingPost.setTitle(submittedPost.getTitle());
+        existingPost.setContent(submittedPost.getContent());
+        existingPost.setSummary(submittedPost.getSummary());
+        existingPost.setSlug(submittedPost.getSlug());
+        existingPost.setStatus(submittedPost.getStatus());
+        existingPost.setTags(submittedPost.getTags());
+        return existingPost;
     }
 }

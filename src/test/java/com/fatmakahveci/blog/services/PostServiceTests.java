@@ -1,7 +1,7 @@
 package com.fatmakahveci.blog.services;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -11,36 +11,38 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import com.fatmakahveci.blog.dao.PostRepository;
+import com.fatmakahveci.blog.exception.DuplicatePostTitleException;
 import com.fatmakahveci.blog.model.Post;
-import com.fatmakahveci.blog.service.TagService;
+import com.fatmakahveci.blog.model.PostStatus;
 import com.fatmakahveci.blog.service.impl.PostServiceImpl;
+import com.fatmakahveci.blog.service.SlugGenerator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
 @ExtendWith(MockitoExtension.class)
-public class PostServiceTests {
+class PostServiceTests {
     
     @Mock
     private PostRepository postRepository;
 
     @Mock
-    private TagService tagService;
+    private SlugGenerator slugGenerator;
 
     @InjectMocks
     private PostServiceImpl postService;
 
 	@Test
-    public void savePostSuccess() throws Exception {
+    void savePostSuccess() {
         Post newPost = new Post(null, "title", "content", Collections.emptySet());
         Post savedPost = new Post(1, "title", "content", Collections.emptySet());
 
@@ -103,6 +105,55 @@ public class PostServiceTests {
     }
 
     @Test
+    void paginatedSearchUsesTrimmedTitleQuery() {
+        PageRequest pageable = PageRequest.of(0, 10);
+        Page<Post> expectedPage = new PageImpl<>(List.of(
+                new Post(1, "Spring", "content", Collections.emptySet())));
+        when(postRepository.findByTitleContainingIgnoreCase("spring", pageable)).thenReturn(expectedPage);
+
+        Page<Post> result = postService.findAll("  spring  ", pageable, true);
+
+        assertThat(result).isSameAs(expectedPage);
+        verify(postRepository).findByTitleContainingIgnoreCase("spring", pageable);
+    }
+
+    @Test
+    void blankSearchUsesStandardPagination() {
+        PageRequest pageable = PageRequest.of(0, 10);
+        Page<Post> expectedPage = Page.empty(pageable);
+        when(postRepository.findAll(pageable)).thenReturn(expectedPage);
+
+        Page<Post> result = postService.findAll(" ", pageable, true);
+
+        assertThat(result).isSameAs(expectedPage);
+        verify(postRepository).findAll(pageable);
+    }
+
+    @Test
+    void publicPaginationReturnsOnlyPublishedPosts() {
+        PageRequest pageable = PageRequest.of(0, 10);
+        Page<Post> expectedPage = Page.empty(pageable);
+        when(postRepository.findByStatus(PostStatus.PUBLISHED, pageable)).thenReturn(expectedPage);
+
+        Page<Post> result = postService.findAll("", pageable, false);
+
+        assertThat(result).isSameAs(expectedPage);
+        verify(postRepository).findByStatus(PostStatus.PUBLISHED, pageable);
+        verify(postRepository, never()).findAll(pageable);
+    }
+
+    @Test
+    void savingPostGeneratesSlugFromTitle() {
+        Post post = new Post(null, "Spring Boot", "content", Collections.emptySet());
+        when(slugGenerator.fromTitle("Spring Boot")).thenReturn("spring-boot-abc");
+        when(postRepository.save(post)).thenReturn(post);
+
+        Post result = postService.save(post);
+
+        assertThat(result.getSlug()).isEqualTo("spring-boot-abc");
+    }
+
+    @Test
     public void findByIdSuccess() {
         Post post = new Post(1, "title", "content", Collections.emptySet());
 
@@ -145,5 +196,31 @@ public class PostServiceTests {
         verify(postRepository, times(1)).findByTitle("title");
 
         assertThat(optionalPost).isEmpty();
+    }
+
+    @Test
+    void saveUpdatesTheExistingPostWhenIdsMatch() {
+        Post existingPost = new Post(1, "title", "old content", Collections.emptySet());
+        Post submittedPost = new Post(1, "title", "new content", Collections.emptySet());
+        when(postRepository.findByTitle("title")).thenReturn(Optional.of(existingPost));
+        when(postRepository.save(existingPost)).thenReturn(existingPost);
+
+        Post result = postService.save(submittedPost);
+
+        assertThat(result.getContent()).isEqualTo("new content");
+        verify(postRepository).save(existingPost);
+    }
+
+    @Test
+    void saveDoesNotOverwriteAnotherPostWithTheSameTitle() {
+        Post existingPost = new Post(1, "title", "existing content", Collections.emptySet());
+        Post submittedPost = new Post(null, "title", "submitted content", Collections.emptySet());
+        when(postRepository.findByTitle("title")).thenReturn(Optional.of(existingPost));
+        org.junit.jupiter.api.Assertions.assertThrows(
+                DuplicatePostTitleException.class,
+                () -> postService.save(submittedPost));
+
+        assertThat(existingPost.getContent()).isEqualTo("existing content");
+        verify(postRepository, never()).save(any());
     }
 }

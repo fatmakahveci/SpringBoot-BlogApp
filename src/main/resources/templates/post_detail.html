@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title th:text="${post.title}">Post</title>
+        <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+        <link th:href="@{/styles/main.css}" rel="stylesheet">
+    </head>
+    <body>
+        <main class="container py-4">
+            <a th:href="@{/}" class="btn btn-outline-primary btn-sm mb-4">Back to all posts</a>
+            <article>
+                <h1 th:text="${post.title}">Post title</h1>
+                <p class="text-muted">
+                    <span th:text="${post.createdAt}">Created</span>
+                    <span th:if="${post.updatedAt != post.createdAt}" th:text="| · Updated ${post.updatedAt}|">Updated</span>
+                </p>
+                <p class="lead" th:if="${post.summary != null and !post.summary.isBlank()}" th:text="${post.summary}">Summary</p>
+                <div class="text-start" style="white-space: pre-wrap" th:text="${post.content}">Content</div>
+                <div class="mt-4">
+                    <a th:each="tag : ${post.tags}" th:href="@{/tags/{id}(id=${tag.id})}" class="badge text-bg-primary me-1" th:text="${tag.name}">Tag</a>
+                </div>
+            </article>
+        </main>
+    </body>
+</html>

@@ -1,16 +1,16 @@
 package com.fatmakahveci.blog.controller;
 
-import com.fatmakahveci.blog.model.Post;
 import com.fatmakahveci.blog.model.Tag;
+import com.fatmakahveci.blog.exception.TagNotFoundException;
+import com.fatmakahveci.blog.exception.DuplicateTagNameException;
+import com.fatmakahveci.blog.service.PostService;
 import com.fatmakahveci.blog.service.TagService;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import jakarta.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,45 +18,58 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-@RestController
+@Controller
 public class TagController {
 
-    private TagService tagService;
+    private final TagService tagService;
+    private final PostService postService;
 
-    @Autowired
-    public TagController(TagService tagService) {
+    public TagController(TagService tagService, PostService postService) {
         this.tagService = tagService;
-    }
-
-    @GetMapping(path = "/tags")
-    public List<Tag> getAllTags() {
-        return tagService.findAll();
+        this.postService = postService;
     }
 
     @GetMapping(path = "/tags/{id}")
-    public ModelAndView getTagPosts(@PathVariable Integer id) {
+    public ModelAndView getTagPosts(@PathVariable Integer id, Authentication authentication) {
         ModelAndView mav = new ModelAndView("tag");
-        Optional<Tag> optionalTag = tagService.findById(id);
-        Set<Post> posts = Collections.emptySet();
-        Tag tag = new Tag();
-        if (optionalTag.isPresent()) {
-            tag = optionalTag.get();
-            posts = tag.getPosts();
-        }
+        Tag tag = tagService.findById(id).orElseThrow(() -> new TagNotFoundException(id));
         mav.addObject("tag", tag);
-        mav.addObject("posts", posts);
+        mav.addObject("posts", tag.getPosts().stream()
+                .filter(post -> post.getStatus() == com.fatmakahveci.blog.model.PostStatus.PUBLISHED
+                        || PostVisibility.canViewDrafts(authentication))
+                .toList());
         return mav;
     }
 
-    @PostMapping(value="/tags")
-    public ModelAndView saveTag(@ModelAttribute Tag tag) {
-        tagService.getOrCreateByName(tag.getName());
+    @PostMapping("/tags")
+    public ModelAndView saveTag(
+            @Valid @ModelAttribute("tag") Tag tag,
+            BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return homeWithTagErrors(tag, bindingResult);
+        }
+
+        try {
+            tagService.createByName(tag.getName());
+        } catch (DuplicateTagNameException exception) {
+            bindingResult.rejectValue("name", "tag.name.duplicate", exception.getMessage());
+            return homeWithTagErrors(tag, bindingResult);
+        }
         return new ModelAndView("redirect:/");
     }
 
-    @DeleteMapping(value="/tags/{id}")
+    @DeleteMapping("/tags/{id}")
     public ModelAndView deleteTag(@PathVariable Integer id) {
        tagService.deleteById(id);
        return new ModelAndView("redirect:/");
+    }
+
+    private ModelAndView homeWithTagErrors(Tag tag, BindingResult bindingResult) {
+        ModelAndView mav = new ModelAndView("index");
+        mav.addObject("tag", tag);
+        mav.addObject(BindingResult.MODEL_KEY_PREFIX + "tag", bindingResult);
+        mav.addObject("tags", tagService.findAll());
+        mav.addObject("posts", postService.findAll());
+        return mav;
     }
 }

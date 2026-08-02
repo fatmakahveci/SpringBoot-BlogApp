@@ -1,13 +1,15 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 	<head>
-		<meta charset="ISO-8859-1">
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>Blogs by tag</title>
 		<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
 		<link th:href="@{/styles/main.css}" rel="stylesheet" />
 	</head>
 	<body>
-		<div class="container fluid text-center">
+		<div class="container-fluid text-center">
+			<div class="text-start my-3"><a th:href="@{/}" class="btn btn-outline-primary btn-sm">Back to all posts</a></div>
 			<h1 th:text="${tag.name}">title</h1>
 			<div class="modal-body row">
 				<table class="table table-hover">
@@ -16,7 +18,7 @@
 							<th>Title</th>
 							<th>Content</th>
 							<th>Tags</th>
-							<th>Actions</th>
+							<th sec:authorize="hasAnyRole('AUTHOR', 'ADMIN')">Actions</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -24,10 +26,11 @@
 							<td th:text="${post.title}"></td>
 							<td th:text="${post.content}"></td>
 							<td th:text="${#strings.listJoin(post.tags.![name], ',')}"></td>
-							<td>
+							<td sec:authorize="hasAnyRole('AUTHOR', 'ADMIN')">
 								<a th:href="@{/posts/{postId}(postId=${post.id})}" class="btn btn-primary btn-sm mb-3">Update</a>
-								<form action="" th:method="DELETE">
-									<button type="submit" value="delete_post" th:formaction="@{/posts/{postId}(postId=${post.id})}" class="btn btn-primary btn-primary btn-sm">Delete</button>
+								<form sec:authorize="hasRole('ADMIN')" action="" th:method="DELETE">
+									<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+									<button type="submit" value="delete_post" th:formaction="@{/posts/{postId}(postId=${post.id})}" class="btn btn-primary btn-sm">Delete</button>
 								</form>
 							</td>
 						</tr>

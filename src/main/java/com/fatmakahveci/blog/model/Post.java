@@ -1,20 +1,27 @@
 package com.fatmakahveci.blog.model;
 
+import java.time.Instant;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -25,26 +32,47 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotNull
-    @Column(unique=true)
+    @NotBlank(message = "Title is required.")
+    @Size(max = 200, message = "Title must be 200 characters or fewer.")
+    @Column(nullable = false, unique = true, length = 200)
     private String title;
 
+    @Size(max = 10000, message = "Content must be 10,000 characters or fewer.")
     private String content;
+
+    @Size(max = 500, message = "Summary must be 500 characters or fewer.")
+    @Column(length = 500)
+    private String summary;
+
+    @Column(nullable = false, unique = true, length = 220)
+    private String slug;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private PostStatus status = PostStatus.DRAFT;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt;
+
+    @Column(name = "updated_at", nullable = false)
+    private Instant updatedAt;
 
     @JsonManagedReference
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name="post_tags", joinColumns = @JoinColumn(name="post_id"), inverseJoinColumns = @JoinColumn(name="tag_id"))
+    @JoinTable(
+            name = "post_tags",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private Set<Tag> tags = new HashSet<>();
 
     public Post() {
-        
     }
 
-    public Post (Integer id, String title, String content, Set<Tag> tags) {
+    public Post(Integer id, String title, String content, Set<Tag> tags) {
         this.id = id;
         this.title = title;
         this.content = content;
-        this.tags = tags;
+        setTags(tags);
     }
 
     public Integer getId() {
@@ -71,47 +99,87 @@ public class Post {
         this.content = content;
     }
 
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
+
+    public PostStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(PostStatus status) {
+        this.status = status == null ? PostStatus.DRAFT : status;
+    }
+
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Instant updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    @PrePersist
+    void assignCreationTime() {
+        Instant now = Instant.now();
+        if (createdAt == null) {
+            createdAt = now;
+        }
+        updatedAt = now;
+    }
+
+    @PreUpdate
+    void assignUpdateTime() {
+        updatedAt = Instant.now();
+    }
+
     public Set<Tag> getTags() {
         return tags;
     }
 
-    public void setTags(Set<Tag> tag) {
-        this.tags = tag;
+    public void setTags(Set<Tag> tags) {
+        // Keep the entity collection mutable and prevent callers from modifying it indirectly.
+        this.tags = tags == null ? new HashSet<>() : new HashSet<>(tags);
     }
 
     @Override
     public String toString() {
-        return "Post [content=" + content + ", id=" + id + ", tags=" + tags + ", title=" + title + "]";
+        return "Post{id=" + id + ", title='" + title + "'}";
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((title == null) ? 0 : title.hashCode());
-        return result;
+        return Objects.hash(id, title);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (!(obj instanceof Post other)) {
             return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Post other = (Post) obj;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
-        if (title == null) {
-            if (other.title != null)
-                return false;
-        } else if (!title.equals(other.title))
-            return false;
-        return true;
+        }
+        return Objects.equals(id, other.id) && Objects.equals(title, other.title);
     }
 }
