@@ -30,6 +30,6 @@ EXPOSE 8080
 USER 10001:10001
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
-    CMD wget --quiet --spider http://127.0.0.1:8080/actuator/health || exit 1
+    CMD wget --quiet --spider http://127.0.0.1:8080/actuator/health/liveness || exit 1
 
 ENTRYPOINT ["java", "-Djava.io.tmpdir=/tmp", "-Dorg.sqlite.tmpdir=/native", "-jar", "springboot.jar"]

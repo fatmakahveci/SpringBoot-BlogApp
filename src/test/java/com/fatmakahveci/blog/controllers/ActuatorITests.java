@@ -26,6 +26,22 @@ class ActuatorITests {
     }
 
     @Test
+    void exposesReadinessProbeWithoutComponentDetails() throws Exception {
+        mockMvc.perform(get("/actuator/health/readiness"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("UP"))
+                .andExpect(jsonPath("$.components").doesNotExist());
+    }
+
+    @Test
+    void exposesLivenessProbeWithoutComponentDetails() throws Exception {
+        mockMvc.perform(get("/actuator/health/liveness"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("UP"))
+                .andExpect(jsonPath("$.components").doesNotExist());
+    }
+
+    @Test
     void doesNotExposeSensitiveActuatorEndpoints() throws Exception {
         mockMvc.perform(get("/actuator/env"))
                 .andExpect(status().isNotFound());
