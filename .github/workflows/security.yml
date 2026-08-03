@@ -85,6 +85,9 @@ jobs:
             --tmpfs /native:rw,exec,nosuid,nodev,uid=10001,gid=10001,mode=0700,size=16m \
             --cap-drop ALL \
             --security-opt no-new-privileges:true \
+            --env BLOG_BASE_URL=http://localhost:8080 \
+            --env BLOG_ADMIN_PASSWORD=policy-test-admin \
+            --env BLOG_AUTHOR_PASSWORD=policy-test-author \
             --publish 127.0.0.1:8080:8080 \
             "$IMAGE")
           trap 'docker rm --force "$container_id"' EXIT
