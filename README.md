@@ -1,39 +1,58 @@
 # Spring Boot Blog Application
 
-[![Build](https://github.com/fatmakahveci/SpringBoot-BlogApp/actions/workflows/maven.yml/badge.svg)](https://github.com/fatmakahveci/SpringBoot-BlogApp/actions/workflows/maven.yml)
-[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE.md)
+[![Java CI](https://github.com/fatmakahveci/SpringBoot-BlogApp/actions/workflows/maven.yml/badge.svg)](https://github.com/fatmakahveci/SpringBoot-BlogApp/actions/workflows/maven.yml)
+[![CodeQL](https://github.com/fatmakahveci/SpringBoot-BlogApp/actions/workflows/codeql.yml/badge.svg)](https://github.com/fatmakahveci/SpringBoot-BlogApp/actions/workflows/codeql.yml)
+[![Java](https://img.shields.io/badge/Java-21-orange.svg)](https://adoptium.net/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.1-brightgreen.svg)](https://spring.io/projects/spring-boot)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE.md)
 
-A small server-rendered blog for creating posts, assigning tags, and browsing posts by tag. The application uses a layered Spring architecture and stores data in SQLite.
+A secure, server-rendered blog platform built with Spring Boot, Thymeleaf, Spring Security, and SQLite. The application combines an accessible web interface with a documented, read-only JSON API and includes production-oriented testing, observability, containerization, and CI security controls.
 
-## Demo
+## Highlights
 
-![Blog application demo](demo.gif)
+- Draft and published post workflow with stable, slug-based URLs
+- Tag management, full-text title search, sorting, and pagination
+- Self-service author registration and role-based authorization
+- Responsive, accessible Thymeleaf interface with explicit empty states
+- Consistent HTML and JSON responses for validation and application errors
+- OpenAPI documentation and Swagger UI for the JSON API
+- Versioned SQLite schema management with Flyway
+- Actuator health probes and structured ECS production logs
+- Multi-stage, non-root Docker image with read-only runtime support
+- Automated tests, coverage enforcement, static analysis, and security scanning
 
-## Features
+## Application preview
 
-- Create, edit, and delete posts
-- Create and delete tags
-- Assign multiple tags to a post
-- Browse posts by tag
-- Search post titles, sort results, and browse paginated post lists
-- Draft/published workflow, summaries, timestamps, and stable slug-based post URLs
-- CSRF protection and restrictive browser security headers
-- Role-based authorization for authors and administrators
-- Unit and MVC integration tests
+> The interface has recently been redesigned. A refreshed walkthrough will be added after the new desktop and mobile screenshots are captured.
 
-## Technology
+The main workflow is straightforward:
+
+1. Browse, search, sort, and filter published posts without signing in.
+2. Open a post through its permanent public URL.
+3. Register or sign in as an author to create drafts, publish content, and assign tags.
+4. Sign in as an administrator to manage all content, including deletions.
+
+## Technology stack
+
+| Area | Technology |
+|---|---|
+| Runtime | Java 21, Spring Boot 4.1 |
+| Web | Spring MVC, Thymeleaf, Bootstrap 5 |
+| Security | Spring Security, CSRF protection, security headers, role-based access |
+| Persistence | Spring Data JPA, SQLite, Flyway |
+| API documentation | springdoc-openapi, Swagger UI |
+| Observability | Spring Boot Actuator, health probes, ECS JSON logs |
+| Quality | JUnit 6, MockMvc, JaCoCo, SpotBugs, Spotless |
+| Delivery | Maven Wrapper, Docker, GitHub Actions, CodeQL, Trivy, Dependabot |
+
+## Quick start
+
+### Requirements
 
 - Java 21
-- Spring Boot 4.1
-- Spring MVC, Thymeleaf, Spring Data JPA, and Spring Security
-- SQLite
-- Flyway database migrations
-- Maven Wrapper
-- Bootstrap 5
+- Git
 
-## Run locally
-
-Requirements: Java 21. Maven does not need to be installed because the repository includes Maven Wrapper.
+Maven does not need to be installed; the repository includes Maven Wrapper.
 
 ```bash
 git clone https://github.com/fatmakahveci/SpringBoot-BlogApp.git
@@ -43,80 +62,163 @@ cd SpringBoot-BlogApp
 
 Open [http://localhost:8080](http://localhost:8080).
 
-### Accounts
+On Windows, run `mvnw.cmd spring-boot:run` instead.
 
-Public pages do not require an account. Authors can create and update content; administrators can also delete it. Configure credentials with environment variables:
+When development passwords are not provided, the application generates temporary administrator and author passwords and writes them once to the startup log. For predictable local credentials, start the application with explicit values:
 
 ```bash
-BLOG_ADMIN_USERNAME=admin \
 BLOG_ADMIN_PASSWORD='replace-with-a-strong-password' \
-BLOG_AUTHOR_USERNAME=author \
 BLOG_AUTHOR_PASSWORD='replace-with-a-different-password' \
 ./mvnw spring-boot:run
 ```
 
-If a password is omitted, the application generates a temporary password and prints it once in the startup log. There are no fixed default passwords.
+## Roles and permissions
 
-By default, data is stored in `sample.db`. Set `BLOG_DATABASE_PATH` to use another location:
+| Capability | Public | Author | Administrator |
+|---|:---:|:---:|:---:|
+| Browse published posts | Yes | Yes | Yes |
+| Register and sign in | Yes | Yes | Yes |
+| View drafts | No | Yes | Yes |
+| Create and edit content | No | Yes | Yes |
+| Delete posts and tags | No | No | Yes |
+
+## Configuration profiles
+
+| Profile | Purpose | Notable behavior |
+|---|---|---|
+| `dev` | Local development; selected by default | Uncached templates and generated temporary passwords |
+| `test` | Automated test execution | Isolated in-memory SQLite database and deterministic credentials |
+| `prod` | Container and production deployments | Required secrets, secure cookies, structured logs, cached templates |
+
+The production profile requires `BLOG_DATABASE_PATH`, `BLOG_ADMIN_PASSWORD`, and `BLOG_AUTHOR_PASSWORD`. It fails fast when required account secrets are missing.
+
+### Environment variables
+
+| Variable | Development default | Description |
+|---|---|---|
+| `SPRING_PROFILES_ACTIVE` | `dev` | Active runtime profile |
+| `BLOG_DATABASE_PATH` | `sample.db` | SQLite database path; required in production |
+| `BLOG_ADMIN_USERNAME` | `admin` | Initial administrator username |
+| `BLOG_ADMIN_PASSWORD` | Generated | Initial administrator password; required in production |
+| `BLOG_AUTHOR_USERNAME` | `author` | Initial author username |
+| `BLOG_AUTHOR_PASSWORD` | Generated | Initial author password; required in production |
+| `SPRINGDOC_ENABLED` | `false` in production | Enables Swagger UI and OpenAPI endpoints in production |
+
+Flyway applies migrations from `src/main/resources/db/migration`. Add a new migration for each schema change; never modify a migration that has already been deployed.
+
+## API and operational endpoints
+
+After starting the application locally:
+
+| Endpoint | Purpose |
+|---|---|
+| [Swagger UI](http://localhost:8080/swagger-ui.html) | Interactive API documentation |
+| [OpenAPI JSON](http://localhost:8080/v3/api-docs/blog-api) | Machine-readable API specification |
+| [Health](http://localhost:8080/actuator/health) | Sanitized application health and probe groups |
+| [Application](http://localhost:8080) | Server-rendered blog interface |
+
+Only the Actuator `health` and `info` endpoints are exposed over HTTP. Health component details and sensitive management endpoints remain unavailable to public clients.
+
+### JSON API examples
 
 ```bash
-BLOG_DATABASE_PATH=/absolute/path/blog.db ./mvnw spring-boot:run
+curl "http://localhost:8080/api/posts?page=0&size=10&sort=newest"
+curl "http://localhost:8080/api/posts?query=spring&sort=titleAsc"
+curl http://localhost:8080/api/tags
 ```
 
-Flyway applies versioned scripts from `src/main/resources/db/migration`. Existing databases created before Flyway are automatically baselined at V1 and upgraded without deleting their data. Add a new migration for every future schema change; do not edit a migration that has already been applied.
+Anonymous API clients only receive published posts. Authenticated authors and administrators may also retrieve drafts.
 
-## Test and build
+API failures use a consistent representation for `400 Bad Request`, `404 Not Found`, and `409 Conflict` responses:
 
-```bash
-./mvnw verify
+```json
+{
+  "timestamp": "2026-08-02T21:00:00Z",
+  "status": 404,
+  "error": "Not Found",
+  "message": "Could not find post missing",
+  "path": "/api/posts/missing"
+}
 ```
 
-The packaged application is written to `target/springboot.jar`.
+Equivalent browser failures render an accessible HTML error page.
 
-Tests use an isolated in-memory SQLite database. They run the same Flyway migrations as the application but never read or modify `sample.db`.
+## Docker
 
-## Run with Docker
-
-Build the JAR and image, then start the container:
+The multi-stage Dockerfile compiles the application and produces a minimal, non-root runtime image:
 
 ```bash
-./mvnw package
 docker build -t springboot-blog .
-docker run --rm -p 8080:8080 -v blog-data:/data \
-  -e BLOG_DATABASE_PATH=/data/blog.db \
+
+docker run --rm \
+  -p 8080:8080 \
+  --read-only \
+  --tmpfs /tmp:rw,noexec,nosuid \
+  -v blog-data:/data \
   -e BLOG_ADMIN_PASSWORD='replace-with-a-strong-password' \
   -e BLOG_AUTHOR_PASSWORD='replace-with-a-different-password' \
   springboot-blog
 ```
 
-## HTTP routes
+SQLite data is stored in the `blog-data` volume. The container runs with the `prod` profile, uses an unprivileged account, writes temporary files only to `/tmp`, and reports health through `/actuator/health`.
 
-| Method | Route | Purpose |
-|---|---|---|
-| `GET` | `/` | Render the blog home page |
-| `GET` | `/api/posts` | Return a paginated post list as JSON |
-| `GET` | `/api/posts/{slug}` | Return a published post as JSON |
-| `GET` | `/posts/add` | Render the create-post form |
-| `POST` | `/posts` | Create a post |
-| `GET` | `/posts/{id}` | Render the edit-post form |
-| `GET` | `/p/{slug}` | Render a public post page |
-| `POST` | `/posts/{id}` | Update a post |
-| `DELETE` | `/posts/{id}` | Delete a post |
-| `GET` | `/api/tags` | Return tags as JSON |
-| `GET` | `/tags/{id}` | Render posts for a tag |
-| `POST` | `/tags` | Create a tag |
-| `DELETE` | `/tags/{id}` | Delete a tag |
+## Testing and code quality
 
-Both `/` and `/api/posts` accept `page`, `size`, `query`, and `sort` parameters. Supported sort values are `newest`, `oldest`, `titleAsc`, and `titleDesc`; page sizes are limited to 50.
+Run the complete verification pipeline:
 
-## Project structure
-
-```text
-controller -> service -> repository -> SQLite
+```bash
+./mvnw clean verify
 ```
 
-- Controllers handle HTTP requests and views.
-- Services define transactional business operations.
-- Repositories provide persistence through Spring Data JPA.
+This command runs:
+
+- Unit, MVC, security, repository, migration, and real SQLite integration tests
+- Spotless source formatting checks
+- SpotBugs static analysis
+- JaCoCo coverage reporting and the configured coverage threshold
+- Spring Boot executable JAR packaging
+
+The coverage report is generated at `target/site/jacoco/index.html`. Tests use isolated in-memory SQLite databases and never modify the repository's `sample.db` file.
+
+## Architecture
+
+```text
+Browser ──> MVC controllers ──> Thymeleaf views
+Client  ──> REST controllers ─> JSON responses
+                 │
+                 v
+              Services ──> Repositories ──> SQLite
+                              │
+                              └────────────> Flyway migrations
+```
+
+- Controllers handle transport concerns and delegate business behavior.
+- Services define transactional boundaries and enforce application rules.
+- Entities maintain both sides of bidirectional relationships safely.
+- Repositories provide persistence without leaking database access into views.
+- A global exception handler produces consistent HTML and JSON failures.
+
+## Security and CI
+
+The application and repository include:
+
+- Password hashing through Spring Security's delegating password encoder
+- CSRF protection, secure session settings, CSP, referrer, permissions, and frame restrictions
+- Role-based write and delete authorization
+- Validation and database constraints for duplicate and malformed data
+- GitHub dependency review for pull requests
+- CodeQL static security analysis
+- Trivy container vulnerability scanning
+- Weekly Dependabot updates for Maven, GitHub Actions, and Docker
+
+## Contributing
+
+1. Create a focused branch.
+2. Add or update tests for behavioral changes.
+3. Run `./mvnw clean verify`.
+4. Add a new Flyway migration for schema changes.
+5. Open a pull request with a concise description and verification notes.
+
+## License
 
 Licensed under the [Apache License 2.0](LICENSE.md).

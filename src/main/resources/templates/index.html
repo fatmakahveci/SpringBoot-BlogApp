@@ -1,122 +1,174 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>Blog</title>
-		<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
-		<link th:href="@{/styles/main.css}" rel="stylesheet" />
-	</head>
-	<body>
-		<div class="container-fluid text-center">
-			<div class="d-flex justify-content-end gap-2 pt-3">
-				<a sec:authorize="isAnonymous()" th:href="@{/login}" class="btn btn-outline-primary btn-sm">Log in</a>
-				<form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post">
-					<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-					<span class="me-2" sec:authentication="name"></span>
-					<button type="submit" class="btn btn-outline-secondary btn-sm">Log out</button>
-				</form>
-			</div>
-			<div class="container-fluid text-center">
-				<br><h3>Welcome to my blog</h3><br>
-			</div>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Spring Boot Blog</title>
+        <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+        <link th:href="@{/styles/main.css}" rel="stylesheet">
+        <script th:src="@{/scripts/main.js}" defer></script>
+    </head>
+    <body>
+        <header class="site-header border-bottom">
+            <nav class="container-xl navbar navbar-expand py-3 px-3" aria-label="Primary navigation">
+                <a th:href="@{/}" class="navbar-brand d-flex align-items-center gap-2">
+                    <span class="brand-mark" aria-hidden="true">B</span>
+                    <span>Spring Blog</span>
+                </a>
+                <div class="ms-auto account-actions d-flex align-items-center justify-content-end gap-2">
+                    <a sec:authorize="isAnonymous()" th:href="@{/login}" class="btn btn-outline-primary btn-sm">Log in</a>
+                    <a sec:authorize="isAnonymous()" th:href="@{/register}" class="btn btn-primary btn-sm">Create account</a>
+                    <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" class="d-flex align-items-center gap-2">
+                        <span class="user-chip" sec:authentication="name"></span>
+                        <button type="submit" class="btn btn-outline-primary btn-sm">Log out</button>
+                    </form>
+                </div>
+            </nav>
+        </header>
 
-			<div class="modal-body row">
-				<div class="col-md-8">
-					<img th:src="@{/images/blog.png}" class="img-fluid" alt="Blog illustration">
-					<div sec:authorize="hasAnyRole('AUTHOR', 'ADMIN')" style="text-align: right;">
-						<br>
-						<a th:href="@{/posts/add}" class="btn btn-primary btn-sm mb-3">Create new post</a>
-					</div>
-					<form th:action="@{/}" method="get" class="row g-2 mb-3 text-start">
-						<div class="col-md-6">
-							<label for="post-search" class="visually-hidden">Search post titles</label>
-							<input id="post-search" type="search" name="query" th:value="${query}" class="form-control" placeholder="Search post titles...">
-						</div>
-						<div class="col-md-4">
-							<label for="post-sort" class="visually-hidden">Sort posts</label>
-							<select id="post-sort" name="sort" class="form-select">
-								<option value="newest" th:selected="${sort == 'newest'}">Newest first</option>
-								<option value="oldest" th:selected="${sort == 'oldest'}">Oldest first</option>
-								<option value="titleAsc" th:selected="${sort == 'titleAsc'}">Title A–Z</option>
-								<option value="titleDesc" th:selected="${sort == 'titleDesc'}">Title Z–A</option>
-							</select>
-						</div>
-						<input type="hidden" name="size" th:value="${size}">
-						<div class="col-md-2 d-grid"><button type="submit" class="btn btn-outline-primary">Apply</button></div>
-					</form>
+        <main>
+            <section class="hero-section">
+                <div class="container-xl px-3 py-5">
+                    <div class="row align-items-center g-4">
+                        <div class="col-lg-7">
+                            <span class="eyebrow">Ideas, tutorials, and notes</span>
+                            <h1 class="display-5 fw-bold mt-2 mb-3">A practical blog for thoughtful software builders.</h1>
+                            <p class="lead text-secondary mb-4">Explore published articles, discover topics, or share your own work with the community.</p>
+                            <div class="d-flex flex-wrap gap-2">
+                                <a href="#posts" class="btn btn-primary btn-lg">Explore posts</a>
+                                <a sec:authorize="hasAnyRole('AUTHOR', 'ADMIN')" th:href="@{/posts/add}" class="btn btn-outline-primary btn-lg">Create new post</a>
+                                <a sec:authorize="isAnonymous()" th:href="@{/register}" class="btn btn-outline-primary btn-lg">Start writing</a>
+                            </div>
+                        </div>
+                        <div class="col-lg-5 text-center">
+                            <img th:src="@{/images/blog.png}" class="img-fluid blog-hero" alt="Person writing a blog article">
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-					<table class="table table-hover">
-						<thead>
-							<tr>
-								<th>Title</th>
-								<th>Content</th>
-								<th>Created</th>
-								<th>Tags</th>
-								<th sec:authorize="hasAnyRole('AUTHOR', 'ADMIN')">Actions</th>
-								<th sec:authorize="hasRole('ADMIN')">Administration</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr th:each="post:${posts}">
-								<td><a th:href="@{/p/{slug}(slug=${post.slug})}" th:text="${post.title}">Title</a></td>
-								<td>
-									<span th:text="${post.summary != null and !post.summary.isBlank() ? post.summary : post.content}"></span>
-									<span th:if="${post.status.name() == 'DRAFT'}" class="badge text-bg-secondary ms-1">Draft</span>
-								</td>
-								<td th:text="${post.createdAt}"></td>
-								<td th:text="${#strings.listJoin(post.tags.![name], ',')}"></td>
-								<td sec:authorize="hasAnyRole('AUTHOR', 'ADMIN')">
-									<a th:href="@{/posts/{postId}(postId=${post.id})}" class="btn btn-primary btn-sm mb-3">Update</a>
-								</td>
-								<td sec:authorize="hasRole('ADMIN')">
-									<form action="" th:method="DELETE">
-										<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-										<button type="submit" value="delete_post" th:formaction="@{/posts/{postId}(postId=${post.id})}" class="btn btn-primary btn-sm">Delete</button>
-									</form>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-					<p th:if="${#lists.isEmpty(posts)}" class="text-muted">No posts match your search.</p>
-					<nav th:if="${postPage != null and postPage.totalPages > 1}" aria-label="Post pages">
-						<ul class="pagination justify-content-center">
-							<li class="page-item" th:classappend="${postPage.first} ? 'disabled'">
-								<a class="page-link" th:href="@{/(page=${postPage.number - 1},size=${size},query=${query},sort=${sort})}">Previous</a>
-							</li>
-							<li class="page-item disabled"><span class="page-link" th:text="|Page ${postPage.number + 1} of ${postPage.totalPages}|">Page</span></li>
-							<li class="page-item" th:classappend="${postPage.last} ? 'disabled'">
-								<a class="page-link" th:href="@{/(page=${postPage.number + 1},size=${size},query=${query},sort=${sort})}">Next</a>
-							</li>
-						</ul>
-					</nav>
-				</div>
+            <section id="posts" class="container-xl px-3 py-5">
+                <div class="row g-4">
+                    <div class="col-12 col-lg-8">
+                        <div class="section-heading d-flex flex-column flex-sm-row align-items-sm-end justify-content-between gap-2 mb-4">
+                            <div>
+                                <span class="eyebrow">Latest writing</span>
+                                <h2 class="h3 mb-0">Browse posts</h2>
+                            </div>
+                            <a sec:authorize="hasAnyRole('AUTHOR', 'ADMIN')" th:href="@{/posts/add}" class="btn btn-primary">Create new post</a>
+                        </div>
 
-				<div class="col-md-4 border">
-					<br>
-					<h4>Tags</h4>
-					<form sec:authorize="hasAnyRole('AUTHOR', 'ADMIN')" action="#" th:action="@{/tags}" th:object="${tag}" method="POST" novalidate>
-						<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-						<div class="btn-group" role="group" aria-label="Basic example">
-							<input type="text" id="form3" th:field="*{name}" class="form-control" th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'" maxlength="50" required placeholder="Write tags here..."/>
-							<button type="submit" value="save_tag" th:formaction="@{/tags}" class="btn btn-primary btn-sm">Create</button>
-						</div>
-						<div class="text-danger small text-start" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Tag error</div>
-					</form>
-						<br><br>
-						<table class="table">
-							<tr th:each="tag:${tags}">
-								<td><a th:href="@{/tags/{tagId}(tagId=${tag.id})}" class="btn btn-outline-primary btn-sm" th:text="${tag.name}">Success</a></td>
-								<td sec:authorize="hasRole('ADMIN')"><form action="" th:method="DELETE">
-									<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-									<button type="submit" value="delete_tag" th:formaction="@{/tags/{tagId}(tagId=${tag.id})}" class="btn btn-primary btn-sm">Delete</button>
-								</form>
-								</td>
-							</tr>
-						</table>
-					
-				</div>
-			</div>
-		</div>
-	</body>
+                        <form th:action="@{/}" method="get" class="filter-card mb-4" aria-label="Search and sort posts">
+                            <div class="row g-2">
+                                <div class="col-md-7">
+                                    <label for="post-search" class="form-label">Search posts</label>
+                                    <input id="post-search" type="search" name="query" th:value="${query}" class="form-control" placeholder="Search by title...">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="post-sort" class="form-label">Sort by</label>
+                                    <select id="post-sort" name="sort" class="form-select">
+                                        <option value="newest" th:selected="${sort == 'newest'}">Newest first</option>
+                                        <option value="oldest" th:selected="${sort == 'oldest'}">Oldest first</option>
+                                        <option value="titleAsc" th:selected="${sort == 'titleAsc'}">Title A–Z</option>
+                                        <option value="titleDesc" th:selected="${sort == 'titleDesc'}">Title Z–A</option>
+                                    </select>
+                                </div>
+                                <input type="hidden" name="size" th:value="${size}">
+                                <div class="col-md-2 d-grid align-self-end">
+                                    <button type="submit" class="btn btn-primary">Apply</button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <div class="post-list" th:if="${!#lists.isEmpty(posts)}">
+                            <article class="post-card" th:each="post : ${posts}">
+                                <div class="d-flex flex-column flex-sm-row justify-content-between gap-3">
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                                            <span th:if="${post.status.name() == 'DRAFT'}" class="badge text-bg-secondary">Draft</span>
+                                            <time class="post-meta" th:text="${post.createdAt}">Created</time>
+                                        </div>
+                                        <h3 class="h4 mb-2">
+                                            <a class="post-link" th:href="@{/p/{slug}(slug=${post.slug})}" th:text="${post.title}">Title</a>
+                                        </h3>
+                                        <p class="post-summary mb-3" th:text="${post.summary != null and !post.summary.isBlank() ? post.summary : post.content}">Summary</p>
+                                        <div class="d-flex flex-wrap gap-2" th:if="${!#sets.isEmpty(post.tags)}">
+                                            <a th:each="postTag : ${post.tags}" th:href="@{/tags/{tagId}(tagId=${postTag.id})}" class="tag-chip" th:text="${postTag.name}">Tag</a>
+                                        </div>
+                                    </div>
+                                    <div class="post-actions d-flex flex-sm-column align-items-start align-items-sm-end gap-2">
+                                        <a th:href="@{/p/{slug}(slug=${post.slug})}" class="btn btn-outline-primary btn-sm">Read post</a>
+                                        <a sec:authorize="hasAnyRole('AUTHOR', 'ADMIN')" th:href="@{/posts/{postId}(postId=${post.id})}" class="btn btn-light border btn-sm">Update</a>
+                                        <form sec:authorize="hasRole('ADMIN')" th:method="DELETE" data-confirm="Delete this post permanently?">
+                                            <button type="submit" th:formaction="@{/posts/{postId}(postId=${post.id})}" class="btn btn-outline-danger btn-sm">Delete</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </article>
+                        </div>
+
+                        <div th:if="${#lists.isEmpty(posts)}" class="empty-state">
+                            <div class="empty-state-icon" aria-hidden="true">⌕</div>
+                            <h3 class="h5">No posts found</h3>
+                            <p class="text-secondary mb-3">No posts match your search. Try a different keyword or clear the filters.</p>
+                            <a th:href="@{/}" class="btn btn-outline-primary">Clear filters</a>
+                        </div>
+
+                        <nav th:if="${postPage != null and postPage.totalPages > 1}" class="mt-4" aria-label="Post pages">
+                            <ul class="pagination justify-content-center mb-0">
+                                <li class="page-item" th:classappend="${postPage.first} ? 'disabled'">
+                                    <a class="page-link" th:href="@{/(page=${postPage.number - 1},size=${size},query=${query},sort=${sort})}">Previous</a>
+                                </li>
+                                <li class="page-item disabled"><span class="page-link" th:text="|Page ${postPage.number + 1} of ${postPage.totalPages}|">Page</span></li>
+                                <li class="page-item" th:classappend="${postPage.last} ? 'disabled'">
+                                    <a class="page-link" th:href="@{/(page=${postPage.number + 1},size=${size},query=${query},sort=${sort})}">Next</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+
+                    <aside class="col-12 col-lg-4">
+                        <div class="sidebar-card sticky-lg-top">
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <div>
+                                    <span class="eyebrow">Discover</span>
+                                    <h2 class="h4 mb-0">Topics</h2>
+                                </div>
+                                <span class="count-badge" th:text="${#lists.size(tags)}">0</span>
+                            </div>
+
+                            <form sec:authorize="hasAnyRole('AUTHOR', 'ADMIN')" th:action="@{/tags}" th:object="${tag}" method="POST" class="mb-4" novalidate>
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                <label for="tag-name" class="form-label">Create a topic</label>
+                                <div class="input-group">
+                                    <input type="text" id="tag-name" th:field="*{name}" class="form-control" th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'" aria-describedby="tag-name-error" maxlength="50" required placeholder="Topic name">
+                                    <button type="submit" th:formaction="@{/tags}" class="btn btn-primary">Add</button>
+                                </div>
+                                <div id="tag-name-error" class="text-danger small mt-1" role="alert" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Tag error</div>
+                            </form>
+
+                            <div class="topic-list" th:if="${!#lists.isEmpty(tags)}">
+                                <div class="topic-row" th:each="topic : ${tags}">
+                                    <a th:href="@{/tags/{tagId}(tagId=${topic.id})}" class="topic-link" th:text="${topic.name}">Topic</a>
+                                    <form sec:authorize="hasRole('ADMIN')" th:method="DELETE" data-confirm="Delete this tag permanently?">
+                                        <button type="submit" th:formaction="@{/tags/{tagId}(tagId=${topic.id})}" class="btn btn-link text-danger btn-sm p-0">Delete</button>
+                                    </form>
+                                </div>
+                            </div>
+                            <div th:if="${#lists.isEmpty(tags)}" class="empty-state compact">
+                                <p class="text-secondary mb-0">No topics have been created yet.</p>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+            </section>
+        </main>
+
+        <footer class="site-footer border-top">
+            <div class="container-xl px-3 py-4 d-flex flex-column flex-sm-row justify-content-between gap-2">
+                <span>Spring Blog</span>
+                <span class="text-secondary">Built with Spring Boot and Thymeleaf.</span>
+            </div>
+        </footer>
+    </body>
 </html>

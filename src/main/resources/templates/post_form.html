@@ -8,64 +8,62 @@
     <link th:href="@{/styles/main.css}" rel="stylesheet" />
     </head>
     <body>
-        <div class="container">
-            <div class="form-row justify-content-center">
-                <p></p><p></p><p></p>
-                <h3>Create new post</h3>
-                <p></p>
-            </div>
+		<main class="container post-editor py-4 py-md-5 px-3">
+			<div class="mb-4"><a th:href="@{/}" class="btn btn-light border btn-sm">← Back to posts</a></div>
             <form action="#" th:action="@{/posts}" th:object="${post}" method="POST" novalidate>
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                <div class="form-row">
-					<div class="form-group col-md-4"><label class="form-label" for="summary">Summary</label></div>
-					<div class="form-group col-md-8">
-						<textarea id="summary" th:field="*{summary}" class="form-control" th:classappend="${#fields.hasErrors('summary')} ? 'is-invalid'" maxlength="500" rows="3" placeholder="Write a short summary..."></textarea>
-						<div class="invalid-feedback" th:if="${#fields.hasErrors('summary')}" th:errors="*{summary}">Summary error</div>
+				<div class="mb-4"><span class="eyebrow">Editor</span><h1 class="h2 mb-1">Create new post</h1><p class="text-secondary mb-0">Write a clear title, add a summary, and choose when to publish.</p></div>
+				<div class="row g-3 mb-3">
+					<div class="col-md-3"><label class="form-label" for="summary">Summary</label></div>
+					<div class="col-md-9">
+                        <textarea id="summary" th:field="*{summary}" class="form-control" th:classappend="${#fields.hasErrors('summary')} ? 'is-invalid'" aria-describedby="summary-error" maxlength="500" rows="3" placeholder="Write a short summary..."></textarea>
+                        <div id="summary-error" class="invalid-feedback" role="alert" th:if="${#fields.hasErrors('summary')}" th:errors="*{summary}">Summary error</div>
 					</div>
 				</div>
-				<div class="form-row">
-                    <div class="form-group col-md-4">
+				<div class="row g-3 mb-3">
+                    <div class="col-md-3">
                         <label class="form-label" for="form1">Title</label>
                     </div>
-                    <div class="form-group col-md-8">
-                        <input type="text" id="form1" th:field="*{title}" class="form-control" th:classappend="${#fields.hasErrors('title')} ? 'is-invalid'" maxlength="200" required placeholder="Write title here..."/>
-                        <div class="invalid-feedback" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">Title error</div>
+                    <div class="col-md-9">
+                        <input type="text" id="form1" th:field="*{title}" class="form-control" th:classappend="${#fields.hasErrors('title')} ? 'is-invalid'" aria-describedby="title-error" maxlength="200" required placeholder="Write title here..."/>
+                        <div id="title-error" class="invalid-feedback" role="alert" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">Title error</div>
                     </div>
                 </div>
-                <div class="form-row">
-                    <div class="form-group col-md-4"><label class="form-label" for="status">Status</label></div>
-                    <div class="form-group col-md-8">
+                <div class="row g-3 mb-3">
+                    <div class="col-md-3"><label class="form-label" for="status">Status</label></div>
+                    <div class="col-md-9">
                         <select id="status" th:field="*{status}" class="form-select">
                             <option value="DRAFT">Draft</option>
                             <option value="PUBLISHED">Published</option>
                         </select>
                     </div>
                 </div>
-                <div class="form-row">
-                    <div class="form-group col-md-4">
+                <div class="row g-3 mb-3">
+                    <div class="col-md-3">
                         <label class="form-label" for="form2">Content</label>
                     </div>
-                    <div class="form-group col-md-8">
+                    <div class="col-md-9">
                         <textarea class="form-control" th:field="*{content}" th:classappend="${#fields.hasErrors('content')} ? 'is-invalid'" id="form2" rows="8" maxlength="10000" placeholder="Write content here..."></textarea>
                         <div class="invalid-feedback" th:if="${#fields.hasErrors('content')}" th:errors="*{content}">Content error</div>
                     </div>
                 </div>
-                <div class="form-row">
-                    <div class="form-group col-md-4">
+                <div class="row g-3 mb-3">
+                    <div class="col-md-3">
                         <label class="form-label" for="form3">Tags</label>
                     </div>
-                    <div class="form-group col-md-8">
-                        <div th:each="tag : ${tags}">
-                            <input type="checkbox" th:id="${{tag}}" th:value="${{tag}}" th:field="*{tags}" />
-                            <label th:for="${{tag}}" th:text="${tag.name}">Tag</label>
+                    <div class="col-md-9 tag-options">
+                        <div class="form-check" th:each="tag : ${tags}">
+                            <input class="form-check-input" type="checkbox" th:id="${{tag}}" th:value="${{tag}}" th:field="*{tags}" />
+                            <label class="form-check-label" th:for="${{tag}}" th:text="${tag.name}">Tag</label>
                         </div>
+						<p th:if="${#lists.isEmpty(tags)}" class="text-muted mb-0">No tags are available yet.</p>
                     </div>
                 </div>
-                <div class="form-group" style="text-align: right;">
-                    <a th:href="@{/}" class="btn btn-outline-secondary mb-4">Cancel</a>
-                    <button type="submit" value="save_post" class="btn btn-primary mb-4">Create new post</button>
+                <div class="d-flex flex-column-reverse flex-sm-row justify-content-sm-end gap-2">
+                    <a th:href="@{/}" class="btn btn-outline-secondary">Cancel</a>
+                    <button type="submit" value="save_post" class="btn btn-primary">Create post</button>
                 </div>
              </form>
-        </div>
+		</main>
     </body>
 </html>

@@ -8,6 +8,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
@@ -19,6 +20,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fatmakahveci.blog.model.Tag;
+import com.fatmakahveci.blog.model.Post;
+import com.fatmakahveci.blog.model.PostStatus;
 import com.fatmakahveci.blog.exception.DuplicateTagNameException;
 import com.fatmakahveci.blog.service.PostService;
 import com.fatmakahveci.blog.service.TagService;
@@ -42,6 +45,33 @@ class TagControllerITests {
 
         mockMvc.perform(get("/tags/404"))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void emptyTagPageShowsHelpfulEmptyState() throws Exception {
+        when(tagService.findById(1)).thenReturn(Optional.of(new Tag(1, "java", Set.of())));
+
+        mockMvc.perform(get("/tags/1"))
+                .andExpect(status().isOk())
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.content()
+                        .string(org.hamcrest.Matchers.containsString("No published posts use this tag yet.")));
+    }
+
+    @Test
+    void administratorsSeeDeleteConfirmationHook() throws Exception {
+        Tag tag = new Tag(1, "java", Set.of());
+        Post post = new Post(1, "Post", "Content", Set.of(tag));
+        post.setSlug("post");
+        post.setStatus(PostStatus.PUBLISHED);
+        when(tagService.findById(1)).thenReturn(Optional.of(tag));
+
+        mockMvc.perform(get("/tags/1").with(user("admin").roles("ADMIN", "AUTHOR")))
+                .andExpect(status().isOk())
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.content()
+                        .string(org.hamcrest.Matchers.containsString(
+                                "data-confirm=\"Delete this post permanently?\"")))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.content()
+                        .string(org.hamcrest.Matchers.containsString("/scripts/main.js")));
     }
 
     @Test

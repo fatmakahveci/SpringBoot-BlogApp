@@ -56,21 +56,31 @@ public class Tag {
     public void setName(String name) {
         this.name = name;
     }
-  
+
     public Set<Post> getPosts() {
         return posts;
     }
 
     public void setPosts(Set<Post> posts) {
-        // Hibernate expects a mutable collection; copy input to avoid shared mutable state.
-        this.posts = posts == null ? new HashSet<>() : new HashSet<>(posts);
+        Set<Post> replacement = posts == null ? Set.of() : new HashSet<>(posts);
+        new HashSet<>(this.posts).forEach(this::removePost);
+        replacement.forEach(this::addPost);
+    }
+
+    public void addPost(Post post) {
+        if (post != null && posts.add(post)) {
+            post.addTag(this);
+        }
+    }
+
+    public void removePost(Post post) {
+        if (post != null && posts.remove(post)) {
+            post.removeTag(this);
+        }
     }
 
     public void deleteTagFromPosts() {
-        // Update the owning side of the bidirectional relationship in memory.
-        for (Post post : posts) {
-            post.getTags().remove(this);
-        }
+        new HashSet<>(posts).forEach(this::removePost);
     }
 
     @Override

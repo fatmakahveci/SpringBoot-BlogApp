@@ -61,5 +61,68 @@ class EntityCollectionTests {
 
         assertThat(firstPost.getTags()).doesNotContain(tag);
         assertThat(secondPost.getTags()).doesNotContain(tag);
+        assertThat(tag.getPosts()).isEmpty();
+    }
+
+    @Test
+    void addTagUpdatesBothSidesWithoutDuplicates() {
+        Post post = new Post(1, "Title", "Content", Set.of());
+        Tag tag = new Tag(1, "java", Set.of());
+
+        post.addTag(tag);
+        post.addTag(tag);
+
+        assertThat(post.getTags()).containsExactly(tag);
+        assertThat(tag.getPosts()).containsExactly(post);
+    }
+
+    @Test
+    void addPostUpdatesBothSidesWithoutDuplicates() {
+        Post post = new Post(1, "Title", "Content", Set.of());
+        Tag tag = new Tag(1, "java", Set.of());
+
+        tag.addPost(post);
+        tag.addPost(post);
+
+        assertThat(tag.getPosts()).containsExactly(post);
+        assertThat(post.getTags()).containsExactly(tag);
+    }
+
+    @Test
+    void removeTagUpdatesBothSides() {
+        Post post = new Post(1, "Title", "Content", Set.of());
+        Tag tag = new Tag(1, "java", Set.of());
+        post.addTag(tag);
+
+        post.removeTag(tag);
+
+        assertThat(post.getTags()).isEmpty();
+        assertThat(tag.getPosts()).isEmpty();
+    }
+
+    @Test
+    void removePostUpdatesBothSides() {
+        Post post = new Post(1, "Title", "Content", Set.of());
+        Tag tag = new Tag(1, "java", Set.of());
+        tag.addPost(post);
+
+        tag.removePost(post);
+
+        assertThat(tag.getPosts()).isEmpty();
+        assertThat(post.getTags()).isEmpty();
+    }
+
+    @Test
+    void replacingTagsDetachesRemovedRelationships() {
+        Post post = new Post(1, "Title", "Content", Set.of());
+        Tag oldTag = new Tag(1, "old", Set.of());
+        Tag newTag = new Tag(2, "new", Set.of());
+        post.addTag(oldTag);
+
+        post.setTags(Set.of(newTag));
+
+        assertThat(post.getTags()).containsExactly(newTag);
+        assertThat(oldTag.getPosts()).doesNotContain(post);
+        assertThat(newTag.getPosts()).contains(post);
     }
 }

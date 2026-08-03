@@ -100,7 +100,7 @@ class PostControllerITests {
     @Test
     void getPostFromForm() throws Exception {
         Post post = new Post(1, "title", "content", Collections.emptySet());
-        
+
         when(postService.findById(1)).thenReturn(Optional.of(post));
 
         mockMvc.perform(get("/posts/{id}", "1")

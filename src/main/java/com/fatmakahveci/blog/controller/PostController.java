@@ -34,7 +34,7 @@ public class PostController {
     public ModelAndView addPost() {
         return postForm("post_form", new Post(), null);
     }
-    
+
     @PostMapping("/posts")
     public ModelAndView savePost(
             @Valid @ModelAttribute("post") Post post,
