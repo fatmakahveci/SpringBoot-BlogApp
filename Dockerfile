@@ -13,8 +13,8 @@ FROM eclipse-temurin:21-jre-alpine
 
 RUN addgroup -S -g 10001 spring \
     && adduser -S -D -H -u 10001 -G spring spring \
-    && mkdir -p /applications /data \
-    && chown -R spring:spring /applications /data
+    && mkdir -p /applications /data /native \
+    && chown -R spring:spring /applications /data /native
 
 WORKDIR /applications
 
@@ -31,4 +31,4 @@ USER 10001:10001
 HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
     CMD wget --quiet --spider http://127.0.0.1:8080/actuator/health || exit 1
 
-ENTRYPOINT ["java", "-Djava.io.tmpdir=/tmp", "-jar", "springboot.jar"]
+ENTRYPOINT ["java", "-Djava.io.tmpdir=/tmp", "-Dorg.sqlite.tmpdir=/native", "-jar", "springboot.jar"]

@@ -156,7 +156,7 @@ export BLOG_AUTHOR_PASSWORD='replace-with-a-different-password'
 docker compose up --build
 ```
 
-SQLite data is stored in the `blog-data` volume. The container runs as UID/GID `10001`, with a read-only root filesystem, all Linux capabilities dropped, `no-new-privileges`, a PID limit, and a small `noexec` temporary filesystem. The Security Dashboard boots the image under this exact policy and fails if the user or read-only runtime is broken. The runtime image installs no additional operating-system packages and reports health through BusyBox `wget`, reducing image size and attack surface.
+SQLite data is stored in the `blog-data` volume. The container runs as UID/GID `10001`, with a read-only root filesystem, all Linux capabilities dropped, `no-new-privileges`, a PID limit, and a small `noexec` temporary filesystem. A separate 16 MB tmpfs is executable only because SQLite JDBC must load its native library; application temporary files and persisted data remain `noexec`. The Security Dashboard boots the image under this exact policy and fails if the user or read-only runtime is broken. The runtime image installs no additional operating-system packages and reports health through BusyBox `wget`, reducing image size and attack surface.
 
 ## Testing and code quality
 
