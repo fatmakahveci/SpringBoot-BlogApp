@@ -11,7 +11,8 @@ RUN ./mvnw -B -DskipTests package
 
 FROM eclipse-temurin:21-jre-alpine
 
-RUN apk add --no-cache curl \
+RUN apk upgrade --no-cache \
+    && apk add --no-cache curl \
     && addgroup -S spring \
     && adduser -S spring -G spring \
     && mkdir -p /applications /data \
