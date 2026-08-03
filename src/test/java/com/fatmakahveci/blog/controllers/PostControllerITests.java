@@ -31,6 +31,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static com.fatmakahveci.blog.support.PostFixtures.DEFAULT_CONTENT;
+import static com.fatmakahveci.blog.support.PostFixtures.DEFAULT_TITLE;
+import static com.fatmakahveci.blog.support.PostFixtures.aPost;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
@@ -78,8 +81,8 @@ class PostControllerITests {
                 .with(csrf())
                 .with(user("author").roles("AUTHOR"))
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("title", "title")
-                .param("content", "content"))
+                .param("title", DEFAULT_TITLE)
+                .param("content", DEFAULT_CONTENT))
                 .andExpect(status().is3xxRedirection());
     }
 
@@ -94,7 +97,7 @@ class PostControllerITests {
                 .with(user("author").roles("AUTHOR"))
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("title", "Tagged post")
-                .param("content", "content")
+                .param("content", DEFAULT_CONTENT)
                 .param("tagIds", "3", "999"))
                 .andExpect(status().is3xxRedirection());
 
@@ -108,14 +111,14 @@ class PostControllerITests {
         mockMvc.perform(post("/posts")
                 .with(user("author").roles("AUTHOR"))
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("title", "title")
-                .param("content", "content"))
+                .param("title", DEFAULT_TITLE)
+                .param("content", DEFAULT_CONTENT))
                 .andExpect(status().isForbidden());
     }
 
     @Test
     void updateUsesPathIdInsteadOfSubmittedId() throws Exception {
-        Post existingPost = new Post(1, "old title", "old content", Collections.emptySet());
+        Post existingPost = aPost().title("old title").content("old content").build();
         when(postService.findById(1)).thenReturn(Optional.of(existingPost));
 
         mockMvc.perform(post("/posts/1")
@@ -134,7 +137,7 @@ class PostControllerITests {
 
     @Test
     void getPostFromForm() throws Exception {
-        Post post = new Post(1, "title", "content", Collections.emptySet());
+        Post post = aPost().build();
 
         when(postService.findById(1)).thenReturn(Optional.of(post));
 
@@ -160,7 +163,7 @@ class PostControllerITests {
                 .with(user("author").roles("AUTHOR"))
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("title", " ")
-                .param("content", "content"))
+                .param("content", DEFAULT_CONTENT))
                 .andExpect(status().isOk())
                 .andExpect(view().name("post_form"))
                 .andExpect(model().attributeHasFieldErrors("post", "title"))
@@ -171,7 +174,7 @@ class PostControllerITests {
 
     @Test
     void invalidUpdateReturnsToFormWithPathId() throws Exception {
-        Post existingPost = new Post(7, "Existing", "Content", Collections.emptySet());
+        Post existingPost = aPost().id(7).title("Existing").build();
         when(postService.findById(7)).thenReturn(Optional.of(existingPost));
 
         mockMvc.perform(post("/posts/7")
@@ -197,7 +200,7 @@ class PostControllerITests {
                 .with(user("author").roles("AUTHOR"))
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("title", "Existing")
-                .param("content", "content"))
+                .param("content", DEFAULT_CONTENT))
                 .andExpect(status().isOk())
                 .andExpect(view().name("post_form"))
                 .andExpect(model().attributeHasFieldErrors("post", "title"))

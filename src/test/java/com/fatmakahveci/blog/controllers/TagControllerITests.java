@@ -6,7 +6,6 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 
@@ -21,10 +20,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fatmakahveci.blog.model.Tag;
 import com.fatmakahveci.blog.model.Post;
-import com.fatmakahveci.blog.model.PostStatus;
 import com.fatmakahveci.blog.exception.DuplicateTagNameException;
 import com.fatmakahveci.blog.service.PostService;
 import com.fatmakahveci.blog.service.TagService;
+
+import static com.fatmakahveci.blog.support.PostFixtures.aPublishedPost;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
@@ -60,9 +60,7 @@ class TagControllerITests {
     @Test
     void administratorsSeeDeleteConfirmationHook() throws Exception {
         Tag tag = new Tag(1, "java", Set.of());
-        Post post = new Post(1, "Post", "Content", Set.of(tag));
-        post.setSlug("post");
-        post.setStatus(PostStatus.PUBLISHED);
+        Post post = aPublishedPost().title("Post").slug("post").tags(tag).build();
         when(tagService.findById(1)).thenReturn(Optional.of(tag));
 
         mockMvc.perform(get("/tags/1").with(user("admin").roles("ADMIN", "AUTHOR")))

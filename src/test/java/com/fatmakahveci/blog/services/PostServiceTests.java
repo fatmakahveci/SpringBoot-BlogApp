@@ -7,7 +7,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +27,8 @@ import com.fatmakahveci.blog.service.SlugGenerator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
+import static com.fatmakahveci.blog.support.PostFixtures.DEFAULT_TITLE;
+import static com.fatmakahveci.blog.support.PostFixtures.aPost;
 
 @ExtendWith(MockitoExtension.class)
 class PostServiceTests {
@@ -43,8 +44,8 @@ class PostServiceTests {
 
 	@Test
     void savePostSuccess() {
-        Post newPost = new Post(null, "title", "content", Collections.emptySet());
-        Post savedPost = new Post(1, "title", "content", Collections.emptySet());
+        Post newPost = aPost().id(null).build();
+        Post savedPost = aPost().build();
 
         when(postRepository.save(eq(newPost))).thenReturn(savedPost);
 
@@ -57,7 +58,7 @@ class PostServiceTests {
 
     @Test
     public void deleteByIdSuccess() {
-        Post post = new Post(1, "title", "content", Collections.emptySet());
+        Post post = aPost().build();
 
         when(postRepository.save(post)).thenReturn(post);
         when(postRepository.findById(1)).thenReturn(Optional.of(post));
@@ -83,8 +84,8 @@ class PostServiceTests {
     @Test
     public void findAllSuccess() {
         List<Post> posts = new ArrayList<>();
-        posts.add(new Post(1, "first title", "first content", Collections.emptySet()));
-        posts.add(new Post(2, "second title", "second content", Collections.emptySet()));
+        posts.add(aPost().title("first title").content("first content").build());
+        posts.add(aPost().id(2).title("second title").content("second content").build());
 
         when(postRepository.findAll()).thenReturn(posts);
 
@@ -108,7 +109,7 @@ class PostServiceTests {
     void paginatedSearchUsesTrimmedTitleQuery() {
         PageRequest pageable = PageRequest.of(0, 10);
         Page<Post> expectedPage = new PageImpl<>(List.of(
-                new Post(1, "Spring", "content", Collections.emptySet())));
+                aPost().title("Spring").build()));
         when(postRepository.findByTitleContainingIgnoreCase("spring", pageable)).thenReturn(expectedPage);
 
         Page<Post> result = postService.findAll("  spring  ", pageable, true);
@@ -144,7 +145,7 @@ class PostServiceTests {
 
     @Test
     void savingPostGeneratesSlugFromTitle() {
-        Post post = new Post(null, "Spring Boot", "content", Collections.emptySet());
+        Post post = aPost().id(null).title("Spring Boot").build();
         when(slugGenerator.fromTitle("Spring Boot")).thenReturn("spring-boot-abc");
         when(postRepository.save(post)).thenReturn(post);
 
@@ -155,7 +156,7 @@ class PostServiceTests {
 
     @Test
     public void findByIdSuccess() {
-        Post post = new Post(1, "title", "content", Collections.emptySet());
+        Post post = aPost().build();
 
         when(postRepository.findById(1)).thenReturn(Optional.of(post));
 
@@ -178,31 +179,31 @@ class PostServiceTests {
 
     @Test
     public void findByTitleSuccess() {
-        Post post = new Post(1, "title", "content", Collections.emptySet());
+        Post post = aPost().build();
 
-        when(postRepository.findByTitle("title")).thenReturn(Optional.of(post));
+        when(postRepository.findByTitle(DEFAULT_TITLE)).thenReturn(Optional.of(post));
 
-        Optional<Post> optionalPost = postService.findByTitle("title");
-        verify(postRepository, times(1)).findByTitle("title");
+        Optional<Post> optionalPost = postService.findByTitle(DEFAULT_TITLE);
+        verify(postRepository, times(1)).findByTitle(DEFAULT_TITLE);
 
-        assertEquals("title", optionalPost.get().getTitle());
+        assertEquals(DEFAULT_TITLE, optionalPost.get().getTitle());
     }
 
     @Test
     public void findByTitleFail() {
-        when(postRepository.findByTitle("title")).thenReturn(Optional.empty());
+        when(postRepository.findByTitle(DEFAULT_TITLE)).thenReturn(Optional.empty());
 
-        Optional<Post> optionalPost = postService.findByTitle("title");
-        verify(postRepository, times(1)).findByTitle("title");
+        Optional<Post> optionalPost = postService.findByTitle(DEFAULT_TITLE);
+        verify(postRepository, times(1)).findByTitle(DEFAULT_TITLE);
 
         assertThat(optionalPost).isEmpty();
     }
 
     @Test
     void saveUpdatesTheExistingPostWhenIdsMatch() {
-        Post existingPost = new Post(1, "title", "old content", Collections.emptySet());
-        Post submittedPost = new Post(1, "title", "new content", Collections.emptySet());
-        when(postRepository.findByTitle("title")).thenReturn(Optional.of(existingPost));
+        Post existingPost = aPost().content("old content").build();
+        Post submittedPost = aPost().content("new content").build();
+        when(postRepository.findByTitle(DEFAULT_TITLE)).thenReturn(Optional.of(existingPost));
         when(postRepository.save(existingPost)).thenReturn(existingPost);
 
         Post result = postService.save(submittedPost);
@@ -213,9 +214,9 @@ class PostServiceTests {
 
     @Test
     void saveDoesNotOverwriteAnotherPostWithTheSameTitle() {
-        Post existingPost = new Post(1, "title", "existing content", Collections.emptySet());
-        Post submittedPost = new Post(null, "title", "submitted content", Collections.emptySet());
-        when(postRepository.findByTitle("title")).thenReturn(Optional.of(existingPost));
+        Post existingPost = aPost().content("existing content").build();
+        Post submittedPost = aPost().id(null).content("submitted content").build();
+        when(postRepository.findByTitle(DEFAULT_TITLE)).thenReturn(Optional.of(existingPost));
         org.junit.jupiter.api.Assertions.assertThrows(
                 DuplicatePostTitleException.class,
                 () -> postService.save(submittedPost));

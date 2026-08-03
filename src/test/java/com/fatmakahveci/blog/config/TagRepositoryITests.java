@@ -10,10 +10,10 @@ import org.springframework.transaction.support.TransactionTemplate;
 import com.fatmakahveci.blog.dao.PostRepository;
 import com.fatmakahveci.blog.dao.TagRepository;
 import com.fatmakahveci.blog.model.Post;
-import com.fatmakahveci.blog.model.PostStatus;
 import com.fatmakahveci.blog.model.Tag;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static com.fatmakahveci.blog.support.PostFixtures.aPublishedPost;
 
 @SpringBootTest
 class TagRepositoryITests {
@@ -31,9 +31,12 @@ class TagRepositoryITests {
     void findByIdLoadsPostsForUseAfterTheTransactionCloses() {
         Integer tagId = transactionTemplate.execute(status -> {
             Tag tag = tagRepository.save(new Tag(null, "repository-test", Set.of()));
-            Post post = new Post(null, "Repository test post", "content", Set.of(tag));
-            post.setSlug("repository-test-post");
-            post.setStatus(PostStatus.PUBLISHED);
+            Post post = aPublishedPost()
+                    .id(null)
+                    .title("Repository test post")
+                    .slug("repository-test-post")
+                    .tags(tag)
+                    .build();
             postRepository.save(post);
             return tag.getId();
         });
