@@ -9,6 +9,7 @@ import com.fatmakahveci.blog.model.Post;
 import com.fatmakahveci.blog.model.Tag;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static com.fatmakahveci.blog.support.PostFixtures.aPost;
 
 class EntityCollectionTests {
 
@@ -26,7 +27,7 @@ class EntityCollectionTests {
 
     @Test
     void tagCopiesSubmittedPosts() {
-        Post post = new Post(1, "Title", "Content", Set.of());
+        Post post = aPost().build();
         Set<Post> submittedPosts = new HashSet<>(Set.of(post));
         Tag tag = new Tag();
 
@@ -53,8 +54,8 @@ class EntityCollectionTests {
     @Test
     void deletingTagDetachesItFromEveryPost() {
         Tag tag = new Tag(1, "java", Set.of());
-        Post firstPost = new Post(1, "First", "Content", Set.of(tag));
-        Post secondPost = new Post(2, "Second", "Content", Set.of(tag));
+        Post firstPost = aPost().title("First").tags(tag).build();
+        Post secondPost = aPost().id(2).title("Second").tags(tag).build();
         tag.setPosts(Set.of(firstPost, secondPost));
 
         tag.deleteTagFromPosts();
@@ -66,7 +67,7 @@ class EntityCollectionTests {
 
     @Test
     void addTagUpdatesBothSidesWithoutDuplicates() {
-        Post post = new Post(1, "Title", "Content", Set.of());
+        Post post = aPost().build();
         Tag tag = new Tag(1, "java", Set.of());
 
         post.addTag(tag);
@@ -78,7 +79,7 @@ class EntityCollectionTests {
 
     @Test
     void addPostUpdatesBothSidesWithoutDuplicates() {
-        Post post = new Post(1, "Title", "Content", Set.of());
+        Post post = aPost().build();
         Tag tag = new Tag(1, "java", Set.of());
 
         tag.addPost(post);
@@ -90,7 +91,7 @@ class EntityCollectionTests {
 
     @Test
     void removeTagUpdatesBothSides() {
-        Post post = new Post(1, "Title", "Content", Set.of());
+        Post post = aPost().build();
         Tag tag = new Tag(1, "java", Set.of());
         post.addTag(tag);
 
@@ -102,7 +103,7 @@ class EntityCollectionTests {
 
     @Test
     void removePostUpdatesBothSides() {
-        Post post = new Post(1, "Title", "Content", Set.of());
+        Post post = aPost().build();
         Tag tag = new Tag(1, "java", Set.of());
         tag.addPost(post);
 
@@ -114,7 +115,7 @@ class EntityCollectionTests {
 
     @Test
     void replacingTagsDetachesRemovedRelationships() {
-        Post post = new Post(1, "Title", "Content", Set.of());
+        Post post = aPost().build();
         Tag oldTag = new Tag(1, "old", Set.of());
         Tag newTag = new Tag(2, "new", Set.of());
         post.addTag(oldTag);

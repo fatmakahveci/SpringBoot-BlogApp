@@ -3,8 +3,6 @@ package com.fatmakahveci.blog.config;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.util.Set;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,6 +13,8 @@ import com.fatmakahveci.blog.dao.PostRepository;
 import com.fatmakahveci.blog.model.Post;
 import com.fatmakahveci.blog.model.PostStatus;
 
+import static com.fatmakahveci.blog.support.PostFixtures.aPost;
+
 @SpringBootTest
 class PostRepositoryITests {
 
@@ -23,8 +23,13 @@ class PostRepositoryITests {
 
     @Test
     void searchesPublishedPostsCaseInsensitivelyInRealSqlite() {
-        postRepository.saveAndFlush(post("SQLite Repository Guide", "sqlite-repository-guide", PostStatus.PUBLISHED));
-        postRepository.saveAndFlush(post("Hidden SQLite Draft", "hidden-sqlite-draft", PostStatus.DRAFT));
+        postRepository.saveAndFlush(aPost()
+                .id(null)
+                .title("SQLite Repository Guide")
+                .slug("sqlite-repository-guide")
+                .status(PostStatus.PUBLISHED)
+                .build());
+        postRepository.saveAndFlush(aPost().id(null).title("Hidden SQLite Draft").slug("hidden-sqlite-draft").build());
 
         var result = postRepository.findByStatusAndTitleContainingIgnoreCase(
                 PostStatus.PUBLISHED, "sqlite", PageRequest.of(0, 10));
@@ -37,26 +42,19 @@ class PostRepositoryITests {
 
     @Test
     void rejectsDuplicatePostTitles() {
-        postRepository.saveAndFlush(post("Unique database title", "first-unique-slug", PostStatus.DRAFT));
+        postRepository.saveAndFlush(aPost().id(null).title("Unique database title").slug("first-unique-slug").build());
 
         assertThatThrownBy(() -> postRepository.saveAndFlush(
-                post("Unique database title", "second-unique-slug", PostStatus.DRAFT)))
+                aPost().id(null).title("Unique database title").slug("second-unique-slug").build()))
                 .isInstanceOf(DataAccessException.class);
     }
 
     @Test
     void rejectsDuplicatePostSlugs() {
-        postRepository.saveAndFlush(post("First unique title", "duplicate-database-slug", PostStatus.DRAFT));
+        postRepository.saveAndFlush(aPost().id(null).title("First unique title").slug("duplicate-database-slug").build());
 
         assertThatThrownBy(() -> postRepository.saveAndFlush(
-                post("Second unique title", "duplicate-database-slug", PostStatus.DRAFT)))
+                aPost().id(null).title("Second unique title").slug("duplicate-database-slug").build()))
                 .isInstanceOf(DataAccessException.class);
-    }
-
-    private Post post(String title, String slug, PostStatus status) {
-        Post post = new Post(null, title, "Repository integration test content", Set.of());
-        post.setSlug(slug);
-        post.setStatus(status);
-        return post;
     }
 }

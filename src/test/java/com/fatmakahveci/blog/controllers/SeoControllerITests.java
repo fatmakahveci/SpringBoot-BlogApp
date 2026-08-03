@@ -6,7 +6,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 
@@ -22,6 +21,9 @@ import com.fatmakahveci.blog.model.PostStatus;
 import com.fatmakahveci.blog.model.Tag;
 import com.fatmakahveci.blog.service.PostService;
 import com.fatmakahveci.blog.service.TagService;
+
+import static com.fatmakahveci.blog.support.PostFixtures.aDraftPost;
+import static com.fatmakahveci.blog.support.PostFixtures.aPublishedPost;
 
 @SpringBootTest(properties = "blog.seo.base-url=https://blog.example.com")
 @AutoConfigureMockMvc
@@ -49,8 +51,8 @@ class SeoControllerITests {
 
     @Test
     void sitemapContainsOnlyCanonicalPublicContent() throws Exception {
-        Post published = post("Published", "published-post", PostStatus.PUBLISHED);
-        Post draft = post("Draft", "draft-post", PostStatus.DRAFT);
+        Post published = aPublishedPost().id(null).title("Published").slug("published-post").build();
+        Post draft = aDraftPost().id(null).title("Draft").slug("draft-post").build();
         Tag publicTag = new Tag(7, "java", Set.of(published));
         Tag draftTag = new Tag(8, "private", Set.of(draft));
         given(postService.findPublished()).willReturn(List.of(published));
@@ -66,14 +68,5 @@ class SeoControllerITests {
                         "<loc>https://blog.example.com/tags/7</loc>")))
                 .andExpect(content().string(org.hamcrest.Matchers.not(containsString("draft-post"))))
                 .andExpect(content().string(org.hamcrest.Matchers.not(containsString("/tags/8"))));
-    }
-
-    private Post post(String title, String slug, PostStatus status) {
-        Post post = new Post(null, title, "Content", Set.of());
-        post.setSlug(slug);
-        post.setStatus(status);
-        post.setCreatedAt(Instant.parse("2026-08-03T08:00:00Z"));
-        post.setUpdatedAt(Instant.parse("2026-08-03T09:00:00Z"));
-        return post;
     }
 }
