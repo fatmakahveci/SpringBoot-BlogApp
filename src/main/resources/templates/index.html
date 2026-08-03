@@ -44,7 +44,7 @@
                             <h1 class="display-5 fw-bold mt-2 mb-3">A practical blog for thoughtful software builders.</h1>
                             <p class="lead text-secondary mb-4">Explore published articles, discover topics, or share your own work with the community.</p>
                             <div class="d-flex flex-wrap gap-2">
-                                <a href="#posts" class="btn btn-primary btn-lg">Explore posts</a>
+                                <a href="/#posts" class="btn btn-primary btn-lg" data-scroll-target="posts">Explore posts</a>
                                 <a sec:authorize="hasAnyRole('AUTHOR', 'ADMIN')" th:href="@{/posts/add}" class="btn btn-outline-primary btn-lg">Create new post</a>
                                 <a sec:authorize="isAnonymous()" th:href="@{/register}" class="btn btn-outline-primary btn-lg">Start writing</a>
                             </div>
@@ -56,13 +56,13 @@
                 </div>
             </section>
 
-            <section id="posts" class="container-xl px-3 py-5">
+            <section id="posts" class="container-xl px-3 py-5" tabindex="-1" aria-labelledby="posts-heading">
                 <div class="row g-4">
                     <div class="col-12 col-lg-8">
                         <div class="section-heading d-flex flex-column flex-sm-row align-items-sm-end justify-content-between gap-2 mb-4">
                             <div>
                                 <span class="eyebrow">Latest writing</span>
-                                <h2 class="h3 mb-0">Browse posts</h2>
+                                <h2 id="posts-heading" class="h3 mb-0">Browse posts</h2>
                             </div>
                             <a sec:authorize="hasAnyRole('AUTHOR', 'ADMIN')" th:href="@{/posts/add}" class="btn btn-primary">Create new post</a>
                         </div>

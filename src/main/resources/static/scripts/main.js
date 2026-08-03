@@ -4,3 +4,20 @@ document.addEventListener("submit", (event) => {
         event.preventDefault();
     }
 });
+
+document.addEventListener("click", (event) => {
+    const link = event.target.closest("a[data-scroll-target]");
+    if (!link) {
+        return;
+    }
+
+    const target = document.getElementById(link.dataset.scrollTarget);
+    if (!target) {
+        return;
+    }
+
+    event.preventDefault();
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+    target.focus({ preventScroll: true });
+    window.history.replaceState(null, "", `#${target.id}`);
+});

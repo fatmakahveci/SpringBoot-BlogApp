@@ -1,7 +1,9 @@
 package com.fatmakahveci.blog.controllers;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -58,6 +60,19 @@ class PostControllerITests {
     }
 
     @Test
+    void canRenderNewPostFormWhenTagsExist() throws Exception {
+        Tag java = new Tag(3, "Java", Collections.emptySet());
+        when(tagService.findAll()).thenReturn(List.of(java));
+
+        mockMvc.perform(get("/posts/add")
+                .with(user("author").roles("AUTHOR")))
+                .andExpect(status().isOk())
+                .andExpect(content().string(Matchers.containsString("id=\"tag-3\"")))
+                .andExpect(content().string(Matchers.containsString("value=\"3\"")))
+                .andExpect(content().string(Matchers.containsString("Java")));
+    }
+
+    @Test
     void canSavePost() throws Exception {
         mockMvc.perform(post("/posts")
                 .with(csrf())
@@ -66,6 +81,26 @@ class PostControllerITests {
                 .param("title", "title")
                 .param("content", "content"))
                 .andExpect(status().is3xxRedirection());
+    }
+
+    @Test
+    void savesOnlyTagsResolvedByServer() throws Exception {
+        Tag java = new Tag(3, "Java", Collections.emptySet());
+        when(tagService.findById(3)).thenReturn(Optional.of(java));
+        when(tagService.findById(999)).thenReturn(Optional.empty());
+
+        mockMvc.perform(post("/posts")
+                .with(csrf())
+                .with(user("author").roles("AUTHOR"))
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("title", "Tagged post")
+                .param("content", "content")
+                .param("tagIds", "3", "999"))
+                .andExpect(status().is3xxRedirection());
+
+        ArgumentCaptor<Post> captor = ArgumentCaptor.forClass(Post.class);
+        verify(postService).save(captor.capture());
+        assertEquals(Set.of(java), captor.getValue().getTags());
     }
 
     @Test
