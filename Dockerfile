@@ -11,7 +11,8 @@ RUN ./mvnw -B -DskipTests package
 
 FROM eclipse-temurin:21-jre-alpine
 
-RUN addgroup -S -g 10001 spring \
+RUN apk upgrade --no-cache \
+    && addgroup -S -g 10001 spring \
     && adduser -S -D -H -u 10001 -G spring spring \
     && mkdir -p /applications /data /native \
     && chown -R spring:spring /applications /data /native
