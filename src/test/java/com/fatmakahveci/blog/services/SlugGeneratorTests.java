@@ -29,4 +29,12 @@ class SlugGeneratorTests {
     void nonLatinOrBlankTitleUsesPostFallback() {
         assertThat(slugGenerator.fromTitle("你好")).startsWith("post-");
     }
+
+    @Test
+    void handlesLongSeparatorHeavyTitlesWithoutRegexBacktracking() {
+        String slug = slugGenerator.fromTitle("Spring" + " !@#$%^&*".repeat(10_000) + "Boot");
+
+        assertThat(slug).startsWith("spring-").doesNotContain("--");
+        assertThat(slug.substring(0, slug.lastIndexOf('-'))).hasSizeLessThanOrEqualTo(200);
+    }
 }
