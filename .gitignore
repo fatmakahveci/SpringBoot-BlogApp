@@ -30,6 +30,7 @@ target
 node_modules/
 playwright-report/
 test-results/
+coverage/
 
 # Local SQLite database
 sample.db

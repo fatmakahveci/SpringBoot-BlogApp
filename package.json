@@ -2,9 +2,13 @@
   "name": "springboot-blogapp-tests",
   "private": true,
   "scripts": {
+    "test:frontend": "vitest run --coverage",
     "test:e2e": "playwright test"
   },
   "devDependencies": {
-    "@playwright/test": "1.62.1"
+    "@playwright/test": "1.62.1",
+    "@vitest/coverage-v8": "4.1.10",
+    "jsdom": "30.0.1",
+    "vitest": "4.1.10"
   }
 }

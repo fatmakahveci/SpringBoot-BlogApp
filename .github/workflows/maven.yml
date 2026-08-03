@@ -24,6 +24,13 @@ jobs:
         cache-dependency-path: pom.xml
     - name: Verify with Maven
       run: ./mvnw -B clean verify
+    - name: Upload backend coverage report
+      if: ${{ !cancelled() }}
+      uses: actions/upload-artifact@v7
+      with:
+        name: backend-coverage
+        path: target/site/jacoco/
+        retention-days: 7
     - name: Set up Docker Buildx
       if: github.event_name == 'push'
       uses: docker/setup-buildx-action@v4
@@ -68,6 +75,15 @@ jobs:
         key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
     - name: Install test dependencies
       run: npm ci
+    - name: Run frontend tests with coverage
+      run: npm run test:frontend
+    - name: Upload frontend coverage report
+      if: ${{ !cancelled() }}
+      uses: actions/upload-artifact@v7
+      with:
+        name: frontend-coverage
+        path: coverage/frontend/
+        retention-days: 7
     - name: Install Chromium
       if: steps.playwright-cache.outputs.cache-hit != 'true'
       run: npx playwright install --with-deps chromium
