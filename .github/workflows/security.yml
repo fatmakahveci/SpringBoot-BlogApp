@@ -1,0 +1,114 @@
+name: Security Dashboard
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  schedule:
+    - cron: "23 4 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+concurrency:
+  group: security-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dependencies:
+    name: Dependency vulnerabilities
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Review dependency changes
+        if: github.event_name == 'pull_request'
+        uses: actions/dependency-review-action@v5
+        with:
+          fail-on-severity: moderate
+      - name: Scan Maven and npm dependencies
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          scanners: vuln
+          format: sarif
+          output: dependency-results.sarif
+          severity: CRITICAL,HIGH
+          limit-severities-for-sarif: true
+          ignore-unfixed: true
+          exit-code: "1"
+          skip-dirs: target,node_modules
+      - name: Publish dependencies to Security panel
+        if: always()
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: dependency-results.sarif
+          category: trivy/dependencies
+
+  container:
+    name: Container vulnerabilities
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5
+        with:
+          java-version: "21"
+          distribution: temurin
+          cache: maven
+          cache-dependency-path: pom.xml
+      - name: Package application
+        run: ./mvnw -B -DskipTests package
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+      - name: Build image for scanning
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          load: true
+          tags: blog-app:scan
+          cache-from: type=gha,scope=security-image
+          cache-to: type=gha,mode=max,scope=security-image
+      - name: Scan container image
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: blog-app:scan
+          format: sarif
+          output: container-results.sarif
+          severity: CRITICAL,HIGH
+          limit-severities-for-sarif: true
+          ignore-unfixed: true
+          exit-code: "1"
+      - name: Publish container to Security panel
+        if: always()
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: container-results.sarif
+          category: trivy/container
+
+  codeql:
+    name: CodeQL Java analysis
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: java-kotlin
+          build-mode: manual
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5
+        with:
+          java-version: "21"
+          distribution: temurin
+          cache: maven
+          cache-dependency-path: pom.xml
+      - name: Build
+        run: ./mvnw -B -DskipTests package
+      - name: Analyze and publish CodeQL results
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: /language:java-kotlin
