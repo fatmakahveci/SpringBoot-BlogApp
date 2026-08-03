@@ -92,7 +92,7 @@ jobs:
             "$IMAGE")
           trap 'docker rm --force "$container_id"' EXIT
           for attempt in $(seq 1 30); do
-            if curl --fail --silent http://127.0.0.1:8080/actuator/health >/dev/null; then
+            if curl --fail --silent http://127.0.0.1:8080/actuator/health/readiness >/dev/null; then
               docker image inspect --format 'Image size: {{.Size}} bytes' "$IMAGE"
               exit 0
             fi

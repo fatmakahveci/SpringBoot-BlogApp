@@ -115,12 +115,14 @@ After starting the application locally:
 |---|---|
 | [Swagger UI](http://localhost:8080/swagger-ui.html) | Interactive API documentation |
 | [OpenAPI JSON](http://localhost:8080/v3/api-docs/blog-api) | Machine-readable API specification |
-| [Health](http://localhost:8080/actuator/health) | Sanitized application health and probe groups |
+| [Health](http://localhost:8080/actuator/health) | Sanitized aggregate status for operators |
+| [Readiness](http://localhost:8080/actuator/health/readiness) | Traffic readiness, including the application state and SQLite connectivity |
+| [Liveness](http://localhost:8080/actuator/health/liveness) | Process health without external dependency checks |
 | [Application](http://localhost:8080) | Server-rendered blog interface |
 | [Sitemap](http://localhost:8080/sitemap.xml) | Canonical URLs for published posts and public topics |
 | [Robots](http://localhost:8080/robots.txt) | Search crawler policy and sitemap discovery |
 
-Only the Actuator `health` and `info` endpoints are exposed over HTTP. Health component details and sensitive management endpoints remain unavailable to public clients.
+Only the Actuator `health` and `info` endpoints are exposed over HTTP. Health component details and sensitive management endpoints remain unavailable to public clients. In production, use readiness to decide when to route traffic and liveness to decide when to restart the process; do not use readiness failures as a restart signal.
 
 ### JSON API examples
 
@@ -156,7 +158,7 @@ export BLOG_AUTHOR_PASSWORD='replace-with-a-different-password'
 docker compose up --build
 ```
 
-SQLite data is stored in the `blog-data` volume. The container runs as UID/GID `10001`, with a read-only root filesystem, all Linux capabilities dropped, `no-new-privileges`, a PID limit, and a small `noexec` temporary filesystem. A separate 16 MB tmpfs is executable only because SQLite JDBC must load its native library; application temporary files and persisted data remain `noexec`. The Security Dashboard boots the image under this exact policy and fails if the user or read-only runtime is broken. The runtime image installs no additional operating-system packages and reports health through BusyBox `wget`, reducing image size and attack surface.
+SQLite data is stored in the `blog-data` volume. The container runs as UID/GID `10001`, with a read-only root filesystem, all Linux capabilities dropped, `no-new-privileges`, a PID limit, and a small `noexec` temporary filesystem. A separate 16 MB tmpfs is executable only because SQLite JDBC must load its native library; application temporary files and persisted data remain `noexec`. The Security Dashboard boots the image under this exact policy, waits for the readiness probe, and fails if the user or read-only runtime is broken. Docker monitors the dependency-independent liveness probe through BusyBox `wget`. The runtime image installs no additional operating-system packages, reducing image size and attack surface.
 
 ## Testing and code quality
 
