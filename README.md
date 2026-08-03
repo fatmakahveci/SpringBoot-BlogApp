@@ -148,23 +148,15 @@ Equivalent browser failures render an accessible HTML error page.
 
 ## Docker
 
-The multi-stage Dockerfile compiles the application and produces a minimal, non-root runtime image:
+The multi-stage Dockerfile compiles the application and produces a minimal image with a fixed unprivileged UID. The recommended Compose configuration enforces the complete runtime policy:
 
 ```bash
-docker build -t springboot-blog .
-
-docker run --rm \
-  -p 8080:8080 \
-  --read-only \
-  --tmpfs /tmp:rw,noexec,nosuid \
-  -v blog-data:/data \
-  -e BLOG_BASE_URL='https://blog.example.com' \
-  -e BLOG_ADMIN_PASSWORD='replace-with-a-strong-password' \
-  -e BLOG_AUTHOR_PASSWORD='replace-with-a-different-password' \
-  springboot-blog
+export BLOG_ADMIN_PASSWORD='replace-with-a-strong-password'
+export BLOG_AUTHOR_PASSWORD='replace-with-a-different-password'
+docker compose up --build
 ```
 
-SQLite data is stored in the `blog-data` volume. The container runs with the `prod` profile, uses an unprivileged account, writes temporary files only to `/tmp`, and reports health through `/actuator/health`.
+SQLite data is stored in the `blog-data` volume. The container runs as UID/GID `10001`, with a read-only root filesystem, all Linux capabilities dropped, `no-new-privileges`, a PID limit, and a small `noexec` temporary filesystem. The Security Dashboard boots the image under this exact policy and fails if the user or read-only runtime is broken. The runtime image installs no additional operating-system packages and reports health through BusyBox `wget`, reducing image size and attack surface.
 
 ## Testing and code quality
 
