@@ -1,0 +1,17 @@
+.git
+.github
+.idea
+.vscode
+coverage
+node_modules
+playwright-report
+target
+test-results
+tests
+*.db
+*.gif
+*.md
+package-lock.json
+package.json
+playwright.config.js
+vitest.config.js

@@ -1,0 +1,25 @@
+services:
+  blog:
+    build:
+      context: .
+    image: springboot-blog:local
+    ports:
+      - "8080:8080"
+    environment:
+      BLOG_BASE_URL: ${BLOG_BASE_URL:-http://localhost:8080}
+      BLOG_ADMIN_PASSWORD: ${BLOG_ADMIN_PASSWORD:?Set BLOG_ADMIN_PASSWORD}
+      BLOG_AUTHOR_PASSWORD: ${BLOG_AUTHOR_PASSWORD:?Set BLOG_AUTHOR_PASSWORD}
+    user: "10001:10001"
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=64m
+    volumes:
+      - blog-data:/data
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 200
+
+volumes:
+  blog-data:

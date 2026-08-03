@@ -11,10 +11,8 @@ RUN ./mvnw -B -DskipTests package
 
 FROM eclipse-temurin:21-jre-alpine
 
-RUN apk upgrade --no-cache \
-    && apk add --no-cache curl \
-    && addgroup -S spring \
-    && adduser -S spring -G spring \
+RUN addgroup -S -g 10001 spring \
+    && adduser -S -D -H -u 10001 -G spring spring \
     && mkdir -p /applications /data \
     && chown -R spring:spring /applications /data
 
@@ -28,9 +26,9 @@ ENV SPRING_PROFILES_ACTIVE=prod
 VOLUME ["/data"]
 EXPOSE 8080
 
-USER spring:spring
+USER 10001:10001
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
-    CMD curl --fail --silent --show-error http://127.0.0.1:8080/actuator/health > /dev/null || exit 1
+    CMD wget --quiet --spider http://127.0.0.1:8080/actuator/health || exit 1
 
 ENTRYPOINT ["java", "-Djava.io.tmpdir=/tmp", "-jar", "springboot.jar"]

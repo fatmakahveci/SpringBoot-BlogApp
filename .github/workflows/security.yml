@@ -69,9 +69,33 @@ jobs:
         with:
           context: .
           load: true
+          pull: true
           tags: blog-app:scan
           cache-from: type=gha,scope=security-image
           cache-to: type=gha,mode=max,scope=security-image
+      - name: Enforce hardened runtime policy
+        env:
+          IMAGE: blog-app:scan
+        run: |
+          test "$(docker image inspect --format '{{.Config.User}}' "$IMAGE")" = "10001:10001"
+          container_id=$(docker run --detach \
+            --read-only \
+            --tmpfs /tmp:rw,noexec,nosuid,size=64m \
+            --tmpfs /data:rw,noexec,nosuid,size=64m \
+            --cap-drop ALL \
+            --security-opt no-new-privileges:true \
+            --publish 127.0.0.1:8080:8080 \
+            "$IMAGE")
+          trap 'docker rm --force "$container_id"' EXIT
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:8080/actuator/health >/dev/null; then
+              docker image inspect --format 'Image size: {{.Size}} bytes' "$IMAGE"
+              exit 0
+            fi
+            sleep 2
+          done
+          docker logs "$container_id"
+          exit 1
       - name: Scan container image
         uses: aquasecurity/trivy-action@v0.36.0
         with:
