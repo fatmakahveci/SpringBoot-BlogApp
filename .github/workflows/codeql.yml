@@ -28,6 +28,7 @@ jobs:
           java-version: "21"
           distribution: temurin
           cache: maven
+          cache-dependency-path: pom.xml
       - name: Build
         run: ./mvnw -B -DskipTests package
       - name: Analyze

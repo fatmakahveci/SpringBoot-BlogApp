@@ -23,10 +23,19 @@ jobs:
           java-version: "21"
           distribution: temurin
           cache: maven
+          cache-dependency-path: pom.xml
       - name: Package application
         run: ./mvnw -B -DskipTests package
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
       - name: Build image for scanning
-        run: docker build --tag blog-app:scan .
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          load: true
+          tags: blog-app:scan
+          cache-from: type=gha,scope=security-image
+          cache-to: type=gha,mode=max,scope=security-image
       - name: Scan image with Trivy
         uses: aquasecurity/trivy-action@v0.36.0
         with:

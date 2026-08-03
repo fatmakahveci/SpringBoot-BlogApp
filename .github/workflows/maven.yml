@@ -21,6 +21,7 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
         cache: maven
+        cache-dependency-path: pom.xml
     - name: Verify with Maven
       run: ./mvnw -B clean verify
     - name: Set up Docker Buildx
@@ -39,3 +40,5 @@ jobs:
         context: .
         push: true
         tags: fatmakhv/springboot:latest
+        cache-from: type=gha,scope=application-image
+        cache-to: type=gha,mode=max,scope=application-image
