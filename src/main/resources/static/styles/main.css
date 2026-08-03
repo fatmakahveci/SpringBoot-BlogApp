@@ -16,6 +16,14 @@ html {
     scroll-behavior: smooth;
 }
 
+#posts {
+    scroll-margin-top: 88px;
+}
+
+#posts:focus {
+    outline: none;
+}
+
 body {
     background: var(--app-bg);
     color: #344641;

@@ -1,5 +1,9 @@
 package com.fatmakahveci.blog.controller;
 
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import com.fatmakahveci.blog.exception.PostNotFoundException;
 import com.fatmakahveci.blog.exception.DuplicatePostTitleException;
 import com.fatmakahveci.blog.model.Post;
@@ -38,8 +42,10 @@ public class PostController {
     @PostMapping("/posts")
     public ModelAndView savePost(
             @Valid @ModelAttribute("post") Post post,
-            BindingResult bindingResult) {
+            BindingResult bindingResult,
+            @RequestParam(name = "tagIds", required = false) List<Integer> tagIds) {
         post.setId(null);
+        applySelectedTags(post, tagIds);
         if (bindingResult.hasErrors()) {
             return postForm("post_form", post, bindingResult);
         }
@@ -69,9 +75,11 @@ public class PostController {
     public ModelAndView updatePost(
             @PathVariable Integer id,
             @Valid @ModelAttribute("post") Post post,
-            BindingResult bindingResult) {
+            BindingResult bindingResult,
+            @RequestParam(name = "tagIds", required = false) List<Integer> tagIds) {
         postService.findById(id).orElseThrow(() -> new PostNotFoundException(id));
         post.setId(id);
+        applySelectedTags(post, tagIds);
         if (bindingResult.hasErrors()) {
             return postForm("update_post_form", post, bindingResult);
         }
@@ -94,5 +102,19 @@ public class PostController {
         mav.addObject("tag", new Tag());
         mav.addObject("tags", tagService.findAll());
         return mav;
+    }
+
+    private void applySelectedTags(Post post, List<Integer> tagIds) {
+        if (tagIds == null || tagIds.isEmpty()) {
+            post.setTags(Set.of());
+            return;
+        }
+
+        Set<Tag> selectedTags = tagIds.stream()
+                .distinct()
+                .map(tagService::findById)
+                .flatMap(java.util.Optional::stream)
+                .collect(Collectors.toSet());
+        post.setTags(selectedTags);
     }
 }
