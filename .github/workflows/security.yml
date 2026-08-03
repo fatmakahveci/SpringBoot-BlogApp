@@ -82,7 +82,7 @@ jobs:
             --read-only \
             --tmpfs /tmp:rw,noexec,nosuid,uid=10001,gid=10001,mode=0700,size=64m \
             --tmpfs /data:rw,noexec,nosuid,uid=10001,gid=10001,mode=0700,size=64m \
-            --tmpfs /native:rw,nosuid,nodev,uid=10001,gid=10001,mode=0700,size=16m \
+            --tmpfs /native:rw,exec,nosuid,nodev,uid=10001,gid=10001,mode=0700,size=16m \
             --cap-drop ALL \
             --security-opt no-new-privileges:true \
             --publish 127.0.0.1:8080:8080 \

@@ -13,7 +13,7 @@ services:
     read_only: true
     tmpfs:
       - /tmp:rw,noexec,nosuid,uid=10001,gid=10001,mode=0700,size=64m
-      - /native:rw,nosuid,nodev,uid=10001,gid=10001,mode=0700,size=16m
+      - /native:rw,exec,nosuid,nodev,uid=10001,gid=10001,mode=0700,size=16m
     volumes:
       - blog-data:/data
     cap_drop:
