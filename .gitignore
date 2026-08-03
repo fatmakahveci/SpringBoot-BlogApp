@@ -27,6 +27,9 @@ hs_err_pid*
 .DS_Store
 
 target
+node_modules/
+playwright-report/
+test-results/
 
 # Local SQLite database
 sample.db
