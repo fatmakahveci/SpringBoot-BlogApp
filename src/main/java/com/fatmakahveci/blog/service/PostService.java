@@ -10,6 +10,7 @@ import com.fatmakahveci.blog.model.Post;
 
 public interface PostService {
     List<Post> findAll();
+    List<Post> findPublished();
     Page<Post> findAll(String query, Pageable pageable, boolean includeDrafts);
     Optional<Post> findById(Integer id);
     Post save(Post post);

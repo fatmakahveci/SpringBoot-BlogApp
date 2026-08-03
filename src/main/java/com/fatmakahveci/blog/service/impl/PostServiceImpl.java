@@ -53,6 +53,11 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public List<Post> findPublished() {
+        return postRepository.findByStatusOrderByUpdatedAtDesc(PostStatus.PUBLISHED);
+    }
+
+    @Override
     public Page<Post> findAll(String query, Pageable pageable, boolean includeDrafts) {
         String normalizedQuery = query == null ? "" : query.trim();
         if (includeDrafts && normalizedQuery.isEmpty()) {

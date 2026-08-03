@@ -103,6 +103,7 @@ The production profile requires `BLOG_DATABASE_PATH`, `BLOG_ADMIN_PASSWORD`, and
 | `BLOG_AUTHOR_USERNAME` | `author` | Initial author username |
 | `BLOG_AUTHOR_PASSWORD` | Generated | Initial author password; required in production |
 | `SPRINGDOC_ENABLED` | `false` in production | Enables Swagger UI and OpenAPI endpoints in production |
+| `BLOG_BASE_URL` | `http://localhost:8080` | Public HTTPS origin used for canonical URLs and the sitemap; required in production |
 
 Flyway applies migrations from `src/main/resources/db/migration`. Add a new migration for each schema change; never modify a migration that has already been deployed.
 
@@ -116,6 +117,8 @@ After starting the application locally:
 | [OpenAPI JSON](http://localhost:8080/v3/api-docs/blog-api) | Machine-readable API specification |
 | [Health](http://localhost:8080/actuator/health) | Sanitized application health and probe groups |
 | [Application](http://localhost:8080) | Server-rendered blog interface |
+| [Sitemap](http://localhost:8080/sitemap.xml) | Canonical URLs for published posts and public topics |
+| [Robots](http://localhost:8080/robots.txt) | Search crawler policy and sitemap discovery |
 
 Only the Actuator `health` and `info` endpoints are exposed over HTTP. Health component details and sensitive management endpoints remain unavailable to public clients.
 
@@ -155,6 +158,7 @@ docker run --rm \
   --read-only \
   --tmpfs /tmp:rw,noexec,nosuid \
   -v blog-data:/data \
+  -e BLOG_BASE_URL='https://blog.example.com' \
   -e BLOG_ADMIN_PASSWORD='replace-with-a-strong-password' \
   -e BLOG_AUTHOR_PASSWORD='replace-with-a-different-password' \
   springboot-blog

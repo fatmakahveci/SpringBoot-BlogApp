@@ -3,7 +3,18 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title th:text="${post.title}">Post</title>
+        <title th:text="${post.title + ' | Spring Blog'}">Post | Spring Blog</title>
+        <meta name="description" th:content="${#strings.abbreviate(post.summary != null and !post.summary.isBlank() ? post.summary : post.content, 160)}">
+        <meta name="robots" th:content="${seoNoIndex} ? 'noindex,nofollow' : 'index,follow,max-image-preview:large'">
+        <link rel="canonical" th:href="${seoBaseUrl + '/p/' + post.slug}">
+        <meta property="og:type" content="article">
+        <meta property="og:site_name" content="Spring Blog">
+        <meta property="og:title" th:content="${post.title}">
+        <meta property="og:description" th:content="${#strings.abbreviate(post.summary != null and !post.summary.isBlank() ? post.summary : post.content, 160)}">
+        <meta property="og:url" th:content="${seoBaseUrl + '/p/' + post.slug}">
+        <meta property="article:published_time" th:content="${post.createdAt}">
+        <meta property="article:modified_time" th:content="${post.updatedAt}">
+        <meta name="twitter:card" content="summary">
         <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
         <link th:href="@{/styles/main.css}" rel="stylesheet">
     </head>
