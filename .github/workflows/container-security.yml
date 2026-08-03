@@ -28,7 +28,7 @@ jobs:
       - name: Build image for scanning
         run: docker build --tag blog-app:scan .
       - name: Scan image with Trivy
-        uses: aquasecurity/trivy-action@0.33.1
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: blog-app:scan
           format: sarif
