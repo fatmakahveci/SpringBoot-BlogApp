@@ -3,7 +3,16 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Spring Boot Blog</title>
+        <title>Spring Blog | Software Articles and Tutorials</title>
+        <meta name="description" content="Read practical software development articles, tutorials, and engineering notes built by the Spring Blog community.">
+        <meta name="robots" th:content="${seoNoIndex} ? 'noindex,follow' : 'index,follow,max-image-preview:large'">
+        <link rel="canonical" th:href="${seoBaseUrl + '/'}">
+        <meta property="og:type" content="website">
+        <meta property="og:site_name" content="Spring Blog">
+        <meta property="og:title" content="Spring Blog | Software Articles and Tutorials">
+        <meta property="og:description" content="Practical software development articles, tutorials, and engineering notes.">
+        <meta property="og:url" th:content="${seoBaseUrl + '/'}">
+        <meta name="twitter:card" content="summary">
         <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
         <link th:href="@{/styles/main.css}" rel="stylesheet">
         <script th:src="@{/scripts/main.js}" defer></script>

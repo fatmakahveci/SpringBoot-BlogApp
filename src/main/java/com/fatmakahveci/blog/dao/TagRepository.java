@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import com.fatmakahveci.blog.model.PostStatus;
 import com.fatmakahveci.blog.model.Tag;
 
 public interface TagRepository extends JpaRepository<Tag, Integer> {
@@ -12,4 +13,6 @@ public interface TagRepository extends JpaRepository<Tag, Integer> {
     Optional<Tag> findById(Integer id);
 
     Optional<Tag> findByName(String name);
+
+    java.util.List<Tag> findDistinctByPostsStatus(PostStatus status);
 }

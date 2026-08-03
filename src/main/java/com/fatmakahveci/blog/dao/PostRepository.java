@@ -1,5 +1,6 @@
 package com.fatmakahveci.blog.dao;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,4 +15,5 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     Page<Post> findByTitleContainingIgnoreCase(String query, Pageable pageable);
     Page<Post> findByStatus(PostStatus status, Pageable pageable);
     Page<Post> findByStatusAndTitleContainingIgnoreCase(PostStatus status, String query, Pageable pageable);
+    List<Post> findByStatusOrderByUpdatedAtDesc(PostStatus status);
 }

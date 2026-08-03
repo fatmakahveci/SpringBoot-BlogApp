@@ -40,6 +40,7 @@ public class MainController {
         mav.addObject("query", query.trim());
         mav.addObject("sort", PostPageRequest.normalizeSort(sort));
         mav.addObject("size", pageable.getPageSize());
+        mav.addObject("seoNoIndex", page > 0 || !query.isBlank() || !"newest".equals(sort));
         mav.addObject("tag", new Tag());
         mav.addObject("tags", tagService.findAll());
         return mav;
@@ -51,6 +52,8 @@ public class MainController {
         if (post.getStatus() != PostStatus.PUBLISHED && !PostVisibility.canViewDrafts(authentication)) {
             throw new PostNotFoundException(slug);
         }
-        return new ModelAndView("post_detail", "post", post);
+        ModelAndView mav = new ModelAndView("post_detail", "post", post);
+        mav.addObject("seoNoIndex", post.getStatus() != PostStatus.PUBLISHED);
+        return mav;
     }
 }

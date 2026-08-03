@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fatmakahveci.blog.dao.TagRepository;
 import com.fatmakahveci.blog.exception.DuplicateTagNameException;
 import com.fatmakahveci.blog.model.Tag;
+import com.fatmakahveci.blog.model.PostStatus;
 import com.fatmakahveci.blog.service.TagService;
 
 @Service
@@ -34,6 +35,11 @@ public class TagServiceImpl implements TagService {
     @Override
     public List<Tag> findAll(){
         return tagRepository.findAll();
+    }
+
+    @Override
+    public List<Tag> findByPostStatus(PostStatus status) {
+        return tagRepository.findDistinctByPostsStatus(status);
     }
 
     @Override
