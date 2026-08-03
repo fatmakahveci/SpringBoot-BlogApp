@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title th:text="${status + ' ' + error + ' | Blog'}">Error | Blog</title>
+        <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+        <link th:href="@{/styles/main.css}" rel="stylesheet">
+    </head>
+    <body>
+        <main class="container account-page px-3 py-4 text-center">
+            <div class="card shadow-sm account-card">
+                <div class="card-body p-3 p-sm-4">
+                    <p class="display-4 mb-2" th:text="${status}">404</p>
+                    <h1 class="h3 mb-3" th:text="${error}">Not Found</h1>
+                    <p th:text="${message}">The requested page could not be found.</p>
+                    <p class="small text-muted text-break" th:text="${path}">/path</p>
+                    <a th:href="@{/}" class="btn btn-primary">Back to the blog</a>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Log in | Blog</title>
+        <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+        <link th:href="@{/styles/main.css}" rel="stylesheet">
+    </head>
+    <body>
+        <main class="container account-page px-3 py-4">
+            <div class="card shadow-sm account-card">
+                <div class="card-body p-3 p-sm-4">
+                    <h3 class="mb-4">Log in</h3>
+                    <div th:if="${param.registered}" class="alert alert-success">Your account is ready. You can now log in.</div>
+                    <div th:if="${param.error}" class="alert alert-danger">The username or password is incorrect.</div>
+                    <div th:if="${param.logout}" class="alert alert-info">You have been logged out.</div>
+                    <form th:action="@{/login}" method="post">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input id="username" name="username" type="text" class="form-control" autocomplete="username" required autofocus>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input id="password" name="password" type="password" class="form-control" autocomplete="current-password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Log in</button>
+                    </form>
+                    <p class="mt-3 mb-0 text-center">Need an account? <a th:href="@{/register}">Register</a></p>
+                    <p class="mt-2 mb-0 text-center"><a th:href="@{/}">Back to the blog</a></p>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

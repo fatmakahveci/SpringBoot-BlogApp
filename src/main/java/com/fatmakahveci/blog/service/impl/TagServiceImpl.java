@@ -19,7 +19,7 @@ public class TagServiceImpl implements TagService {
     public TagServiceImpl(TagRepository tagRepository) {
         this.tagRepository = tagRepository;
     }
-    
+
     @Override
     @Transactional
     public Tag save(Tag tag) {
@@ -41,7 +41,7 @@ public class TagServiceImpl implements TagService {
         return tagRepository.findByName(name);
     }
 
-    @Override 
+    @Override
     @Transactional
     public Tag createByName(String name) {
         if (tagRepository.findByName(name).isPresent()) {

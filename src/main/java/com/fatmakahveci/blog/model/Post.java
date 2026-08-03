@@ -158,8 +158,21 @@ public class Post {
     }
 
     public void setTags(Set<Tag> tags) {
-        // Keep the entity collection mutable and prevent callers from modifying it indirectly.
-        this.tags = tags == null ? new HashSet<>() : new HashSet<>(tags);
+        Set<Tag> replacement = tags == null ? Set.of() : new HashSet<>(tags);
+        new HashSet<>(this.tags).forEach(this::removeTag);
+        replacement.forEach(this::addTag);
+    }
+
+    public void addTag(Tag tag) {
+        if (tag != null && tags.add(tag)) {
+            tag.addPost(this);
+        }
+    }
+
+    public void removeTag(Tag tag) {
+        if (tag != null && tags.remove(tag)) {
+            tag.removePost(this);
+        }
     }
 
     @Override
