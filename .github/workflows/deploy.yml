@@ -1,0 +1,144 @@
+name: Release deployment
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing v-prefixed release tag
+        required: true
+        default: v1.0.0
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: release-deployment-${{ github.event.release.tag_name || inputs.tag }}
+  cancel-in-progress: false
+
+env:
+  IMAGE_REPOSITORY: ghcr.io/fatmakahveci/springboot-blogapp
+  RELEASE_TAG: ${{ github.event.release.tag_name || inputs.tag }}
+
+jobs:
+  image:
+    name: Build immutable release image
+    runs-on: ubuntu-latest
+    outputs:
+      digest: ${{ steps.build.outputs.digest }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ env.RELEASE_TAG }}
+      - uses: docker/setup-buildx-action@v4
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and publish immutable image
+        id: build
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          push: true
+          pull: true
+          provenance: mode=max
+          sbom: true
+          tags: |
+            ${{ env.IMAGE_REPOSITORY }}:${{ env.RELEASE_TAG }}
+            ${{ env.IMAGE_REPOSITORY }}:${{ github.sha }}
+          cache-from: type=gha,scope=release-image
+          cache-to: type=gha,mode=max,scope=release-image
+
+  staging:
+    name: Verify and deploy to staging
+    needs: image
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+      url: ${{ vars.STAGING_URL }}
+    steps:
+      - name: Verify the immutable image under the production policy
+        env:
+          IMAGE: ${{ env.IMAGE_REPOSITORY }}@${{ needs.image.outputs.digest }}
+        run: |
+          docker pull "$IMAGE"
+          container_id=$(docker run --detach \
+            --read-only \
+            --tmpfs /tmp:rw,noexec,nosuid,uid=10001,gid=10001,mode=0700,size=64m \
+            --tmpfs /data:rw,noexec,nosuid,uid=10001,gid=10001,mode=0700,size=64m \
+            --tmpfs /native:rw,exec,nosuid,nodev,uid=10001,gid=10001,mode=0700,size=16m \
+            --cap-drop ALL \
+            --security-opt no-new-privileges:true \
+            --env BLOG_BASE_URL=http://localhost:8080 \
+            --env BLOG_ADMIN_PASSWORD=release-smoke-admin \
+            --env BLOG_AUTHOR_PASSWORD=release-smoke-author \
+            --publish 127.0.0.1:8080:8080 \
+            "$IMAGE")
+          trap 'docker rm --force "$container_id"' EXIT
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:8080/actuator/health/readiness >/dev/null; then
+              curl --fail --silent http://127.0.0.1:8080/actuator/health/liveness >/dev/null
+              exit 0
+            fi
+            sleep 2
+          done
+          docker logs "$container_id"
+          exit 1
+      - name: Trigger staging deployment
+        env:
+          DEPLOY_WEBHOOK: ${{ secrets.STAGING_DEPLOY_WEBHOOK }}
+          IMAGE: ${{ env.IMAGE_REPOSITORY }}@${{ needs.image.outputs.digest }}
+        run: |
+          if [ -z "$DEPLOY_WEBHOOK" ]; then
+            echo "No staging webhook configured; immutable image verification is complete."
+            exit 0
+          fi
+          curl --fail --show-error --silent \
+            --request POST \
+            --header 'Content-Type: application/json' \
+            --data "{\"image\":\"$IMAGE\",\"environment\":\"staging\"}" \
+            "$DEPLOY_WEBHOOK"
+      - name: Verify staging URL
+        env:
+          DEPLOY_URL: ${{ vars.STAGING_URL }}
+        run: |
+          if [ -n "$DEPLOY_URL" ]; then
+            curl --fail --retry 5 --retry-all-errors --retry-delay 5 \
+              "$DEPLOY_URL/actuator/health/readiness"
+          fi
+
+  production:
+    name: Deploy to production
+    needs: [image, staging]
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: ${{ vars.PRODUCTION_URL }}
+    steps:
+      - name: Trigger production deployment
+        env:
+          DEPLOY_WEBHOOK: ${{ secrets.PRODUCTION_DEPLOY_WEBHOOK }}
+          IMAGE: ${{ env.IMAGE_REPOSITORY }}@${{ needs.image.outputs.digest }}
+        run: |
+          if [ -z "$DEPLOY_WEBHOOK" ]; then
+            echo "No production webhook configured; release image remains ready for deployment."
+            exit 0
+          fi
+          curl --fail --show-error --silent \
+            --request POST \
+            --header 'Content-Type: application/json' \
+            --data "{\"image\":\"$IMAGE\",\"environment\":\"production\"}" \
+            "$DEPLOY_WEBHOOK"
+      - name: Verify production health
+        env:
+          DEPLOY_URL: ${{ vars.PRODUCTION_URL }}
+        run: |
+          if [ -n "$DEPLOY_URL" ]; then
+            curl --fail --retry 5 --retry-all-errors --retry-delay 5 \
+              "$DEPLOY_URL/actuator/health/readiness"
+          fi
