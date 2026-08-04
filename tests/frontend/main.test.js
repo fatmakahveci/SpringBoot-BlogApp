@@ -39,12 +39,14 @@ describe("in-page navigation", () => {
     const target = document.querySelector("#posts");
     target.scrollIntoView = vi.fn();
     target.focus = vi.fn();
+    vi.spyOn(window, "requestAnimationFrame").mockImplementation((callback) => callback());
     vi.spyOn(window.history, "replaceState");
 
     document.querySelector("a").click();
 
     expect(target.scrollIntoView).toHaveBeenCalledWith({ behavior: "smooth", block: "start" });
     expect(target.focus).toHaveBeenCalledWith({ preventScroll: true });
+    expect(target.classList.contains("is-scroll-highlighted")).toBe(true);
     expect(window.history.replaceState).toHaveBeenCalledWith(null, "", "#posts");
   });
 
