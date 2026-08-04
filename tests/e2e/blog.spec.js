@@ -27,14 +27,16 @@ test("footer stays at the bottom of a tall viewport", async ({ page }) => {
     return {
       bodyDisplay: getComputedStyle(document.body).display,
       bodyDirection: getComputedStyle(document.body).flexDirection,
+      bodyMinHeight: getComputedStyle(document.body).minHeight,
       footerBottom: Math.round(footerBounds.bottom),
-      pageBottom: Math.max(document.documentElement.scrollHeight, window.innerHeight)
+      viewportBottom: window.innerHeight
     };
   });
 
   expect(layout.bodyDisplay).toBe("flex");
   expect(layout.bodyDirection).toBe("column");
-  expect(layout.footerBottom).toBe(layout.pageBottom);
+  expect(layout.bodyMinHeight).toBe("1400px");
+  expect(layout.footerBottom).toBe(layout.viewportBottom);
 });
 
 test("registration validates the password and creates an account", async ({ page }) => {
