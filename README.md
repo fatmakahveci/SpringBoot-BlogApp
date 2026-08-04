@@ -233,11 +233,7 @@ The Java CI and Security Dashboard workflows run on every pull request and every
 
 ## Contributing
 
-1. Create a focused branch.
-2. Add or update tests for behavioral changes.
-3. Run `./mvnw clean verify`.
-4. Add a new Flyway migration for schema changes.
-5. Open a pull request with a concise description and verification notes.
+Read [CONTRIBUTING.md](CONTRIBUTING.md) for development, testing, and pull-request requirements. Security issues must be reported privately according to [SECURITY.md](SECURITY.md). Release history and maintainer procedures are documented in [CHANGELOG.md](CHANGELOG.md) and [RELEASING.md](RELEASING.md).
 
 ## License
 
