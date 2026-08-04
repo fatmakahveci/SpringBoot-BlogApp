@@ -15,6 +15,7 @@
 }
 
 html {
+    min-height: 100%;
     scroll-behavior: smooth;
 }
 
@@ -53,11 +54,12 @@ body {
     font-synthesis: none;
     line-height: 1.65;
     min-height: 100vh;
+    min-height: 100dvh;
     text-rendering: optimizeLegibility;
 }
 
 body > main {
-    flex: 1 0 auto;
+    flex: 1 1 auto;
     width: 100%;
 }
 
@@ -324,6 +326,7 @@ a:hover {
     color: var(--app-heading);
     flex-shrink: 0;
     font-size: .875rem;
+    margin-top: auto;
 }
 
 .account-page {
