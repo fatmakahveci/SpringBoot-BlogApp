@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,6 +30,7 @@ public class AdminAuditFilter extends OncePerRequestFilter {
     private final AdminAuditEventRepository repository;
     private final Clock clock;
 
+    @Autowired
     public AdminAuditFilter(AdminAuditEventRepository repository) {
         this(repository, Clock.systemUTC());
     }
