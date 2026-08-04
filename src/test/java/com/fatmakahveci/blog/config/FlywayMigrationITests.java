@@ -19,7 +19,7 @@ class FlywayMigrationITests {
 
     @Test
     void schemaIsMigratedToLatestVersion() {
-        assertThat(flyway.info().current().getVersion().getVersion()).isEqualTo("6");
+        assertThat(flyway.info().current().getVersion().getVersion()).isEqualTo("7");
     }
 
     @Test
@@ -27,10 +27,10 @@ class FlywayMigrationITests {
         Integer tableCount = jdbcTemplate.queryForObject("""
                 SELECT COUNT(*)
                 FROM sqlite_master
-                WHERE type = 'table' AND name IN ('posts', 'tags', 'post_tags', 'users')
+                WHERE type = 'table' AND name IN ('posts', 'tags', 'post_tags', 'users', 'admin_audit_events')
                 """, Integer.class);
 
-        assertThat(tableCount).isEqualTo(4);
+        assertThat(tableCount).isEqualTo(5);
     }
 
     @Test

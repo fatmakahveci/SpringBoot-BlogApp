@@ -25,6 +25,7 @@
                     <span>Spring Blog</span>
                 </a>
                 <div class="ms-auto account-actions d-flex align-items-center justify-content-end gap-2">
+                    <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/audit}" class="btn btn-light border btn-sm">Audit log</a>
                     <a sec:authorize="isAnonymous()" th:href="@{/login}" class="btn btn-outline-primary btn-sm">Log in</a>
                     <a sec:authorize="isAnonymous()" th:href="@{/register}" class="btn btn-primary btn-sm">Create account</a>
                     <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" class="d-flex align-items-center gap-2">
