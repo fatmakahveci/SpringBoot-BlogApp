@@ -108,6 +108,10 @@ The production profile requires `BLOG_DATABASE_PATH`, `BLOG_ADMIN_PASSWORD`, and
 | `BLOG_AUTHOR_PASSWORD` | Generated | Initial author password; required in production |
 | `SPRINGDOC_ENABLED` | `false` in production | Enables Swagger UI and OpenAPI endpoints in production |
 | `BLOG_BASE_URL` | `http://localhost:8080` | Public HTTPS origin used for canonical URLs and the sitemap; required in production |
+| `BLOG_VERSION` | Maven project version | Release value attached to logs and Sentry events |
+| `SENTRY_DSN` | Disabled | Enables Sentry error and performance reporting when configured |
+| `SENTRY_ENVIRONMENT` | `production` | Sentry environment name |
+| `SENTRY_TRACES_SAMPLE_RATE` | `0.1` | Production transaction sampling rate from `0.0` to `1.0` |
 
 Flyway applies migrations from `src/main/resources/db/migration`. Add a new migration for each schema change; never modify a migration that has already been deployed.
 
@@ -127,6 +131,8 @@ After starting the application locally:
 | [Robots](http://localhost:8080/robots.txt) | Search crawler policy and sitemap discovery |
 
 Only the Actuator `health` and `info` endpoints are exposed over HTTP. Health component details and sensitive management endpoints remain unavailable to public clients. In production, use readiness to decide when to route traffic and liveness to decide when to restart the process; do not use readiness failures as a restart signal.
+
+Every response includes an `X-Request-ID`. A safe client-provided value is preserved; otherwise the application generates one. Production ECS logs attach the request ID, authenticated username, and service version. Setting `SENTRY_DSN` enables sanitized error and performance reporting with the same correlation context; default personally identifiable information collection remains disabled.
 
 ### JSON API examples
 

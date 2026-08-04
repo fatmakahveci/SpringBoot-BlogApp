@@ -80,12 +80,27 @@ class ErrorHandlingITests {
                 .andExpect(jsonPath("$.message").value("A tag named 'duplicate' already exists."));
     }
 
+    @Test
+    void unexpectedApiFailureUsesSanitizedResponse() throws Exception {
+        mockMvc.perform(get("/api/test/failure"))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.status").value(500))
+                .andExpect(jsonPath("$.error").value("Internal Server Error"))
+                .andExpect(jsonPath("$.message").value("An unexpected error occurred."))
+                .andExpect(jsonPath("$.path").value("/api/test/failure"));
+    }
+
     @RestController
     static class ConflictController {
 
         @GetMapping("/api/test/conflict")
         void conflict() {
             throw new DuplicateTagNameException("duplicate");
+        }
+
+        @GetMapping("/api/test/failure")
+        void failure() {
+            throw new IllegalStateException("sensitive implementation detail");
         }
     }
 }
