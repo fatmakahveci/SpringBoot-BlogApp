@@ -159,9 +159,12 @@
                             <div class="topic-list" th:if="${!#lists.isEmpty(tags)}">
                                 <div class="topic-row" th:each="topic : ${tags}">
                                     <a th:href="@{/tags/{tagId}(tagId=${topic.id})}" class="topic-link" th:text="${topic.name}">Topic</a>
-                                    <form sec:authorize="hasRole('ADMIN')" th:method="DELETE" data-confirm="Delete this tag permanently?">
-                                        <button type="submit" th:formaction="@{/tags/{tagId}(tagId=${topic.id})}" class="btn btn-link text-danger btn-sm p-0">Delete</button>
-                                    </form>
+                                    <div sec:authorize="hasRole('ADMIN')" class="d-flex align-items-center gap-2">
+                                        <a th:href="@{/tags/{tagId}/edit(tagId=${topic.id})}" class="btn btn-link btn-sm p-0">Edit</a>
+                                        <form th:method="DELETE" data-confirm="Delete this tag permanently?">
+                                            <button type="submit" th:formaction="@{/tags/{tagId}(tagId=${topic.id})}" class="btn btn-link text-danger btn-sm p-0">Delete</button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                             <div th:if="${#lists.isEmpty(tags)}" class="empty-state compact">

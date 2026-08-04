@@ -13,5 +13,6 @@ public interface TagService {
     Optional<Tag> findByName(String name);
     Tag save(Tag tag);
     Tag createByName(String name);
+    Tag updateName(Integer id, String name);
     void deleteById(Integer id);
 }

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 
 @Controller
 public class TagController {
@@ -56,6 +57,31 @@ public class TagController {
             return homeWithTagErrors(tag, bindingResult);
         }
         return new ModelAndView("redirect:/");
+    }
+
+    @GetMapping("/tags/{id}/edit")
+    public ModelAndView editTagForm(@PathVariable Integer id) {
+        Tag tag = tagService.findById(id).orElseThrow(() -> new TagNotFoundException(id));
+        return new ModelAndView("tag_form", "tag", tag);
+    }
+
+    @PutMapping("/tags/{id}")
+    public ModelAndView updateTag(
+            @PathVariable Integer id,
+            @Valid @ModelAttribute("tag") Tag tag,
+            BindingResult bindingResult) {
+        tag.setId(id);
+        if (bindingResult.hasErrors()) {
+            return new ModelAndView("tag_form", "tag", tag);
+        }
+
+        try {
+            tagService.updateName(id, tag.getName());
+        } catch (DuplicateTagNameException exception) {
+            bindingResult.rejectValue("name", "tag.name.duplicate", exception.getMessage());
+            return new ModelAndView("tag_form", "tag", tag);
+        }
+        return new ModelAndView("redirect:/tags/" + id);
     }
 
     @DeleteMapping("/tags/{id}")
