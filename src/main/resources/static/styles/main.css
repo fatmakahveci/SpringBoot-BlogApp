@@ -314,7 +314,12 @@ a:hover {
 }
 
 .topic-actions {
+    flex-shrink: 0;
     padding-right: .75rem;
+}
+
+.topic-actions .btn {
+    min-height: 36px;
 }
 
 .empty-state {
