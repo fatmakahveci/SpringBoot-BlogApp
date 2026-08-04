@@ -86,6 +86,8 @@ BLOG_AUTHOR_PASSWORD='replace-with-a-different-password' \
 | Create and edit content | No | Yes | Yes |
 | Delete posts and tags | No | No | Yes |
 
+Administrator password authentication is followed by mandatory TOTP verification. On first sign-in, add the displayed setup key to an authenticator application and enter its current six-digit code. Subsequent administrator sessions remain restricted until the second factor succeeds.
+
 ## Configuration profiles
 
 | Profile | Purpose | Notable behavior |
@@ -94,7 +96,7 @@ BLOG_AUTHOR_PASSWORD='replace-with-a-different-password' \
 | `test` | Automated test execution | Isolated in-memory SQLite database and deterministic credentials |
 | `prod` | Container and production deployments | Required secrets, secure cookies, structured logs, cached templates |
 
-The production profile requires `BLOG_DATABASE_PATH`, `BLOG_ADMIN_PASSWORD`, and `BLOG_AUTHOR_PASSWORD`. It fails fast when required account secrets are missing.
+The production profile requires `BLOG_DATABASE_PATH`, account passwords, and the two MFA encryption values. It fails fast when required secrets are missing.
 
 ### Environment variables
 
@@ -106,6 +108,8 @@ The production profile requires `BLOG_DATABASE_PATH`, `BLOG_ADMIN_PASSWORD`, and
 | `BLOG_ADMIN_PASSWORD` | Generated | Initial administrator password; required in production |
 | `BLOG_AUTHOR_USERNAME` | `author` | Initial author username |
 | `BLOG_AUTHOR_PASSWORD` | Generated | Initial author password; required in production |
+| `BLOG_MFA_KEY` | Development-only value | High-entropy key used to encrypt TOTP secrets; required in production |
+| `BLOG_MFA_ENCRYPTION_SALT` | Development-only value | Stable random hexadecimal salt for MFA encryption; required in production |
 | `SPRINGDOC_ENABLED` | `false` in production | Enables Swagger UI and OpenAPI endpoints in production |
 | `BLOG_BASE_URL` | `http://localhost:8080` | Public HTTPS origin used for canonical URLs and the sitemap; required in production |
 | `BLOG_VERSION` | Maven project version | Release value attached to logs and Sentry events |
@@ -165,6 +169,7 @@ The multi-stage Dockerfile compiles the application and produces a minimal image
 ```bash
 export BLOG_ADMIN_PASSWORD='replace-with-a-strong-password'
 export BLOG_AUTHOR_PASSWORD='replace-with-a-different-password'
+# Also set BLOG_MFA_KEY and BLOG_MFA_ENCRYPTION_SALT.
 docker compose up --build
 ```
 
@@ -224,6 +229,7 @@ Client  ──> REST controllers ─> JSON responses
 The application and repository include:
 
 - Password hashing through Spring Security's delegating password encoder
+- Mandatory administrator TOTP with AES-GCM encrypted secrets
 - CSRF protection, secure session settings, CSP, referrer, permissions, and frame restrictions
 - Role-based write and delete authorization
 - Validation and database constraints for duplicate and malformed data

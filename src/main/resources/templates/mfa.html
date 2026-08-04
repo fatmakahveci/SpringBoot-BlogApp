@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Administrator verification | Spring Blog</title>
+        <meta name="robots" content="noindex,nofollow">
+        <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+        <link th:href="@{/styles/main.css(v='20260804-4')}" rel="stylesheet">
+    </head>
+    <body>
+        <main class="container account-page px-3 py-4">
+            <section class="account-card bg-white p-4 p-md-5" aria-labelledby="mfa-heading">
+                <span class="eyebrow">Administrator security</span>
+                <h1 id="mfa-heading" class="h3 mt-2" th:text="${setup} ? 'Set up two-factor authentication' : 'Enter your verification code'">Verify account</h1>
+                <div th:if="${setup}" class="mb-4">
+                    <p class="text-secondary">Add this account to a TOTP authenticator, then enter the current six-digit code. Store the setup key securely.</p>
+                    <label for="mfa-secret" class="form-label">Setup key</label>
+                    <input id="mfa-secret" class="form-control font-monospace" th:value="${secret}" readonly>
+                    <details class="mt-3">
+                        <summary>Manual provisioning URI</summary>
+                        <code class="d-block mt-2 text-break" th:text="${provisioningUri}"></code>
+                    </details>
+                </div>
+                <p th:unless="${setup}" class="text-secondary">Open your authenticator and enter the current six-digit code.</p>
+                <div th:if="${mfaError}" class="alert alert-danger" role="alert" th:text="${mfaError}"></div>
+                <form th:action="@{/mfa}" method="post">
+                    <label for="mfa-code" class="form-label">Verification code</label>
+                    <input id="mfa-code" name="code" class="form-control" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required autofocus>
+                    <button type="submit" class="btn btn-primary w-100 mt-3">Verify and continue</button>
+                </form>
+                <form th:action="@{/logout}" method="post" class="mt-3 text-center">
+                    <button type="submit" class="btn btn-link">Log out</button>
+                </form>
+            </section>
+        </main>
+    </body>
+</html>
