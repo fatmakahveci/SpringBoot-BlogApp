@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -41,6 +42,9 @@ class AccountControllerITests {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Value("${BLOG_ADMIN_PASSWORD}")
+    private String administratorPassword;
 
     @Test
     void rendersRegistrationForm() throws Exception {
@@ -135,6 +139,16 @@ class AccountControllerITests {
                         .param("password", VALID_PASSWORD))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"));
+    }
+
+    @Test
+    void administratorLoginRequiresMfaBeforeAccessingTheApplication() throws Exception {
+        mockMvc.perform(post("/login")
+                        .with(csrf())
+                        .param("username", "admin")
+                        .param("password", administratorPassword))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/mfa"));
     }
 
     @ParameterizedTest

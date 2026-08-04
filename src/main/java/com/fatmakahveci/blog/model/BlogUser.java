@@ -33,6 +33,12 @@ public class BlogUser {
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
+    @Column(name = "mfa_secret_encrypted", length = 512)
+    private String mfaSecretEncrypted;
+
+    @Column(name = "mfa_enabled", nullable = false)
+    private boolean mfaEnabled;
+
     public BlogUser() {
     }
 
@@ -79,5 +85,21 @@ public class BlogUser {
 
     public Instant getCreatedAt() {
         return createdAt;
+    }
+
+    public String getMfaSecretEncrypted() {
+        return mfaSecretEncrypted;
+    }
+
+    public void setMfaSecretEncrypted(String mfaSecretEncrypted) {
+        this.mfaSecretEncrypted = mfaSecretEncrypted;
+    }
+
+    public boolean isMfaEnabled() {
+        return mfaEnabled;
+    }
+
+    public void setMfaEnabled(boolean mfaEnabled) {
+        this.mfaEnabled = mfaEnabled;
     }
 }
