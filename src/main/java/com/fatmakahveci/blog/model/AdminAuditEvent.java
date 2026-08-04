@@ -15,6 +15,7 @@ public class AdminAuditEvent {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(columnDefinition = "INTEGER")
     private Integer id;
 
     @Column(name = "occurred_at", nullable = false, updatable = false)

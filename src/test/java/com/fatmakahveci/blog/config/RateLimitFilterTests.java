@@ -16,7 +16,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 
 class RateLimitFilterTests {
 
@@ -83,7 +83,7 @@ class RateLimitFilterTests {
     }
 
     private RateLimitFilter filter(String scannerAddresses) {
-        return new RateLimitFilter(new ObjectMapper().findAndRegisterModules(), clock, limits, scannerAddresses);
+        return new RateLimitFilter(new ObjectMapper(), clock, limits, scannerAddresses);
     }
 
     private MockHttpServletResponse execute(RateLimitFilter filter, MockHttpServletRequest request) throws Exception {
