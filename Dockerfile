@@ -1,4 +1,4 @@
-FROM eclipse-temurin:25-jdk-noble AS builder
+FROM eclipse-temurin:25-jdk-alpine AS builder
 
 WORKDIR /workspace
 
