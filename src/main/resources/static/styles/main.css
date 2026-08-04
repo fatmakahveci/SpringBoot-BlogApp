@@ -289,7 +289,7 @@ a:hover {
     border-radius: .6rem;
     display: flex;
     justify-content: space-between;
-    padding: .65rem .75rem;
+    overflow: hidden;
 }
 
 .topic-row:hover {
@@ -297,9 +297,24 @@ a:hover {
 }
 
 .topic-link {
+    align-items: center;
+    align-self: stretch;
     color: var(--app-text);
+    display: flex;
+    flex: 1;
     font-weight: 650;
+    min-width: 0;
+    padding: .65rem .75rem;
     text-decoration: none;
+}
+
+.topic-link:focus-visible {
+    box-shadow: inset 0 0 0 3px var(--app-primary);
+    outline: none;
+}
+
+.topic-actions {
+    padding-right: .75rem;
 }
 
 .empty-state {
