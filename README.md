@@ -230,6 +230,7 @@ The application and repository include:
 
 - Password hashing through Spring Security's delegating password encoder
 - Mandatory administrator TOTP with AES-GCM encrypted secrets
+- Append-only administrator audit records for successful state-changing requests
 - CSRF protection, secure session settings, CSP, referrer, permissions, and frame restrictions
 - Role-based write and delete authorization
 - Validation and database constraints for duplicate and malformed data
