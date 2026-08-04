@@ -1,5 +1,44 @@
 const { test, expect } = require("@playwright/test");
 
+const responsiveViewports = [
+  { name: "phone", width: 320, height: 568 },
+  { name: "tablet", width: 768, height: 1024 },
+  { name: "laptop", width: 1440, height: 900 }
+];
+
+async function expectResponsiveLayout(page, viewport) {
+  const layout = await page.evaluate(() => ({
+    documentWidth: document.documentElement.scrollWidth,
+    viewportWidth: document.documentElement.clientWidth,
+    overflowingElements: [...document.body.querySelectorAll("*")]
+      .filter((element) => {
+        const bounds = element.getBoundingClientRect();
+        return bounds.width > 0 && (bounds.left < -1 || bounds.right > window.innerWidth + 1);
+      })
+      .slice(0, 10)
+      .map((element) => `${element.tagName.toLowerCase()}.${element.className}`)
+  }));
+
+  expect(layout.documentWidth, `${viewport.name} page width`).toBeLessThanOrEqual(layout.viewportWidth);
+  expect(layout.overflowingElements, `${viewport.name} overflowing elements`).toEqual([]);
+}
+
+test("public pages fit phone, tablet, and laptop screens", async ({ page }) => {
+  for (const viewport of responsiveViewports) {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+
+    for (const path of ["/", "/login", "/register"]) {
+      await page.goto(path);
+      await expectResponsiveLayout(page, viewport);
+    }
+
+    await page.goto("/");
+    await expect(page.getByRole("link", { name: "Browse all posts" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Log in" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Create account" })).toBeVisible();
+  }
+});
+
 test("browse all posts visibly scrolls to the posts section", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 720 });
   await page.goto("/");
