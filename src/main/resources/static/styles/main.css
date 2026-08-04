@@ -27,12 +27,19 @@ html {
 body {
     background: var(--app-bg);
     color: #344641;
+    display: flex;
+    flex-direction: column;
     font-family: var(--font-body);
     font-size: 1rem;
     font-synthesis: none;
     line-height: 1.65;
     min-height: 100vh;
     text-rendering: optimizeLegibility;
+}
+
+body > main {
+    flex: 1 0 auto;
+    width: 100%;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -286,6 +293,7 @@ a:hover {
 .site-footer {
     background: #fff;
     color: var(--app-heading);
+    flex-shrink: 0;
     font-size: .875rem;
 }
 
