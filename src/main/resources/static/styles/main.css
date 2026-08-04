@@ -171,6 +171,13 @@ a:hover {
     padding: .35rem .7rem;
 }
 
+.user-chip {
+    max-width: min(16rem, 40vw);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .hero-section {
     background:
         radial-gradient(circle at 88% 18%, rgba(13, 148, 136, .16), transparent 30%),
@@ -319,7 +326,7 @@ a:hover {
 }
 
 .topic-actions .btn {
-    min-height: 36px;
+    min-height: 42px;
 }
 
 .empty-state {
@@ -420,11 +427,17 @@ a:hover {
     }
 
     .account-actions {
+        min-width: 0;
         flex-wrap: wrap;
     }
 
     .account-actions form {
         justify-content: flex-end;
+        min-width: 0;
+    }
+
+    .user-chip {
+        max-width: 8rem;
     }
 
     .hero-section .display-5 {
@@ -443,6 +456,25 @@ a:hover {
 
     .post-actions .btn {
         flex: 1;
+    }
+
+    .topic-row {
+        align-items: stretch;
+        flex-wrap: wrap;
+    }
+
+    .topic-actions {
+        padding: 0 .75rem .65rem;
+        width: 100%;
+    }
+
+    .topic-actions .btn,
+    .topic-actions form {
+        flex: 1;
+    }
+
+    .topic-actions .btn {
+        width: 100%;
     }
 
     .pagination .page-link {
