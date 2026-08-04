@@ -15,7 +15,7 @@ public class AdminAuditEvent {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(name = "occurred_at", nullable = false, updatable = false)
     private Instant occurredAt;
@@ -58,7 +58,7 @@ public class AdminAuditEvent {
         this.requestId = requestId;
     }
 
-    public Long getId() { return id; }
+    public Integer getId() { return id; }
     public Instant getOccurredAt() { return occurredAt; }
     public String getUsername() { return username; }
     public String getHttpMethod() { return httpMethod; }

@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.fatmakahveci.blog.model.AdminAuditEvent;
 
-public interface AdminAuditEventRepository extends JpaRepository<AdminAuditEvent, Long> {
+public interface AdminAuditEventRepository extends JpaRepository<AdminAuditEvent, Integer> {
     List<AdminAuditEvent> findTop100ByOrderByOccurredAtDesc();
 }
