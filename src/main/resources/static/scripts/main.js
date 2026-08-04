@@ -19,5 +19,7 @@ document.addEventListener("click", (event) => {
     event.preventDefault();
     target.scrollIntoView({ behavior: "smooth", block: "start" });
     target.focus({ preventScroll: true });
+    target.classList.remove("is-scroll-highlighted");
+    window.requestAnimationFrame(() => target.classList.add("is-scroll-highlighted"));
     window.history.replaceState(null, "", `#${target.id}`);
 });
