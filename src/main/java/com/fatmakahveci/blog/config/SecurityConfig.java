@@ -31,6 +31,7 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(
             HttpSecurity http,
             AdminMfaFilter adminMfaFilter,
+            RateLimitFilter rateLimitFilter,
             MfaAuthenticationSuccessHandler successHandler) throws Exception {
         return http
                 .authorizeHttpRequests(requests -> requests
@@ -43,6 +44,7 @@ public class SecurityConfig {
                         .anyRequest().permitAll())
                 .formLogin(login -> login.loginPage("/login").successHandler(successHandler).permitAll())
                 .logout(logout -> logout.logoutSuccessUrl("/"))
+                .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(adminMfaFilter, UsernamePasswordAuthenticationFilter.class)
                 .headers(headers -> headers
                         // Keep resources local and prevent the application from being framed.
