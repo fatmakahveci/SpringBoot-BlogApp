@@ -16,6 +16,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import io.sentry.Sentry;
 import jakarta.servlet.http.HttpServletRequest;
 
 @ControllerAdvice
@@ -52,6 +53,12 @@ public class GlobalExceptionHandler {
                 ? "The request conflicts with existing data."
                 : exception.getMessage();
         return response(HttpStatus.CONFLICT, message, request);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public Object handleUnexpected(Exception exception, HttpServletRequest request) {
+        Sentry.captureException(exception);
+        return response(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred.", request);
     }
 
     private Object response(HttpStatus status, String message, HttpServletRequest request) {
