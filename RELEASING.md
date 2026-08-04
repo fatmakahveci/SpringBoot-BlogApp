@@ -21,6 +21,10 @@ Use Semantic Versioning:
 7. Deploy to staging, verify readiness and smoke tests, then approve production.
 8. Confirm production health, logs, rollback metadata, and the published package.
 
+Release Please maintains the release pull request from conventional commits. Merging that pull request creates the GitHub release, which publishes the Maven package and an immutable GHCR image. The deployment workflow verifies that exact image in staging before entering the protected `production` environment.
+
+Configure `STAGING_URL` and `PRODUCTION_URL` as environment variables. Configure `STAGING_DEPLOY_WEBHOOK` and `PRODUCTION_DEPLOY_WEBHOOK` as environment secrets when the hosting platform supports deployment webhooks. Production approvals are managed through the GitHub `production` environment.
+
 ## Rollback
 
 Redeploy the previously verified immutable image. Database migrations must be forward-compatible; restore from a tested backup only when a forward fix cannot safely recover the data. Record the incident and corrective action before the next release.
