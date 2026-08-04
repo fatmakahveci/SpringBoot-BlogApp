@@ -116,6 +116,7 @@ The production profile requires `BLOG_DATABASE_PATH`, account passwords, and the
 | `SENTRY_DSN` | Disabled | Enables Sentry error and performance reporting when configured |
 | `SENTRY_ENVIRONMENT` | `production` | Sentry environment name |
 | `SENTRY_TRACES_SAMPLE_RATE` | `0.1` | Production transaction sampling rate from `0.0` to `1.0` |
+| `BLOG_SECURITY_SCANNER_ADDRESSES` | Empty | Comma-separated trusted scanner source addresses; never inferred from User-Agent |
 
 Flyway applies migrations from `src/main/resources/db/migration`. Add a new migration for each schema change; never modify a migration that has already been deployed.
 
@@ -231,6 +232,7 @@ The application and repository include:
 - Password hashing through Spring Security's delegating password encoder
 - Mandatory administrator TOTP with AES-GCM encrypted secrets
 - Append-only administrator audit records for successful state-changing requests
+- Role-aware request limits with strict authentication throttles and trusted scanner allowlisting
 - CSRF protection, secure session settings, CSP, referrer, permissions, and frame restrictions
 - Role-based write and delete authorization
 - Validation and database constraints for duplicate and malformed data
