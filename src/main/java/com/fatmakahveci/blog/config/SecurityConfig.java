@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 
 import com.fatmakahveci.blog.dao.UserRepository;
@@ -27,7 +28,10 @@ public class SecurityConfig {
     private static final Logger LOGGER = LoggerFactory.getLogger(SecurityConfig.class);
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain securityFilterChain(
+            HttpSecurity http,
+            AdminMfaFilter adminMfaFilter,
+            MfaAuthenticationSuccessHandler successHandler) throws Exception {
         return http
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers(HttpMethod.DELETE, "/posts/**", "/tags/**").hasRole("ADMIN")
@@ -36,8 +40,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/tags/*/edit").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/posts/add", "/posts/*").hasAnyRole("AUTHOR", "ADMIN")
                         .anyRequest().permitAll())
-                .formLogin(login -> login.loginPage("/login").defaultSuccessUrl("/", true).permitAll())
+                .formLogin(login -> login.loginPage("/login").successHandler(successHandler).permitAll())
                 .logout(logout -> logout.logoutSuccessUrl("/"))
+                .addFilterAfter(adminMfaFilter, UsernamePasswordAuthenticationFilter.class)
                 .headers(headers -> headers
                         // Keep resources local and prevent the application from being framed.
                         .contentSecurityPolicy(csp -> csp.policyDirectives(

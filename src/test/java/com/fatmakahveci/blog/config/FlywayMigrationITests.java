@@ -19,7 +19,7 @@ class FlywayMigrationITests {
 
     @Test
     void schemaIsMigratedToLatestVersion() {
-        assertThat(flyway.info().current().getVersion().getVersion()).isEqualTo("5");
+        assertThat(flyway.info().current().getVersion().getVersion()).isEqualTo("6");
     }
 
     @Test

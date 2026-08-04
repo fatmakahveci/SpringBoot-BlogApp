@@ -1,0 +1,3 @@
+ALTER TABLE users ADD COLUMN mfa_secret_encrypted VARCHAR(512);
+ALTER TABLE users ADD COLUMN mfa_enabled BOOLEAN NOT NULL DEFAULT FALSE;
+

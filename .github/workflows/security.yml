@@ -78,6 +78,8 @@ jobs:
           IMAGE: blog-app:scan
         run: |
           test "$(docker image inspect --format '{{.Config.User}}' "$IMAGE")" = "10001:10001"
+          mfa_password=$(openssl rand -hex 32)
+          mfa_salt=$(openssl rand -hex 8)
           container_id=$(docker run --detach \
             --read-only \
             --tmpfs /tmp:rw,noexec,nosuid,uid=10001,gid=10001,mode=0700,size=64m \
@@ -88,6 +90,8 @@ jobs:
             --env BLOG_BASE_URL=http://localhost:8080 \
             --env BLOG_ADMIN_PASSWORD=policy-test-admin \
             --env BLOG_AUTHOR_PASSWORD=policy-test-author \
+            --env BLOG_MFA_KEY="$mfa_password" \
+            --env BLOG_MFA_ENCRYPTION_SALT="$mfa_salt" \
             --publish 127.0.0.1:8080:8080 \
             "$IMAGE")
           trap 'docker rm --force "$container_id"' EXIT
