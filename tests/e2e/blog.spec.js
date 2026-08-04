@@ -11,6 +11,27 @@ test("explore posts moves focus to the posts section", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Browse posts" })).toBeVisible();
 });
 
+test("footer stays at the bottom of a tall viewport", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 1400 });
+  await page.goto("/");
+
+  const layout = await page.evaluate(() => {
+    const footer = document.querySelector("footer");
+    const footerBounds = footer.getBoundingClientRect();
+
+    return {
+      bodyDisplay: getComputedStyle(document.body).display,
+      bodyDirection: getComputedStyle(document.body).flexDirection,
+      footerBottom: Math.round(footerBounds.bottom),
+      pageBottom: Math.max(document.documentElement.scrollHeight, window.innerHeight)
+    };
+  });
+
+  expect(layout.bodyDisplay).toBe("flex");
+  expect(layout.bodyDirection).toBe("column");
+  expect(layout.footerBottom).toBe(layout.pageBottom);
+});
+
 test("registration validates the password and creates an account", async ({ page }) => {
   await page.goto("/register");
 
