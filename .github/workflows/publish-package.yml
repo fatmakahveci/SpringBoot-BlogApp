@@ -1,0 +1,50 @@
+name: Publish Maven package
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Package version without the v prefix
+        required: true
+        default: "1.0.0"
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: publish-package-${{ github.event.release.tag_name || inputs.version }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Set up JDK 21 and Maven registry authentication
+        uses: actions/setup-java@v5
+        with:
+          java-version: "21"
+          distribution: temurin
+          cache: maven
+          cache-dependency-path: pom.xml
+          server-id: github
+          server-username: GITHUB_ACTOR
+          server-password: GITHUB_TOKEN
+      - name: Select package version
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          REQUESTED_VERSION: ${{ inputs.version }}
+        run: |
+          raw_version="${RELEASE_TAG:-$REQUESTED_VERSION}"
+          package_version="${raw_version#v}"
+          test -n "$package_version"
+          ./mvnw -B versions:set -DnewVersion="$package_version" -DgenerateBackupPoms=false
+      - name: Verify package
+        run: ./mvnw -B clean verify
+      - name: Publish to GitHub Packages
+        run: ./mvnw -B -DskipTests deploy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
