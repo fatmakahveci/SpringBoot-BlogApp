@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fatmakahveci.blog.dao.TagRepository;
 import com.fatmakahveci.blog.exception.DuplicateTagNameException;
+import com.fatmakahveci.blog.exception.TagNotFoundException;
 import com.fatmakahveci.blog.model.Tag;
 import com.fatmakahveci.blog.model.PostStatus;
 import com.fatmakahveci.blog.service.TagService;
@@ -57,6 +58,21 @@ public class TagServiceImpl implements TagService {
         Tag tag = new Tag();
         tag.setName(name);
         return save(tag);
+    }
+
+    @Override
+    @Transactional
+    public Tag updateName(Integer id, String name) {
+        Tag tag = tagRepository.findById(id).orElseThrow(() -> new TagNotFoundException(id));
+        String normalizedName = name.trim();
+        if (tagRepository.findByName(normalizedName)
+                .filter(existingTag -> !existingTag.getId().equals(id))
+                .isPresent()) {
+            throw new DuplicateTagNameException(normalizedName);
+        }
+
+        tag.setName(normalizedName);
+        return tagRepository.save(tag);
     }
 
     @Override

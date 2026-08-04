@@ -21,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.fatmakahveci.blog.dao.TagRepository;
 import com.fatmakahveci.blog.exception.DuplicateTagNameException;
+import com.fatmakahveci.blog.exception.TagNotFoundException;
 import com.fatmakahveci.blog.model.Tag;
 import com.fatmakahveci.blog.service.impl.TagServiceImpl;
 
@@ -160,6 +161,43 @@ class TagServiceTests {
                 DuplicateTagNameException.class,
                 () -> tagService.createByName("tag"));
         verify(tagRepository, times(1)).findByName("tag");
+
+        verify(tagRepository, times(0)).save(any());
+    }
+    @Test
+    void updateName_updatesExistingTag() {
+        Tag tag = new Tag(1, "java", Collections.emptySet());
+        when(tagRepository.findById(1)).thenReturn(Optional.of(tag));
+        when(tagRepository.findByName("Spring Boot")).thenReturn(Optional.empty());
+        when(tagRepository.save(tag)).thenReturn(tag);
+
+        Tag updatedTag = tagService.updateName(1, " Spring Boot ");
+
+        assertThat(updatedTag.getName()).isEqualTo("Spring Boot");
+        verify(tagRepository).save(tag);
+    }
+
+    @Test
+    void updateName_rejectsAnotherTagWithSameName() {
+        Tag tag = new Tag(1, "java", Collections.emptySet());
+        Tag duplicate = new Tag(2, "spring", Collections.emptySet());
+        when(tagRepository.findById(1)).thenReturn(Optional.of(tag));
+        when(tagRepository.findByName("spring")).thenReturn(Optional.of(duplicate));
+
+        org.junit.jupiter.api.Assertions.assertThrows(
+                DuplicateTagNameException.class,
+                () -> tagService.updateName(1, "spring"));
+
+        verify(tagRepository, times(0)).save(any());
+    }
+
+    @Test
+    void updateName_missingTagIsRejected() {
+        when(tagRepository.findById(404)).thenReturn(Optional.empty());
+
+        org.junit.jupiter.api.Assertions.assertThrows(
+                TagNotFoundException.class,
+                () -> tagService.updateName(404, "spring"));
 
         verify(tagRepository, times(0)).save(any());
     }
