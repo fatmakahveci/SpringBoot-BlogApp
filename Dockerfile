@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21-jdk-alpine AS builder
+FROM eclipse-temurin:25-jdk-alpine AS builder
 
 WORKDIR /workspace
 
@@ -9,7 +9,7 @@ RUN ./mvnw -B -DskipTests dependency:go-offline
 COPY src/ src/
 RUN ./mvnw -B -DskipTests package
 
-FROM eclipse-temurin:21-jre-noble
+FROM eclipse-temurin:25-jre-noble
 
 RUN apt-get update \
     && apt-get upgrade --yes \
