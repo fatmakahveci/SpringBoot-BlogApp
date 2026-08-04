@@ -43,7 +43,7 @@ jobs:
           skip-dirs: target,node_modules
       - name: Publish dependencies to Security panel
         if: always()
-        uses: github/codeql-action/upload-sarif@v4
+        uses: github/codeql-action/upload-sarif@v4.37.4
         with:
           sarif_file: dependency-results.sarif
           category: trivy/dependencies
@@ -112,7 +112,7 @@ jobs:
           exit-code: "1"
       - name: Publish container to Security panel
         if: ${{ always() && hashFiles('container-results.sarif') != '' }}
-        uses: github/codeql-action/upload-sarif@v4
+        uses: github/codeql-action/upload-sarif@v4.37.4
         with:
           sarif_file: container-results.sarif
           category: trivy/container
@@ -123,7 +123,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v4
+        uses: github/codeql-action/init@v4.37.4
         with:
           languages: java-kotlin
           build-mode: manual
@@ -137,6 +137,6 @@ jobs:
       - name: Build
         run: ./mvnw -B -DskipTests package
       - name: Analyze and publish CodeQL results
-        uses: github/codeql-action/analyze@v4
+        uses: github/codeql-action/analyze@v4.37.4
         with:
           category: /language:java-kotlin
