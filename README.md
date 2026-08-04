@@ -1,9 +1,10 @@
 # Spring Boot Blog Application
 
 [![Java CI](https://github.com/fatmakahveci/SpringBoot-BlogApp/actions/workflows/maven.yml/badge.svg)](https://github.com/fatmakahveci/SpringBoot-BlogApp/actions/workflows/maven.yml)
-[![CodeQL](https://github.com/fatmakahveci/SpringBoot-BlogApp/actions/workflows/codeql.yml/badge.svg)](https://github.com/fatmakahveci/SpringBoot-BlogApp/actions/workflows/codeql.yml)
+[![Security Dashboard](https://github.com/fatmakahveci/SpringBoot-BlogApp/actions/workflows/security.yml/badge.svg)](https://github.com/fatmakahveci/SpringBoot-BlogApp/actions/workflows/security.yml)
 [![Java](https://img.shields.io/badge/Java-21-orange.svg)](https://adoptium.net/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.1-brightgreen.svg)](https://spring.io/projects/spring-boot)
+[![Coverage](https://img.shields.io/badge/coverage-85%25%20line%20%7C%2065%25%20branch-brightgreen.svg)](#testing-and-code-quality)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE.md)
 
 A secure, server-rendered blog platform built with Spring Boot, Thymeleaf, Spring Security, and SQLite. The application combines an accessible web interface with a documented, read-only JSON API and includes production-oriented testing, observability, containerization, and CI security controls.
@@ -23,7 +24,9 @@ A secure, server-rendered blog platform built with Spring Boot, Thymeleaf, Sprin
 
 ## Application preview
 
-> The interface has recently been redesigned. A refreshed walkthrough will be added after the new desktop and mobile screenshots are captured.
+![Spring Boot Blog application walkthrough](demo.gif)
+
+The demo shows the responsive public feed, post discovery, authentication, authoring, and content-management flow. The interface is keyboard accessible and adapts to phone, tablet, and desktop viewports.
 
 The main workflow is straightforward:
 
@@ -36,7 +39,8 @@ The main workflow is straightforward:
 
 | Area | Technology |
 |---|---|
-| Runtime | Java 21, Spring Boot 4.1 |
+| Application baseline | Java 21, Spring Boot 4.1 |
+| Container toolchain | Eclipse Temurin 25 JDK/JRE |
 | Web | Spring MVC, Thymeleaf, Bootstrap 5 |
 | Security | Spring Security, CSRF protection, security headers, role-based access |
 | Persistence | Spring Data JPA, SQLite, Flyway |
@@ -49,7 +53,7 @@ The main workflow is straightforward:
 
 ### Requirements
 
-- Java 21
+- Java 21 or later
 - Git
 
 Maven does not need to be installed; the repository includes Maven Wrapper.
@@ -62,7 +66,7 @@ cd SpringBoot-BlogApp
 
 Open [http://localhost:8080](http://localhost:8080).
 
-On Windows, run `mvnw.cmd spring-boot:run` instead.
+On Windows, run `mvnw.cmd spring-boot:run` instead. The application uses the `dev` profile by default and stores local data in `sample.db`.
 
 When development passwords are not provided, the application generates temporary administrator and author passwords and writes them once to the startup log. For predictable local credentials, start the application with explicit values:
 
@@ -158,7 +162,9 @@ export BLOG_AUTHOR_PASSWORD='replace-with-a-different-password'
 docker compose up --build
 ```
 
-SQLite data is stored in the `blog-data` volume. The container runs as UID/GID `10001`, with a read-only root filesystem, all Linux capabilities dropped, `no-new-privileges`, a PID limit, and a small `noexec` temporary filesystem. A separate 16 MB tmpfs is executable only because SQLite JDBC must load its native library; application temporary files and persisted data remain `noexec`. The Security Dashboard boots the image under this exact policy, waits for the readiness probe, and fails if the user or read-only runtime is broken. Docker monitors the dependency-independent liveness probe through BusyBox `wget`. The runtime image installs no additional operating-system packages, reducing image size and attack surface.
+SQLite data is stored in the `blog-data` volume. The container runs as UID/GID `10001`, with a read-only root filesystem, all Linux capabilities dropped, `no-new-privileges`, a PID limit, and a small `noexec` temporary filesystem. A separate 16 MB tmpfs is executable only because SQLite JDBC must load its native library; application temporary files and persisted data remain `noexec`. The Security Dashboard boots the image under this exact policy, waits for the readiness probe, and fails if the user or read-only runtime is broken. Docker monitors the dependency-independent liveness probe with `wget`.
+
+The build stage uses Eclipse Temurin 25 JDK on Alpine. The runtime uses the glibc-based Eclipse Temurin 25 JRE on Ubuntu Noble because SQLite JDBC requires a compatible native library. Only CA certificates and `wget` are installed in the runtime image; package upgrades are applied during the image build.
 
 ## Testing and code quality
 
@@ -177,6 +183,17 @@ This command runs:
 - Spring Boot executable JAR packaging
 
 The coverage report is generated at `target/site/jacoco/index.html`. Tests use isolated in-memory SQLite databases and never modify the repository's `sample.db` file.
+
+Frontend unit and browser tests require Node.js 24:
+
+```bash
+npm ci
+npm run test:frontend
+npx playwright install chromium
+npm run test:e2e
+```
+
+JaCoCo enforces 85% line and instruction coverage and 65% branch coverage. Vitest enforces the frontend thresholds configured in `vitest.config.js`. CI uploads both coverage reports and the Playwright report as short-lived workflow artifacts.
 
 ## Architecture
 
@@ -205,9 +222,14 @@ The application and repository include:
 - Role-based write and delete authorization
 - Validation and database constraints for duplicate and malformed data
 - GitHub dependency review for pull requests
+- Dependabot vulnerability alerts and automated security updates
 - CodeQL static security analysis
 - Trivy container vulnerability scanning
+- Secret scanning with push protection
+- Hardened container startup verification under the production runtime policy
 - Weekly Dependabot updates for Maven, GitHub Actions, and Docker
+
+The Java CI and Security Dashboard workflows run on every pull request and every push to `main`. Changes should not be merged until required build, frontend/E2E, dependency, CodeQL, and container checks pass.
 
 ## Contributing
 
