@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fatmakahveci.blog.dao.TagRepository;
@@ -24,6 +25,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     @Transactional
+    @CacheEvict(cacheNames = "seo-sitemap", allEntries = true)
     public Tag save(Tag tag) {
         return tagRepository.save(tag);
     }
@@ -50,6 +52,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     @Transactional
+    @CacheEvict(cacheNames = "seo-sitemap", allEntries = true)
     public Tag createByName(String name) {
         if (tagRepository.findByName(name).isPresent()) {
             throw new DuplicateTagNameException(name);
@@ -62,6 +65,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     @Transactional
+    @CacheEvict(cacheNames = "seo-sitemap", allEntries = true)
     public Tag updateName(Integer id, String name) {
         Tag tag = tagRepository.findById(id).orElseThrow(() -> new TagNotFoundException(id));
         String normalizedName = name.trim();
@@ -77,6 +81,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     @Transactional
+    @CacheEvict(cacheNames = "seo-sitemap", allEntries = true)
     public void deleteById(Integer id) {
         tagRepository.findById(id).ifPresent(tag -> {
             // Post owns the join table, so detach the tag from every post before deletion.
