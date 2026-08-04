@@ -39,6 +39,26 @@ test("footer stays at the bottom of a tall viewport", async ({ page }) => {
   expect(layout.footerBottom).toBe(layout.viewportBottom);
 });
 
+test("the full topic row opens its topic page", async ({ page }) => {
+  await page.goto("/");
+  await page.evaluate(() => {
+    const topicList = document.createElement("div");
+    topicList.className = "topic-list";
+    topicList.style.width = "320px";
+    topicList.innerHTML = '<div class="topic-row"><a href="/tags/404" class="topic-link">Java</a></div>';
+    document.body.append(topicList);
+  });
+
+  const row = page.locator(".topic-row");
+  const link = page.getByRole("link", { name: "Java" });
+  const rowBox = await row.boundingBox();
+  const linkBox = await link.boundingBox();
+
+  expect(linkBox).toEqual(rowBox);
+  await row.click({ position: { x: 300, y: 10 } });
+  await expect(page).toHaveURL(/\/tags\/404$/);
+});
+
 test("registration validates the password and creates an account", async ({ page }) => {
   await page.goto("/register");
 

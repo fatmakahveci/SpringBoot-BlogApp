@@ -14,7 +14,7 @@
         <meta property="og:url" th:content="${seoBaseUrl + '/'}">
         <meta name="twitter:card" content="summary">
         <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
-        <link th:href="@{/styles/main.css(v='20260804-1')}" rel="stylesheet">
+        <link th:href="@{/styles/main.css(v='20260804-2')}" rel="stylesheet">
         <script th:src="@{/scripts/main.js}" defer></script>
     </head>
     <body>
@@ -159,7 +159,7 @@
                             <div class="topic-list" th:if="${!#lists.isEmpty(tags)}">
                                 <div class="topic-row" th:each="topic : ${tags}">
                                     <a th:href="@{/tags/{tagId}(tagId=${topic.id})}" class="topic-link" th:text="${topic.name}">Topic</a>
-                                    <div sec:authorize="hasRole('ADMIN')" class="d-flex align-items-center gap-2">
+                                    <div sec:authorize="hasRole('ADMIN')" class="topic-actions d-flex align-items-center gap-2">
                                         <a th:href="@{/tags/{tagId}/edit(tagId=${topic.id})}" class="btn btn-link btn-sm p-0">Edit</a>
                                         <form th:method="DELETE" data-confirm="Delete this tag permanently?">
                                             <button type="submit" th:formaction="@{/tags/{tagId}(tagId=${topic.id})}" class="btn btn-link text-danger btn-sm p-0">Delete</button>
