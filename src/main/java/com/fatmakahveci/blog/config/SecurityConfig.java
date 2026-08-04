@@ -38,6 +38,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/tags/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/posts/**", "/tags/**").hasAnyRole("AUTHOR", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/tags/*/edit").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/admin/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/posts/add", "/posts/*").hasAnyRole("AUTHOR", "ADMIN")
                         .anyRequest().permitAll())
                 .formLogin(login -> login.loginPage("/login").successHandler(successHandler).permitAll())

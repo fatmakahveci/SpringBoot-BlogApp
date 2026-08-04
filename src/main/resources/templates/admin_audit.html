@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Administrator audit log | Spring Blog</title>
+        <meta name="robots" content="noindex,nofollow">
+        <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+        <link th:href="@{/styles/main.css(v='20260804-4')}" rel="stylesheet">
+    </head>
+    <body>
+        <main class="container-xl px-3 py-4 py-md-5">
+            <nav class="mb-3" aria-label="Breadcrumb"><a th:href="@{/}">← Back to blog</a></nav>
+            <header class="mb-4">
+                <span class="eyebrow">Administrator security</span>
+                <h1 class="h2 mt-2 mb-2">Audit log</h1>
+                <p class="text-secondary mb-0">The 100 most recent successful administrator changes. Request bodies and credentials are never stored.</p>
+            </header>
+            <div class="content-card p-3 p-md-4">
+                <div class="table-responsive" th:if="${!#lists.isEmpty(events)}">
+                    <table class="table align-middle mb-0">
+                        <caption class="visually-hidden">Recent administrator changes</caption>
+                        <thead><tr><th>Time</th><th>User</th><th>Action</th><th>Target</th><th>Status</th><th>Client IP</th><th>Request ID</th></tr></thead>
+                        <tbody>
+                            <tr th:each="event : ${events}">
+                                <td class="text-nowrap" th:text="${event.occurredAt}">Time</td>
+                                <td th:text="${event.username}">User</td>
+                                <td><code th:text="${event.httpMethod}">POST</code></td>
+                                <td class="text-break" th:text="${event.requestPath}">Path</td>
+                                <td th:text="${event.responseStatus}">200</td>
+                                <td th:text="${event.clientIp}">IP</td>
+                                <td class="text-break"><code th:text="${event.requestId}">Request ID</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="empty-state compact" th:if="${#lists.isEmpty(events)}">
+                    <p class="text-secondary mb-0">No administrator changes have been recorded yet.</p>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>
