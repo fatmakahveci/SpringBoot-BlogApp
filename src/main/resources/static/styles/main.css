@@ -1,15 +1,17 @@
 :root {
-    --app-bg: #f7f9f8;
-    --app-border: #dce5e2;
-    --app-heading: #13231f;
-    --app-muted: #60706b;
-    --app-primary: #0f766e;
-    --app-primary-dark: #0b5f59;
+    --app-bg: #f5f8f7;
+    --app-border: #d7e2df;
+    --app-heading: #142522;
+    --app-text: #304540;
+    --app-muted: #596c67;
+    --app-primary: #087f6f;
+    --app-primary-dark: #056257;
+    --app-primary-light: #dff5f0;
     --app-surface: #ffffff;
-    --app-soft: #eaf7f4;
-    --app-shadow: 0 12px 34px rgba(19, 35, 31, .08);
-    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    --font-heading: "Iowan Old Style", "Palatino Linotype", Palatino, Baskerville, Georgia, serif;
+    --app-soft: #edf8f5;
+    --app-shadow: 0 14px 40px rgba(20, 37, 34, .08);
+    --font-body: Inter, "SF Pro Text", "Segoe UI Variable Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-heading: "Avenir Next", "SF Pro Display", "Segoe UI Variable Display", "Segoe UI", sans-serif;
 }
 
 html {
@@ -26,11 +28,12 @@ html {
 
 body {
     background: var(--app-bg);
-    color: #344641;
+    color: var(--app-text);
     display: flex;
     flex-direction: column;
     font-family: var(--font-body);
     font-size: 1rem;
+    font-feature-settings: "kern" 1, "liga" 1;
     font-synthesis: none;
     line-height: 1.65;
     min-height: 100vh;
@@ -45,9 +48,9 @@ body > main {
 h1, h2, h3, h4, h5, h6 {
     color: var(--app-heading);
     font-family: var(--font-heading);
-    font-weight: 700;
-    letter-spacing: -.02em;
-    line-height: 1.2;
+    font-weight: 750;
+    letter-spacing: -.032em;
+    line-height: 1.15;
 }
 
 a {
@@ -59,56 +62,62 @@ a:hover {
 }
 
 ::selection {
-    background: #bfe9e3;
-    color: #102a25;
+    background: #b9eadf;
+    color: var(--app-heading);
 }
 
 :focus-visible {
-    outline: 3px solid rgba(15, 118, 110, .32);
+    outline: 3px solid rgba(8, 127, 111, .34);
     outline-offset: 3px;
 }
 
 .btn {
-    border-radius: .65rem;
+    border-radius: .7rem;
     font-family: var(--font-body);
     font-weight: 700;
-    letter-spacing: .005em;
+    letter-spacing: -.005em;
+    min-height: 42px;
     padding-inline: 1rem;
+    transition: background-color .18s ease, border-color .18s ease, box-shadow .18s ease, color .18s ease, transform .18s ease;
 }
 
 .btn-primary {
     background: var(--app-primary);
     border-color: var(--app-primary);
+    box-shadow: 0 6px 16px rgba(8, 127, 111, .18);
 }
 
 .btn-primary:hover,
 .btn-primary:focus {
     background: var(--app-primary-dark);
     border-color: var(--app-primary-dark);
+    box-shadow: 0 8px 20px rgba(5, 98, 87, .22);
+    transform: translateY(-1px);
 }
 
 .form-control,
 .form-select {
-    border-color: #cbd5e1;
-    border-radius: .65rem;
-    min-height: 44px;
+    border-color: #c5d4d0;
+    border-radius: .7rem;
+    color: var(--app-text);
+    min-height: 46px;
 }
 
 .form-control:focus,
 .form-select:focus {
-    border-color: #4fa69d;
-    box-shadow: 0 0 0 .2rem rgba(15, 118, 110, .14);
+    border-color: #49a99c;
+    box-shadow: 0 0 0 .2rem rgba(8, 127, 111, .14);
 }
 
 .form-label {
-    color: #2f423d;
+    color: var(--app-heading);
     font-size: .875rem;
     font-weight: 700;
 }
 
 .site-header {
-    background: rgba(255, 255, 255, .94);
-    backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, .92);
+    backdrop-filter: saturate(150%) blur(16px);
     position: sticky;
     top: 0;
     z-index: 1020;
@@ -117,14 +126,15 @@ a:hover {
 .navbar-brand {
     color: var(--app-heading);
     font-family: var(--font-heading);
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     font-weight: 800;
 }
 
 .brand-mark {
     align-items: center;
-    background: linear-gradient(135deg, #0f766e, #134e4a);
-    border-radius: .65rem;
+    background: linear-gradient(145deg, #0b927f, #075e54);
+    border-radius: .75rem;
+    box-shadow: 0 7px 16px rgba(8, 127, 111, .2);
     color: #fff;
     display: inline-flex;
     height: 36px;
@@ -134,8 +144,8 @@ a:hover {
 
 .user-chip,
 .count-badge {
-    background: var(--app-soft);
-    border: 1px solid #c9e9e4;
+    background: var(--app-primary-light);
+    border: 1px solid #bce7dd;
     border-radius: 999px;
     color: var(--app-primary-dark);
     font-size: .8rem;
@@ -145,8 +155,9 @@ a:hover {
 
 .hero-section {
     background:
-        radial-gradient(circle at 88% 20%, rgba(20, 184, 166, .13), transparent 28%),
-        linear-gradient(180deg, #fff 0%, #eef8f6 100%);
+        radial-gradient(circle at 88% 18%, rgba(13, 148, 136, .16), transparent 30%),
+        radial-gradient(circle at 8% 92%, rgba(45, 212, 191, .08), transparent 24%),
+        linear-gradient(180deg, #fff 0%, #eaf7f3 100%);
     border-bottom: 1px solid var(--app-border);
 }
 
@@ -158,12 +169,12 @@ a:hover {
     color: var(--app-primary);
     font-size: .75rem;
     font-weight: 800;
-    letter-spacing: .14em;
+    letter-spacing: .16em;
     text-transform: uppercase;
 }
 
 .blog-hero {
-    filter: drop-shadow(0 18px 25px rgba(15, 118, 110, .13));
+    filter: drop-shadow(0 20px 28px rgba(8, 127, 111, .15));
     max-height: 300px;
     object-fit: contain;
     width: 100%;
@@ -176,7 +187,7 @@ a:hover {
 .content-card {
     background: var(--app-surface);
     border: 1px solid var(--app-border);
-    border-radius: 1rem;
+    border-radius: 1.15rem;
     box-shadow: var(--app-shadow);
 }
 
@@ -200,8 +211,8 @@ a:hover {
 }
 
 .post-card:hover {
-    border-color: #9ed7d0;
-    box-shadow: 0 16px 38px rgba(19, 35, 31, .12);
+    border-color: #8fcfc4;
+    box-shadow: 0 18px 42px rgba(20, 37, 34, .12);
     transform: translateY(-2px);
 }
 
@@ -236,6 +247,7 @@ a:hover {
 
 .tag-chip {
     background: var(--app-soft);
+    border: 1px solid #c8eae2;
     border-radius: 999px;
     color: var(--app-primary-dark);
     font-size: .78rem;
@@ -245,7 +257,8 @@ a:hover {
 }
 
 .tag-chip:hover {
-    background: #d5f0ec;
+    background: var(--app-primary-light);
+    border-color: #9ed8cd;
 }
 
 .topic-list {
@@ -262,19 +275,19 @@ a:hover {
 }
 
 .topic-row:hover {
-    background: #f8fafc;
+    background: var(--app-soft);
 }
 
 .topic-link {
-    color: #30433e;
+    color: var(--app-text);
     font-weight: 650;
     text-decoration: none;
 }
 
 .empty-state {
     background: var(--app-surface);
-    border: 1px dashed #b8c4d7;
-    border-radius: 1rem;
+    border: 1px dashed #aabdb8;
+    border-radius: 1.15rem;
     padding: 3rem 1.5rem;
     text-align: center;
 }
@@ -291,7 +304,7 @@ a:hover {
 }
 
 .site-footer {
-    background: #fff;
+    background: rgba(255, 255, 255, .82);
     color: var(--app-heading);
     flex-shrink: 0;
     font-size: .875rem;
@@ -300,8 +313,8 @@ a:hover {
 .account-page {
     align-items: center;
     background:
-        radial-gradient(circle at 15% 20%, rgba(15, 118, 110, .13), transparent 24%),
-        radial-gradient(circle at 90% 85%, rgba(20, 184, 166, .11), transparent 25%),
+        radial-gradient(circle at 15% 20%, rgba(8, 127, 111, .14), transparent 24%),
+        radial-gradient(circle at 90% 85%, rgba(45, 212, 191, .1), transparent 25%),
         var(--app-bg);
     display: flex;
     justify-content: center;
@@ -310,7 +323,8 @@ a:hover {
 
 .account-card {
     border: 1px solid var(--app-border);
-    border-radius: 1rem;
+    border-radius: 1.15rem;
+    box-shadow: var(--app-shadow);
     max-width: 480px;
     width: 100%;
 }
@@ -324,7 +338,7 @@ a:hover {
 .post-editor form {
     background: var(--app-surface);
     border: 1px solid var(--app-border);
-    border-radius: 1rem;
+    border-radius: 1.15rem;
     box-shadow: var(--app-shadow);
     padding: clamp(1.25rem, 4vw, 3rem);
 }
@@ -336,15 +350,15 @@ a:hover {
 }
 
 .post-detail-body {
-    color: #344641;
-    font-family: var(--font-heading);
-    font-size: 1.05rem;
-    line-height: 1.85;
+    color: var(--app-text);
+    font-family: var(--font-body);
+    font-size: 1.075rem;
+    line-height: 1.8;
     white-space: pre-wrap;
 }
 
 .tag-options {
-    background: #f8fafc;
+    background: var(--app-soft);
     border: 1px solid var(--app-border);
     border-radius: .75rem;
     display: grid;
