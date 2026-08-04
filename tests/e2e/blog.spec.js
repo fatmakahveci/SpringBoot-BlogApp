@@ -1,14 +1,19 @@
 const { test, expect } = require("@playwright/test");
 
-test("explore posts moves focus to the posts section", async ({ page }) => {
+test("browse all posts visibly scrolls to the posts section", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 720 });
   await page.goto("/");
 
   await expect(page.getByRole("heading", { name: "A practical blog for thoughtful software builders." })).toBeVisible();
-  await page.getByRole("link", { name: "Explore posts" }).click();
+  await page.getByRole("link", { name: "Browse all posts" }).click();
 
   await expect(page).toHaveURL(/#posts$/);
   await expect(page.locator("#posts")).toBeFocused();
   await expect(page.getByRole("heading", { name: "Browse posts" })).toBeVisible();
+  await expect(page.locator("#posts")).toHaveClass(/is-scroll-highlighted/);
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(100);
+  await expect.poll(() => page.locator("#posts").evaluate((element) => element.getBoundingClientRect().top))
+    .toBeGreaterThanOrEqual(70);
 });
 
 test("footer stays at the bottom of a tall viewport", async ({ page }) => {

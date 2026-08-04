@@ -44,7 +44,7 @@
                             <h1 class="display-5 fw-bold mt-2 mb-3">A practical blog for thoughtful software builders.</h1>
                             <p class="lead text-secondary mb-4">Explore published articles, discover topics, or share your own work with the community.</p>
                             <div class="d-flex flex-wrap gap-2">
-                                <a href="/#posts" class="btn btn-primary btn-lg" data-scroll-target="posts">Explore posts</a>
+                                <a href="#posts" class="btn btn-primary btn-lg" data-scroll-target="posts">Browse all posts <span aria-hidden="true">↓</span></a>
                                 <a sec:authorize="hasAnyRole('AUTHOR', 'ADMIN')" th:href="@{/posts/add}" class="btn btn-outline-primary btn-lg">Create new post</a>
                                 <a sec:authorize="isAnonymous()" th:href="@{/register}" class="btn btn-outline-primary btn-lg">Start writing</a>
                             </div>

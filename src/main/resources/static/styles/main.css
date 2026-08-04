@@ -26,6 +26,22 @@ html {
     outline: none;
 }
 
+#posts.is-scroll-highlighted .section-heading {
+    animation: section-arrival 1.2s ease-out;
+}
+
+@keyframes section-arrival {
+    0% {
+        background: var(--app-primary-light);
+        box-shadow: 0 0 0 .75rem var(--app-primary-light);
+    }
+
+    100% {
+        background: transparent;
+        box-shadow: 0 0 0 0 transparent;
+    }
+}
+
 body {
     background: var(--app-bg);
     color: var(--app-text);
@@ -408,5 +424,15 @@ a:hover {
 
     .pagination .page-link {
         padding: .375rem .55rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    #posts.is-scroll-highlighted .section-heading {
+        animation: none;
     }
 }
