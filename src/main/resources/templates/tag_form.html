@@ -6,7 +6,8 @@
         <title>Edit topic | Spring Blog</title>
         <meta name="robots" content="noindex,nofollow">
         <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
-        <link th:href="@{/styles/main.css(v='20260804-2')}" rel="stylesheet">
+        <link th:href="@{/styles/main.css(v='20260804-3')}" rel="stylesheet">
+        <script th:src="@{/scripts/main.js}" defer></script>
     </head>
     <body>
         <main class="container account-page px-3 py-4">
@@ -27,6 +28,13 @@
                             <a th:href="@{/tags/{tagId}(tagId=${tag.id})}" class="btn btn-light border">Cancel</a>
                         </div>
                     </form>
+                    <div class="danger-zone mt-4 pt-4 border-top">
+                        <h2 class="h6">Delete topic</h2>
+                        <p class="text-secondary small">Posts will be kept, but this topic will be removed from every post.</p>
+                        <form th:method="DELETE" data-confirm="Delete this topic permanently? Posts will be kept.">
+                            <button type="submit" th:formaction="@{/tags/{tagId}(tagId=${tag.id})}" class="btn btn-outline-danger">Delete topic</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </main>

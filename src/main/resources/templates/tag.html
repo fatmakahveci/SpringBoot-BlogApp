@@ -14,7 +14,7 @@
         <meta property="og:url" th:content="${seoBaseUrl + '/tags/' + tag.id}">
         <meta name="twitter:card" content="summary">
         <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
-        <link th:href="@{/styles/main.css(v='20260804-2')}" rel="stylesheet">
+        <link th:href="@{/styles/main.css(v='20260804-3')}" rel="stylesheet">
         <script th:src="@{/scripts/main.js}" defer></script>
     </head>
     <body>
@@ -33,7 +33,12 @@
                 <span class="eyebrow">Topic</span>
                 <h1 class="display-6 fw-bold mb-2" th:text="${tag.name}">Topic name</h1>
                 <p class="text-secondary mb-0">Published articles filed under this topic.</p>
-                <a sec:authorize="hasRole('ADMIN')" th:href="@{/tags/{tagId}/edit(tagId=${tag.id})}" class="btn btn-outline-primary btn-sm mt-3">Edit topic</a>
+                <div sec:authorize="hasRole('ADMIN')" class="d-flex flex-wrap gap-2 mt-3" aria-label="Topic administration">
+                    <a th:href="@{/tags/{tagId}/edit(tagId=${tag.id})}" class="btn btn-outline-primary btn-sm">Edit topic</a>
+                    <form th:method="DELETE" data-confirm="Delete this topic permanently? Posts will be kept.">
+                        <button type="submit" th:formaction="@{/tags/{tagId}(tagId=${tag.id})}" class="btn btn-outline-danger btn-sm">Delete topic</button>
+                    </form>
+                </div>
             </section>
 
             <div class="post-list" th:if="${!#lists.isEmpty(posts)}">
