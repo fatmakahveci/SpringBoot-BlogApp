@@ -231,6 +231,7 @@ Client  ──> REST controllers ─> JSON responses
 - Services define transactional boundaries and enforce application rules.
 - Entities maintain both sides of bidirectional relationships safely.
 - Repositories provide persistence without leaking database access into views.
+- Lazy relationships use bounded batch loading, while Flyway indexes cover published-post and reverse topic lookups.
 - A global exception handler produces consistent HTML and JSON failures.
 
 ## Security and CI

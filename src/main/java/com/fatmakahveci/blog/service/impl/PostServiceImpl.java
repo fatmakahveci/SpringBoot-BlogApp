@@ -45,34 +45,38 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Post> findById(Integer id) {
         return postRepository.findById(id);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Post> findAll() {
         return postRepository.findAll();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Post> findPublished() {
         return postRepository.findByStatusOrderByUpdatedAtDesc(PostStatus.PUBLISHED);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<Post> findAll(String query, Pageable pageable, boolean includeDrafts) {
         String normalizedQuery = query == null ? "" : query.trim();
         if (includeDrafts && normalizedQuery.isEmpty()) {
-            return postRepository.findAll(pageable);
+            return initializeTags(postRepository.findAll(pageable));
         }
         if (includeDrafts) {
-            return postRepository.findByTitleContainingIgnoreCase(normalizedQuery, pageable);
+            return initializeTags(postRepository.findByTitleContainingIgnoreCase(normalizedQuery, pageable));
         }
         if (normalizedQuery.isEmpty()) {
-            return postRepository.findByStatus(PostStatus.PUBLISHED, pageable);
+            return initializeTags(postRepository.findByStatus(PostStatus.PUBLISHED, pageable));
         }
-        return postRepository.findByStatusAndTitleContainingIgnoreCase(
-                PostStatus.PUBLISHED, normalizedQuery, pageable);
+        return initializeTags(postRepository.findByStatusAndTitleContainingIgnoreCase(
+                PostStatus.PUBLISHED, normalizedQuery, pageable));
     }
 
     @Override
@@ -85,11 +89,13 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Post> findByTitle(String title) {
         return postRepository.findByTitle(title);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Post> findBySlug(String slug) {
         return postRepository.findBySlug(slug);
     }
@@ -102,5 +108,10 @@ public class PostServiceImpl implements PostService {
         existingPost.setStatus(submittedPost.getStatus());
         existingPost.setTags(submittedPost.getTags());
         return existingPost;
+    }
+
+    private Page<Post> initializeTags(Page<Post> posts) {
+        posts.forEach(post -> post.getTags().size());
+        return posts;
     }
 }
