@@ -30,15 +30,29 @@ class HomePageNavigationITests {
     }
 
     @Test
-    void pageAdvertisesTheBrandedSvgFavicon() throws Exception {
+    void pageAdvertisesTheCompleteBrandedIconSet() throws Exception {
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(
-                        "rel=\"icon\" type=\"image/svg+xml\" href=\"/images/favicon.svg?v=1\"")));
+                        "rel=\"icon\" type=\"image/svg+xml\" href=\"/images/favicon.svg?v=1\"")))
+                .andExpect(content().string(containsString(
+                        "rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"/images/favicon-32x32.png?v=1\"")))
+                .andExpect(content().string(containsString(
+                        "rel=\"apple-touch-icon\" sizes=\"180x180\" href=\"/images/apple-touch-icon.png?v=1\"")))
+                .andExpect(content().string(containsString(
+                        "class=\"brand-mark\" src=\"/images/favicon.svg?v=1\" width=\"36\" height=\"36\" alt=\"\"")));
 
         mockMvc.perform(get("/images/favicon.svg"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith("image/svg+xml"))
                 .andExpect(content().string(containsString("Spring Blog logo")));
+
+        mockMvc.perform(get("/images/favicon-32x32.png"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("image/png"));
+
+        mockMvc.perform(get("/images/apple-touch-icon.png"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("image/png"));
     }
 }
