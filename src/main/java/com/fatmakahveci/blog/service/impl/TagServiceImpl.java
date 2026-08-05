@@ -31,21 +31,25 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Tag> findById(Integer id) {
         return tagRepository.findById(id);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Tag> findAll(){
         return tagRepository.findAll();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Tag> findByPostStatus(PostStatus status) {
         return tagRepository.findDistinctByPostsStatus(status);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Tag> findByName(String name) {
         return tagRepository.findByName(name);
     }

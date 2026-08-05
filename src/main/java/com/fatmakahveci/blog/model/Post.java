@@ -23,6 +23,8 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import org.hibernate.annotations.BatchSize;
+
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
@@ -58,7 +60,8 @@ public class Post {
     private Instant updatedAt;
 
     @JsonManagedReference
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @BatchSize(size = 50)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "post_tags",
             joinColumns = @JoinColumn(name = "post_id"),
