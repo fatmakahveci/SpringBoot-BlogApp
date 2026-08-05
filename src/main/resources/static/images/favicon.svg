@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Spring Blog logo">
+  <defs>
+    <linearGradient id="background" x1="8" y1="4" x2="56" y2="60" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0b927f"/>
+      <stop offset="1" stop-color="#056257"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="url(#background)"/>
+  <path fill="#fff" d="M18 13h20c8.3 0 14 4.5 14 11.3 0 4.5-2.4 7.8-6.4 9.5 5 1.4 8.4 5.3 8.4 10.7C54 52.2 47.8 57 38.2 57H18V13Zm10 8v9h9.1c3.2 0 5-1.7 5-4.6 0-2.8-1.8-4.4-5-4.4H28Zm0 17v11h9.7c4 0 6.2-2 6.2-5.5 0-3.6-2.2-5.5-6.2-5.5H28Z"/>
+</svg>

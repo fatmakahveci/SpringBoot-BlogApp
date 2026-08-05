@@ -3,6 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image/svg+xml" th:href="@{/images/favicon.svg(v='1')}">
         <title th:text="${post.title + ' | Spring Blog'}">Post | Spring Blog</title>
         <meta name="description" th:content="${#strings.abbreviate(post.summary != null and !post.summary.isBlank() ? post.summary : post.content, 160)}">
         <meta name="robots" th:content="${seoNoIndex} ? 'noindex,nofollow' : 'index,follow,max-image-preview:large'">
