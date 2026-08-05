@@ -6,16 +6,19 @@
         <link rel="icon" type="image/svg+xml" th:href="@{/images/favicon.svg(v='1')}">
         <link rel="icon" type="image/png" sizes="32x32" th:href="@{/images/favicon-32x32.png(v='1')}">
         <link rel="apple-touch-icon" sizes="180x180" th:href="@{/images/apple-touch-icon.png(v='1')}">
-        <title>Spring Blog | Software Articles and Tutorials</title>
-        <meta name="description" content="Read practical software development articles, tutorials, and engineering notes built by the Spring Blog community.">
+        <title>Spring Blog | Everyday Stories and Simple Moments</title>
+        <meta name="description" content="Read warm, practical stories about everyday life, food, travel, wellbeing, and the small moments worth remembering.">
         <meta name="robots" th:content="${seoNoIndex} ? 'noindex,follow' : 'index,follow,max-image-preview:large'">
         <link rel="canonical" th:href="${seoBaseUrl + '/'}">
         <meta property="og:type" content="website">
         <meta property="og:site_name" content="Spring Blog">
-        <meta property="og:title" content="Spring Blog | Software Articles and Tutorials">
-        <meta property="og:description" content="Practical software development articles, tutorials, and engineering notes.">
+        <meta property="og:title" content="Spring Blog | Everyday Stories and Simple Moments">
+        <meta property="og:description" content="Everyday stories about food, travel, wellbeing, and the moments that make life memorable.">
         <meta property="og:url" th:content="${seoBaseUrl + '/'}">
-        <meta name="twitter:card" content="summary">
+        <meta property="og:image" th:content="${seoBaseUrl + '/images/blog.png'}">
+        <meta property="og:image:alt" content="A person writing and sharing a story on Spring Blog">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:image" th:content="${seoBaseUrl + '/images/blog.png'}">
         <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
         <link th:href="@{/styles/main.css(v='20260804-4')}" rel="stylesheet">
         <script th:src="@{/scripts/main.js}" defer></script>
@@ -44,9 +47,9 @@
                 <div class="container-xl px-3 py-5">
                     <div class="row align-items-center g-4">
                         <div class="col-lg-7">
-                            <span class="eyebrow">Ideas, tutorials, and notes</span>
-                            <h1 class="display-5 fw-bold mt-2 mb-3">A practical blog for thoughtful software builders.</h1>
-                            <p class="lead text-secondary mb-4">Explore published articles, discover topics, or share your own work with the community.</p>
+                            <span class="eyebrow">Stories from everyday life</span>
+                            <h1 class="display-5 fw-bold mt-2 mb-3">Small moments, honest stories, and ideas worth sharing.</h1>
+                            <p class="lead text-secondary mb-4">Discover stories about daily life, food, travel, and wellbeing—or share a moment of your own.</p>
                             <div class="d-flex flex-wrap gap-2">
                                 <a href="#posts" class="btn btn-primary btn-lg" data-scroll-target="posts">Browse all posts <span aria-hidden="true">↓</span></a>
                                 <a sec:authorize="hasAnyRole('AUTHOR', 'ADMIN')" th:href="@{/posts/add}" class="btn btn-outline-primary btn-lg">Create new post</a>
@@ -183,7 +186,7 @@
         <footer class="site-footer border-top">
             <div class="container-xl px-3 py-4 d-flex flex-column flex-sm-row justify-content-between gap-2">
                 <span>Spring Blog</span>
-                <span class="text-secondary">Built with Spring Boot and Thymeleaf.</span>
+                <span class="text-secondary">Everyday stories, thoughtfully shared.</span>
             </div>
         </footer>
     </body>

@@ -43,7 +43,7 @@ test("browse all posts visibly scrolls to the posts section", async ({ page }) =
   await page.setViewportSize({ width: 1280, height: 720 });
   await page.goto("/");
 
-  await expect(page.getByRole("heading", { name: "A practical blog for thoughtful software builders." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Small moments, honest stories, and ideas worth sharing." })).toBeVisible();
   await page.getByRole("link", { name: "Browse all posts" }).click();
 
   await expect(page).toHaveURL(/#posts$/);

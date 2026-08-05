@@ -54,7 +54,7 @@ class TagControllerITests {
         mockMvc.perform(get("/tags/1"))
                 .andExpect(status().isOk())
                 .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.content()
-                        .string(org.hamcrest.Matchers.containsString("No published posts use this tag yet.")));
+                        .string(org.hamcrest.Matchers.containsString("No published stories use this topic yet.")));
     }
 
     @Test

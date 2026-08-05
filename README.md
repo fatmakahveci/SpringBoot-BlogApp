@@ -26,7 +26,7 @@ A secure, server-rendered blog platform built with Spring Boot, Thymeleaf, Sprin
 
 ![Current Spring Boot Blog interface and publishing workflow](demo.gif)
 
-The walkthrough is generated from the current application and shows the branded public feed, post discovery, sign-in, authoring, and published-post experience. The interface is keyboard accessible and adapts to phone, tablet, and desktop viewports.
+The walkthrough is generated from the current application and shows the everyday-story feed, topic discovery, sign-in, authoring, and published-post experience. The interface is keyboard accessible and adapts to phone, tablet, and desktop viewports.
 
 The main workflow is straightforward:
 
