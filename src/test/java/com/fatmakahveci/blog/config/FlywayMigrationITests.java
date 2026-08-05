@@ -19,7 +19,7 @@ class FlywayMigrationITests {
 
     @Test
     void schemaIsMigratedToLatestVersion() {
-        assertThat(flyway.info().current().getVersion().getVersion()).isEqualTo("7");
+        assertThat(flyway.info().current().getVersion().getVersion()).isEqualTo("8");
     }
 
     @Test
@@ -42,5 +42,17 @@ class FlywayMigrationITests {
                 """, Integer.class);
 
         assertThat(uniqueIndexCount).isPositive();
+    }
+
+    @Test
+    void migratedSchemaContainsReadPathIndexes() {
+        Integer indexCount = jdbcTemplate.queryForObject("""
+                SELECT COUNT(*)
+                FROM sqlite_master
+                WHERE type = 'index'
+                  AND name IN ('idx_posts_status_updated_at', 'idx_post_tags_tag_post')
+                """, Integer.class);
+
+        assertThat(indexCount).isEqualTo(2);
     }
 }

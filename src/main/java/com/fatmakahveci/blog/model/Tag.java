@@ -14,6 +14,8 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import org.hibernate.annotations.BatchSize;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
@@ -29,6 +31,7 @@ public class Tag {
     private String name;
 
     @JsonBackReference
+    @BatchSize(size = 50)
     @ManyToMany(mappedBy = "tags")
     private Set<Post> posts = new HashSet<>();
 
