@@ -81,6 +81,7 @@ jobs:
             --env BLOG_AUTHOR_PASSWORD=release-smoke-author \
             --env BLOG_MFA_KEY="$mfa_password" \
             --env BLOG_MFA_ENCRYPTION_SALT="$mfa_salt" \
+            --env SPRING_PROFILES_ACTIVE=staging \
             --publish 127.0.0.1:8080:8080 \
             "$IMAGE")
           trap 'docker rm --force "$container_id"' EXIT

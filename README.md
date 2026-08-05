@@ -94,10 +94,12 @@ Administrator password authentication is followed by mandatory TOTP verification
 |---|---|---|
 | `dev` | Local development; selected by default | Uncached templates and generated temporary passwords |
 | `test` | Automated test execution | Isolated in-memory SQLite database and deterministic credentials |
+| `e2e` | Playwright browser tests | Isolated in-memory database, stable credentials, concise logs |
+| `staging` | Pre-production deployment | Production security with an independent database and Sentry environment |
 | `prod` | Container and production deployments | Required secrets, secure cookies, structured logs, cached templates |
 | `redis` | Optional shared cache; combine with another profile | Redis-backed sitemap cache with bounded timeouts and TTL |
 
-The production profile requires `BLOG_DATABASE_PATH`, account passwords, and the two MFA encryption values. It fails fast when required secrets are missing.
+The staging and production profiles each require their own `BLOG_DATABASE_PATH`, account passwords, base URL, and MFA encryption values. They fail fast when required secrets are missing. Never point staging at the production database or reuse its secrets.
 
 ### Environment variables
 
