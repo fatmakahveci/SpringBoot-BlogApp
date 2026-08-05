@@ -149,14 +149,11 @@ a:hover {
 }
 
 .brand-mark {
-    align-items: center;
-    background: linear-gradient(145deg, #0b927f, #075e54);
     border-radius: .75rem;
     box-shadow: 0 7px 16px rgba(8, 127, 111, .2);
-    color: #fff;
-    display: inline-flex;
+    display: block;
+    flex: 0 0 auto;
     height: 36px;
-    justify-content: center;
     width: 36px;
 }
 

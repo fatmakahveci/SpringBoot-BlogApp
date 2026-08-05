@@ -4,6 +4,8 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="icon" type="image/svg+xml" th:href="@{/images/favicon.svg(v='1')}">
+        <link rel="icon" type="image/png" sizes="32x32" th:href="@{/images/favicon-32x32.png(v='1')}">
+        <link rel="apple-touch-icon" sizes="180x180" th:href="@{/images/apple-touch-icon.png(v='1')}">
         <title>Spring Blog | Software Articles and Tutorials</title>
         <meta name="description" content="Read practical software development articles, tutorials, and engineering notes built by the Spring Blog community.">
         <meta name="robots" th:content="${seoNoIndex} ? 'noindex,follow' : 'index,follow,max-image-preview:large'">
@@ -22,7 +24,7 @@
         <header class="site-header border-bottom">
             <nav class="container-xl navbar navbar-expand py-3 px-3" aria-label="Primary navigation">
                 <a th:href="@{/}" class="navbar-brand d-flex align-items-center gap-2">
-                    <span class="brand-mark" aria-hidden="true">B</span>
+                    <img class="brand-mark" th:src="@{/images/favicon.svg(v='1')}" width="36" height="36" alt="">
                     <span>Spring Blog</span>
                 </a>
                 <div class="ms-auto account-actions d-flex align-items-center justify-content-end gap-2">
