@@ -255,6 +255,8 @@ The application and repository include:
 
 The Java CI and Security Dashboard workflows run on every pull request and every push to `main`. Changes should not be merged until required build, frontend/E2E, dependency, CodeQL, and container checks pass.
 
+The scheduled Disaster Recovery workflow creates an online SQLite backup, deliberately changes the source database, restores the backup to a clean path, boots the restored application, and verifies a known record through the public API. Operators can use `scripts/backup-sqlite.sh` and `scripts/restore-sqlite.sh`; both commands reject invalid input and run SQLite integrity checks.
+
 ## Contributing
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md) for development, testing, and pull-request requirements. Security issues must be reported privately according to [SECURITY.md](SECURITY.md). Release history and maintainer procedures are documented in [CHANGELOG.md](CHANGELOG.md) and [RELEASING.md](RELEASING.md).
