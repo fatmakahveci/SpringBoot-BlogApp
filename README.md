@@ -147,7 +147,7 @@ After starting the application locally:
 
 Only the Actuator `health` and `info` endpoints are exposed over HTTP. Health component details and sensitive management endpoints remain unavailable to public clients. In production, use readiness to decide when to route traffic and liveness to decide when to restart the process; do not use readiness failures as a restart signal.
 
-Every response includes an `X-Request-ID`. A safe client-provided value is preserved; otherwise the application generates one. Production ECS logs attach the request ID, authenticated username, and service version. Setting `SENTRY_DSN` enables sanitized error and performance reporting with the same correlation context; default personally identifiable information collection remains disabled.
+Every response includes an `X-Request-ID`. A safe client-provided value is preserved; otherwise the application generates one. Secure-environment ECS logs attach the request ID, authenticated username, service version, environment, response status, and request duration. Setting `SENTRY_DSN` enables sanitized error and performance reporting with matching request, user, version, and environment tags; default personally identifiable information collection remains disabled. Invalid trace sampling values fail during startup.
 
 ### JSON API examples
 
