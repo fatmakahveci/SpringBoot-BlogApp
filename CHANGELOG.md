@@ -2,6 +2,21 @@
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and releases use [Semantic Versioning](https://semver.org/).
 
+## [1.2.0](https://github.com/fatmakahveci/SpringBoot-BlogApp/compare/v1.1.0...v1.2.0) (2026-08-05)
+
+
+### Features
+
+* add development sample posts and topics ([#52](https://github.com/fatmakahveci/SpringBoot-BlogApp/issues/52)) ([85a3897](https://github.com/fatmakahveci/SpringBoot-BlogApp/commit/85a3897029559d91ffad782dcb634754148e00f7))
+* replace technical samples with everyday stories ([#55](https://github.com/fatmakahveci/SpringBoot-BlogApp/issues/55)) ([70b76f5](https://github.com/fatmakahveci/SpringBoot-BlogApp/commit/70b76f57dc2f0a17fbf3c6988655984032e50e5a))
+* **ui:** align blog experience with everyday stories ([#57](https://github.com/fatmakahveci/SpringBoot-BlogApp/issues/57)) ([41f5501](https://github.com/fatmakahveci/SpringBoot-BlogApp/commit/41f550181264c64bf8a170aa28eff1f4482c00c0))
+
+
+### Bug Fixes
+
+* **dev:** remove obsolete demo content ([#56](https://github.com/fatmakahveci/SpringBoot-BlogApp/issues/56)) ([344059a](https://github.com/fatmakahveci/SpringBoot-BlogApp/commit/344059a355872ae70d44b7d8ec727b11a36e98dc))
+* seed development content atomically ([#54](https://github.com/fatmakahveci/SpringBoot-BlogApp/issues/54)) ([0afabbf](https://github.com/fatmakahveci/SpringBoot-BlogApp/commit/0afabbfa415baee4c6f183d9f647a7f75dfefdee))
+
 ## [1.1.0](https://github.com/fatmakahveci/SpringBoot-BlogApp/compare/v1.0.0...v1.1.0) (2026-08-05)
 
 
