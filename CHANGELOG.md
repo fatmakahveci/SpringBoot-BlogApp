@@ -7,10 +7,17 @@ All notable changes to this project are documented here. The format follows [Kee
 ### Added
 
 - Professional contribution, security, and release documentation.
+- Administrator TOTP MFA and append-only administrator audit events.
+- Role-aware request limiting with separate authentication and trusted-scanner policies.
+- Optional Redis sitemap caching with deterministic invalidation.
+- Scheduled SQLite backup and restore drills with integrity verification.
+- Dedicated staging configuration and an operations runbook.
 
 ### Changed
 
 - Main branch governance now requires build, browser, dependency, CodeQL, container, and secret-scanning checks.
+- Post-topic reads use bounded lazy loading and indexed query paths.
+- Structured request completion logs and Sentry context include correlation, version, and environment fields.
 
 ## [1.0.0] - 2026-08-04
 
