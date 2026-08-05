@@ -9,6 +9,8 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import com.fatmakahveci.blog.model.Post;
 import com.fatmakahveci.blog.model.PostStatus;
@@ -44,20 +46,26 @@ public class DevelopmentSampleDataConfig {
                     Set.of("Testing", "Spring Boot")));
 
     @Bean
-    ApplicationRunner developmentSampleData(PostService postService, TagService tagService) {
-        return arguments -> {
-            Map<String, Tag> topics = new LinkedHashMap<>();
-            SAMPLE_POSTS.stream()
-                    .flatMap(post -> post.topics().stream())
-                    .distinct()
-                    .forEach(name -> topics.put(name, tagService.findByName(name)
-                            .orElseGet(() -> tagService.createByName(name))));
+    ApplicationRunner developmentSampleData(
+            PostService postService,
+            TagService tagService,
+            PlatformTransactionManager transactionManager) {
+        TransactionTemplate transaction = new TransactionTemplate(transactionManager);
+        return arguments -> transaction.executeWithoutResult(status -> seed(postService, tagService));
+    }
 
-            SAMPLE_POSTS.stream()
-                    .filter(sample -> postService.findByTitle(sample.title()).isEmpty())
-                    .map(sample -> sample.toPost(topics))
-                    .forEach(postService::save);
-        };
+    void seed(PostService postService, TagService tagService) {
+        Map<String, Tag> topics = new LinkedHashMap<>();
+        SAMPLE_POSTS.stream()
+                .flatMap(post -> post.topics().stream())
+                .distinct()
+                .forEach(name -> topics.put(name, tagService.findByName(name)
+                        .orElseGet(() -> tagService.createByName(name))));
+
+        SAMPLE_POSTS.stream()
+                .filter(sample -> postService.findByTitle(sample.title()).isEmpty())
+                .map(sample -> sample.toPost(topics))
+                .forEach(postService::save);
     }
 
     private record SamplePost(String title, String summary, String content, Set<String> topics) {

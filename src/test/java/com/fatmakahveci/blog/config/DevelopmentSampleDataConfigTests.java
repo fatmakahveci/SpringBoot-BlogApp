@@ -14,8 +14,6 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.springframework.boot.ApplicationRunner;
-
 import com.fatmakahveci.blog.model.Post;
 import com.fatmakahveci.blog.model.PostStatus;
 import com.fatmakahveci.blog.model.Tag;
@@ -38,9 +36,7 @@ class DevelopmentSampleDataConfigTests {
         });
         when(postService.findByTitle(any())).thenReturn(Optional.empty());
 
-        ApplicationRunner runner = new DevelopmentSampleDataConfig()
-                .developmentSampleData(postService, tagService);
-        runner.run(null);
+        new DevelopmentSampleDataConfig().seed(postService, tagService);
 
         ArgumentCaptor<Post> posts = ArgumentCaptor.forClass(Post.class);
         verify(postService, times(3)).save(posts.capture());
@@ -64,7 +60,7 @@ class DevelopmentSampleDataConfigTests {
         when(tagService.findByName(any())).thenReturn(Optional.of(existingTag));
         when(postService.findByTitle(any())).thenReturn(Optional.of(new Post()));
 
-        new DevelopmentSampleDataConfig().developmentSampleData(postService, tagService).run(null);
+        new DevelopmentSampleDataConfig().seed(postService, tagService);
 
         verify(tagService, never()).createByName(any());
         verify(postService, never()).save(any());
