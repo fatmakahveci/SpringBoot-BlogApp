@@ -5,6 +5,8 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 
 import org.slf4j.MDC;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -26,11 +28,16 @@ public class ObservabilityContextFilter extends OncePerRequestFilter {
 
     static final String REQUEST_ID_HEADER = "X-Request-ID";
     private static final Pattern SAFE_REQUEST_ID = Pattern.compile("[A-Za-z0-9._-]{1,64}");
+    private static final Logger LOGGER = LoggerFactory.getLogger(ObservabilityContextFilter.class);
 
     private final String applicationVersion;
+    private final String environment;
 
-    ObservabilityContextFilter(@Value("${info.app.version:dev}") String applicationVersion) {
+    ObservabilityContextFilter(
+            @Value("${info.app.version:dev}") String applicationVersion,
+            @Value("${blog.environment:development}") String environment) {
         this.applicationVersion = applicationVersion;
+        this.environment = environment;
     }
 
     @Override
@@ -38,15 +45,22 @@ public class ObservabilityContextFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         String requestId = resolveRequestId(request.getHeader(REQUEST_ID_HEADER));
         String username = resolveUsername();
+        long startedAt = System.nanoTime();
         response.setHeader(REQUEST_ID_HEADER, requestId);
 
         try (MDC.MDCCloseable ignoredRequest = MDC.putCloseable("request.id", requestId);
                 MDC.MDCCloseable ignoredUser = MDC.putCloseable("user.name", username);
-                MDC.MDCCloseable ignoredVersion = MDC.putCloseable("service.version", applicationVersion)) {
+                MDC.MDCCloseable ignoredVersion = MDC.putCloseable("service.version", applicationVersion);
+                MDC.MDCCloseable ignoredEnvironment = MDC.putCloseable("service.environment", environment)) {
             configureSentry(requestId, username);
-            filterChain.doFilter(request, response);
-        } finally {
-            clearSentryContext();
+            try {
+                filterChain.doFilter(request, response);
+            } finally {
+                long durationMillis = (System.nanoTime() - startedAt) / 1_000_000;
+                LOGGER.info("HTTP request completed method={} path={} status={} duration_ms={}",
+                        request.getMethod(), request.getRequestURI(), response.getStatus(), durationMillis);
+                clearSentryContext();
+            }
         }
     }
 
@@ -68,6 +82,7 @@ public class ObservabilityContextFilter extends OncePerRequestFilter {
             scope.setUser(user);
             scope.setTag("request_id", requestId);
             scope.setTag("service_version", applicationVersion);
+            scope.setTag("environment", environment);
         });
     }
 
@@ -76,6 +91,7 @@ public class ObservabilityContextFilter extends OncePerRequestFilter {
             scope.setUser(null);
             scope.removeTag("request_id");
             scope.removeTag("service_version");
+            scope.removeTag("environment");
         });
     }
 }
