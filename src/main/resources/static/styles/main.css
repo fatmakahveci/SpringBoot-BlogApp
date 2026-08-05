@@ -294,6 +294,7 @@ a:hover {
     display: flex;
     justify-content: space-between;
     overflow: hidden;
+    position: relative;
 }
 
 .topic-row:hover {
@@ -312,6 +313,12 @@ a:hover {
     text-decoration: none;
 }
 
+.topic-link::after {
+    content: "";
+    inset: 0;
+    position: absolute;
+}
+
 .topic-link:focus-visible {
     box-shadow: inset 0 0 0 3px var(--app-primary);
     outline: none;
@@ -320,6 +327,8 @@ a:hover {
 .topic-actions {
     flex-shrink: 0;
     padding-right: .75rem;
+    position: relative;
+    z-index: 1;
 }
 
 .topic-actions .btn {

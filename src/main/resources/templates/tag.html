@@ -7,27 +7,38 @@
         <link rel="icon" type="image/png" sizes="32x32" th:href="@{/images/favicon-32x32.png(v='1')}">
         <link rel="apple-touch-icon" sizes="180x180" th:href="@{/images/apple-touch-icon.png(v='1')}">
         <title th:text="${tag.name + ' posts | Spring Blog'}">Topic | Spring Blog</title>
-        <meta name="description" th:content="${'Browse published software articles filed under ' + tag.name + ' on Spring Blog.'}">
+        <meta name="description" th:content="${'Browse stories and personal notes about ' + tag.name + ' on Spring Blog.'}">
         <meta name="robots" content="index,follow">
         <link rel="canonical" th:href="${seoBaseUrl + '/tags/' + tag.id}">
         <meta property="og:type" content="website">
         <meta property="og:site_name" content="Spring Blog">
         <meta property="og:title" th:content="${tag.name + ' posts | Spring Blog'}">
-        <meta property="og:description" th:content="${'Browse published software articles filed under ' + tag.name + '.'}">
+        <meta property="og:description" th:content="${'Browse stories and personal notes about ' + tag.name + '.'}">
         <meta property="og:url" th:content="${seoBaseUrl + '/tags/' + tag.id}">
-        <meta name="twitter:card" content="summary">
+        <meta property="og:image" th:content="${seoBaseUrl + '/images/blog.png'}">
+        <meta property="og:image:alt" content="A person writing and sharing a story on Spring Blog">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:image" th:content="${seoBaseUrl + '/images/blog.png'}">
         <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
         <link th:href="@{/styles/main.css(v='20260804-4')}" rel="stylesheet">
         <script th:src="@{/scripts/main.js}" defer></script>
     </head>
     <body>
         <header class="site-header border-bottom">
-            <nav class="container-xl navbar py-3 px-3">
+            <nav class="container-xl navbar py-3 px-3" aria-label="Primary navigation">
                 <a th:href="@{/}" class="navbar-brand d-flex align-items-center gap-2">
                     <img class="brand-mark" th:src="@{/images/favicon.svg(v='1')}" width="36" height="36" alt="">
                     <span>Spring Blog</span>
                 </a>
-                <a th:href="@{/}" class="btn btn-outline-primary btn-sm ms-auto">All posts</a>
+                <div class="ms-auto account-actions d-flex align-items-center justify-content-end gap-2">
+                    <a th:href="@{/}" class="btn btn-light border btn-sm">All posts</a>
+                    <a sec:authorize="isAnonymous()" th:href="@{/login}" class="btn btn-outline-primary btn-sm">Log in</a>
+                    <a sec:authorize="isAnonymous()" th:href="@{/register}" class="btn btn-primary btn-sm">Create account</a>
+                    <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" class="d-flex align-items-center gap-2">
+                        <span class="user-chip" sec:authentication="name"></span>
+                        <button type="submit" class="btn btn-outline-primary btn-sm">Log out</button>
+                    </form>
+                </div>
             </nav>
         </header>
 
@@ -35,7 +46,7 @@
             <section class="section-heading mb-4">
                 <span class="eyebrow">Topic</span>
                 <h1 class="display-6 fw-bold mb-2" th:text="${tag.name}">Topic name</h1>
-                <p class="text-secondary mb-0">Published articles filed under this topic.</p>
+                <p class="text-secondary mb-0">Stories and personal notes collected under this topic.</p>
                 <div sec:authorize="hasRole('ADMIN')" class="d-flex flex-wrap gap-2 mt-3" aria-label="Topic administration">
                     <a th:href="@{/tags/{tagId}/edit(tagId=${tag.id})}" class="btn btn-outline-primary btn-sm">Edit topic</a>
                     <form th:method="DELETE" data-confirm="Delete this topic permanently? Posts will be kept.">
@@ -71,9 +82,16 @@
             <div th:if="${#lists.isEmpty(posts)}" class="empty-state">
                 <div class="empty-state-icon" aria-hidden="true">⌕</div>
                 <h2 class="h5">No posts in this topic yet</h2>
-                <p class="text-secondary mb-3">No published posts use this tag yet. Published posts assigned to this topic will appear here.</p>
+                <p class="text-secondary mb-3">No published stories use this topic yet. New stories assigned to it will appear here.</p>
                 <a th:href="@{/}" class="btn btn-primary">Browse all posts</a>
             </div>
         </main>
+
+        <footer class="site-footer border-top">
+            <div class="container-xl px-3 py-4 d-flex flex-column flex-sm-row justify-content-between gap-2">
+                <span>Spring Blog</span>
+                <span class="text-secondary">Everyday stories, thoughtfully shared.</span>
+            </div>
+        </footer>
     </body>
 </html>
