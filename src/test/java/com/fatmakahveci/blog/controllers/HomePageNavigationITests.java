@@ -28,4 +28,17 @@ class HomePageNavigationITests {
                         "id=\"posts\" class=\"container-xl px-3 py-5\" tabindex=\"-1\"")))
                 .andExpect(content().string(containsString("id=\"posts-heading\"")));
     }
+
+    @Test
+    void pageAdvertisesTheBrandedSvgFavicon() throws Exception {
+        mockMvc.perform(get("/"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString(
+                        "rel=\"icon\" type=\"image/svg+xml\" href=\"/images/favicon.svg?v=1\"")));
+
+        mockMvc.perform(get("/images/favicon.svg"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("image/svg+xml"))
+                .andExpect(content().string(containsString("Spring Blog logo")));
+    }
 }
