@@ -56,6 +56,12 @@ Start with the response `X-Request-ID`. Search structured logs using `request.id
 
 Do not paste credentials, MFA secrets, database files, session cookies, or personal data into issues or chat. Follow `SECURITY.md` for suspected vulnerabilities.
 
+## Security maintenance
+
+Review the GitHub Security tab and the scheduled Security Dashboard every week. Treat open Dependabot, CodeQL, secret-scanning, and Trivy findings as release blockers until they are fixed or documented as reviewed false positives. Validate dependency updates with the full Maven, frontend, and E2E suites; never update Spring Boot-managed transitive libraries as an untested group.
+
+After a base-image or runtime dependency update, verify the container starts as UID/GID `10001`, remains functional with a read-only root filesystem and dropped capabilities, and reports separate liveness and readiness states. Publish production images by immutable digest and retain the scan result with the release evidence.
+
 ## Release rollback
 
 Redeploy the previously verified image by immutable digest. Prefer a forward database fix because Flyway migrations are not automatically reversible. Restore a tested backup only after evaluating data written since that backup and recording the recovery decision.
