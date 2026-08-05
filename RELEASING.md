@@ -17,7 +17,7 @@ Use Semantic Versioning:
 3. Confirm the latest Disaster Recovery workflow passed and verify migrations against a restored copy of representative data.
 4. Run `./mvnw clean verify`, frontend tests, E2E tests, and the container security workflow.
 5. Create a signed `vMAJOR.MINOR.PATCH` tag through the release workflow.
-6. Publish GitHub release notes and the Maven package.
+6. Publish GitHub release notes and the Maven package from the immutable release tag; the workflow rejects a tag/POM version mismatch.
 7. Deploy to staging, verify readiness and smoke tests, then approve production.
 8. Confirm production health, logs, rollback metadata, and the published package.
 

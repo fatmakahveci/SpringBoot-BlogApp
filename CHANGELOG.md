@@ -18,6 +18,8 @@ All notable changes to this project are documented here. The format follows [Kee
 - Main branch governance now requires build, browser, dependency, CodeQL, container, and secret-scanning checks.
 - Post-topic reads use bounded lazy loading and indexed query paths.
 - Structured request completion logs and Sentry context include correlation, version, and environment fields.
+- Package publishing now checks out an immutable stable tag and verifies its POM version before deployment.
+- Redundant JDBC starter wiring and Redis repository discovery were removed.
 
 ## [1.0.0] - 2026-08-04
 
