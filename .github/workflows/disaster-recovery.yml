@@ -1,0 +1,87 @@
+name: Disaster Recovery
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "23 3 * * 1"
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "scripts/*-sqlite.sh"
+      - ".github/workflows/disaster-recovery.yml"
+      - "src/main/resources/db/migration/**"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: disaster-recovery-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  restore-drill:
+    name: Backup and restore drill
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5
+        with:
+          java-version: "21"
+          distribution: temurin
+          cache: maven
+          cache-dependency-path: pom.xml
+      - name: Install SQLite CLI
+        run: sudo apt-get update && sudo apt-get install --yes sqlite3
+      - name: Package application
+        run: ./mvnw -B -DskipTests package
+      - name: Create live database
+        env:
+          BLOG_DATABASE_PATH: ${{ runner.temp }}/live.db
+          BLOG_ADMIN_PASSWORD: dr-test-admin-password
+          BLOG_AUTHOR_PASSWORD: dr-test-author-password
+        run: |
+          java -jar target/springboot.jar >"${RUNNER_TEMP}/dr-source.log" 2>&1 &
+          echo $! >"${RUNNER_TEMP}/dr-source.pid"
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:8080/actuator/health/readiness >/dev/null; then
+              break
+            fi
+            sleep 1
+          done
+          curl --fail --silent http://127.0.0.1:8080/actuator/health/readiness >/dev/null
+          sqlite3 "$BLOG_DATABASE_PATH" "INSERT INTO posts (title, content, created_at, summary, slug, status, updated_at) VALUES ('Recovery marker', 'restore drill', CURRENT_TIMESTAMP, 'restore drill', 'recovery-marker', 'PUBLISHED', CURRENT_TIMESTAMP);"
+      - name: Back up, alter source, and restore
+        run: |
+          scripts/backup-sqlite.sh "${RUNNER_TEMP}/live.db" "${RUNNER_TEMP}/backup/blog.db"
+          sqlite3 "${RUNNER_TEMP}/live.db" "DELETE FROM posts WHERE slug = 'recovery-marker';"
+          scripts/restore-sqlite.sh "${RUNNER_TEMP}/backup/blog.db" "${RUNNER_TEMP}/restored.db"
+          test "$(sqlite3 "${RUNNER_TEMP}/restored.db" "SELECT COUNT(*) FROM posts WHERE slug = 'recovery-marker';")" = "1"
+          test "$(sqlite3 "${RUNNER_TEMP}/restored.db" "PRAGMA integrity_check;")" = "ok"
+      - name: Boot and verify restored application
+        env:
+          BLOG_DATABASE_PATH: ${{ runner.temp }}/restored.db
+          BLOG_ADMIN_PASSWORD: dr-test-admin-password
+          BLOG_AUTHOR_PASSWORD: dr-test-author-password
+        run: |
+          kill "$(cat "${RUNNER_TEMP}/dr-source.pid")"
+          wait "$(cat "${RUNNER_TEMP}/dr-source.pid")" 2>/dev/null || true
+          java -jar target/springboot.jar >"${RUNNER_TEMP}/dr-restored.log" 2>&1 &
+          echo $! >"${RUNNER_TEMP}/dr-restored.pid"
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:8080/actuator/health/readiness >/dev/null; then
+              break
+            fi
+            sleep 1
+          done
+          curl --fail --silent http://127.0.0.1:8080/api/posts/recovery-marker | grep --fixed-strings '"slug":"recovery-marker"'
+      - name: Stop application and print logs on failure
+        if: always()
+        run: |
+          if [[ -f "${RUNNER_TEMP}/dr-source.pid" ]]; then kill "$(cat "${RUNNER_TEMP}/dr-source.pid")" 2>/dev/null || true; fi
+          if [[ -f "${RUNNER_TEMP}/dr-restored.pid" ]]; then kill "$(cat "${RUNNER_TEMP}/dr-restored.pid")" 2>/dev/null || true; fi
+          if [[ "${{ job.status }}" != "success" ]]; then
+            cat "${RUNNER_TEMP}/dr-source.log" 2>/dev/null || true
+            cat "${RUNNER_TEMP}/dr-restored.log" 2>/dev/null || true
+          fi
