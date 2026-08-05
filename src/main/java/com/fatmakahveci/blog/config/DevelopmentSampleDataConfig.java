@@ -22,8 +22,10 @@ import com.fatmakahveci.blog.service.TagService;
 @Profile("dev")
 public class DevelopmentSampleDataConfig {
 
-    private static final Set<String> LEGACY_TOPICS =
-            Set.of("Spring Boot", "Getting Started", "Security", "Testing");
+    private static final Set<String> LEGACY_POST_TITLES = Set.of("kjn");
+
+    private static final Set<String> LEGACY_TOPICS = Set.of(
+            "Spring Boot", "Getting Started", "Security", "Testing", "pmkl", "dfas", "British Museum");
 
     private static final List<SamplePost> SAMPLE_POSTS = List.of(
             new SamplePost(
@@ -61,6 +63,12 @@ public class DevelopmentSampleDataConfig {
     }
 
     void seed(PostService postService, TagService tagService) {
+        LEGACY_POST_TITLES.stream()
+                .map(postService::findByTitle)
+                .flatMap(java.util.Optional::stream)
+                .map(Post::getId)
+                .forEach(postService::deleteById);
+
         Map<String, Tag> topics = new LinkedHashMap<>();
         SAMPLE_POSTS.stream()
                 .flatMap(post -> post.topics().stream())

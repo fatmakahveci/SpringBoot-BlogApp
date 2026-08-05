@@ -70,4 +70,19 @@ class DevelopmentSampleDataConfigTests {
         verify(tagService, never()).createByName(any());
         verify(postService, never()).save(any());
     }
+
+    @Test
+    void removesKnownLegacyDemoContent() {
+        PostService postService = mock(PostService.class);
+        TagService tagService = mock(TagService.class);
+        Post legacyPost = new Post();
+        legacyPost.setId(99);
+        legacyPost.setTitle("kjn");
+        when(postService.findByTitle(any())).thenReturn(Optional.of(new Post()));
+        when(postService.findByTitle("kjn")).thenReturn(Optional.of(legacyPost));
+
+        new DevelopmentSampleDataConfig().seed(postService, tagService);
+
+        verify(postService).deleteById(99);
+    }
 }
