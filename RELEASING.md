@@ -14,7 +14,7 @@ Use Semantic Versioning:
 
 1. Confirm `main` is green and has no unresolved security alerts.
 2. Review the `Unreleased` section in `CHANGELOG.md`.
-3. Verify migrations against a restored copy of representative data.
+3. Confirm the latest Disaster Recovery workflow passed and verify migrations against a restored copy of representative data.
 4. Run `./mvnw clean verify`, frontend tests, E2E tests, and the container security workflow.
 5. Create a signed `vMAJOR.MINOR.PATCH` tag through the release workflow.
 6. Publish GitHub release notes and the Maven package.
@@ -25,9 +25,11 @@ Release Please maintains the release pull request from conventional commits. Mer
 
 Configure `STAGING_URL` and `PRODUCTION_URL` as environment variables. Configure `STAGING_DEPLOY_WEBHOOK` and `PRODUCTION_DEPLOY_WEBHOOK` as environment secrets when the hosting platform supports deployment webhooks. Production approvals are managed through the GitHub `production` environment.
 
+Staging must run the `staging` profile with staging-only data and secrets. Production must run `prod`. Record the image digest, database migration version, approver, deployment time, and rollback digest in the release record.
+
 ## Rollback
 
-Redeploy the previously verified immutable image. Database migrations must be forward-compatible; restore from a tested backup only when a forward fix cannot safely recover the data. Record the incident and corrective action before the next release.
+Redeploy the previously verified immutable image. Database migrations must be forward-compatible; restore from a tested backup only when a forward fix cannot safely recover the data. Follow [the operations runbook](docs/OPERATIONS.md), and record the incident and corrective action before the next release.
 
 ## Security releases
 

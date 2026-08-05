@@ -263,6 +263,8 @@ The scheduled Disaster Recovery workflow creates an online SQLite backup, delibe
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md) for development, testing, and pull-request requirements. Security issues must be reported privately according to [SECURITY.md](SECURITY.md). Release history and maintainer procedures are documented in [CHANGELOG.md](CHANGELOG.md) and [RELEASING.md](RELEASING.md).
 
+Deployment owners should follow the [operations runbook](docs/OPERATIONS.md) for environment isolation, health semantics, verified backup and restore, incident correlation, and rollback.
+
 ## License
 
 Licensed under the [Apache License 2.0](LICENSE.md).
