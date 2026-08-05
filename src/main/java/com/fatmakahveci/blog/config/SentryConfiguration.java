@@ -24,6 +24,9 @@ public class SentryConfiguration {
         this.dsn = dsn;
         this.environment = environment;
         this.release = release;
+        if (tracesSampleRate < 0.0 || tracesSampleRate > 1.0) {
+            throw new IllegalArgumentException("Sentry trace sample rate must be between 0.0 and 1.0.");
+        }
         this.tracesSampleRate = tracesSampleRate;
     }
 
