@@ -49,6 +49,8 @@ The main workflow is straightforward:
 | Quality | JUnit 6, MockMvc, JaCoCo, SpotBugs, Spotless |
 | Delivery | Maven Wrapper, Docker, GitHub Actions, CodeQL, Trivy, Dependabot |
 
+Direct observability and API dependencies are kept current independently of the Spring Boot BOM: Sentry Java `8.51.0` and springdoc-openapi `3.1.0`. Framework-managed transitive dependencies remain aligned with Spring Boot to avoid unsupported version combinations.
+
 ## Quick start
 
 ### Requirements

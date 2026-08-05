@@ -6,9 +6,9 @@ Security fixes are provided for the latest release and the current `main` branch
 
 | Version | Supported |
 |---|:---:|
-| Latest release | Yes |
+| 1.2.x | Yes |
 | `main` | Yes |
-| Older releases | No |
+| 1.1.x and older | No |
 
 ## Reporting a vulnerability
 
@@ -40,3 +40,18 @@ Reporters receive updates through the private advisory. Public disclosure occurs
 - Backups contain production data: encrypt them, restrict access, test restoration, and dispose of expired copies securely.
 
 Automated checks reduce risk but do not guarantee that the application is vulnerability-free.
+
+## Dependency and vulnerability maintenance
+
+Dependabot checks Maven, npm, GitHub Actions, and Docker dependencies every week. Pull requests must pass dependency review, filesystem and container vulnerability scans, CodeQL, secret scanning, the complete Maven verification build, and frontend/E2E tests before merge.
+
+For a local review, run:
+
+```bash
+./mvnw -B versions:display-dependency-updates versions:display-plugin-updates
+npm audit --audit-level=moderate
+npm outdated
+./mvnw -B clean verify
+```
+
+Do not override Spring Boot's dependency-management versions individually unless a published advisory requires an urgent temporary override. Record that reason and remove the override after upgrading the managed platform.
