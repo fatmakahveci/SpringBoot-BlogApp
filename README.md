@@ -95,6 +95,7 @@ Administrator password authentication is followed by mandatory TOTP verification
 | `dev` | Local development; selected by default | Uncached templates and generated temporary passwords |
 | `test` | Automated test execution | Isolated in-memory SQLite database and deterministic credentials |
 | `prod` | Container and production deployments | Required secrets, secure cookies, structured logs, cached templates |
+| `redis` | Optional shared cache; combine with another profile | Redis-backed sitemap cache with bounded timeouts and TTL |
 
 The production profile requires `BLOG_DATABASE_PATH`, account passwords, and the two MFA encryption values. It fails fast when required secrets are missing.
 
@@ -117,8 +118,15 @@ The production profile requires `BLOG_DATABASE_PATH`, account passwords, and the
 | `SENTRY_ENVIRONMENT` | `production` | Sentry environment name |
 | `SENTRY_TRACES_SAMPLE_RATE` | `0.1` | Production transaction sampling rate from `0.0` to `1.0` |
 | `BLOG_SECURITY_SCANNER_ADDRESSES` | Empty | Comma-separated trusted scanner source addresses; never inferred from User-Agent |
+| `REDIS_HOST` | `localhost` | Redis host used when the `redis` profile is active |
+| `REDIS_PORT` | `6379` | Redis port used when the `redis` profile is active |
+| `REDIS_PASSWORD` | Empty | Redis password; supply it through the deployment secret store |
+| `REDIS_SSL` | `false` | Enables TLS for the Redis connection |
+| `BLOG_CACHE_TTL` | `10m` | Maximum lifetime of a cached sitemap |
 
 Flyway applies migrations from `src/main/resources/db/migration`. Add a new migration for each schema change; never modify a migration that has already been deployed.
+
+The application uses an in-process cache by default. Set `SPRING_PROFILES_ACTIVE=prod,redis` to share the sitemap cache across instances. Successful post and topic mutations evict the complete sitemap cache, while the TTL provides a recovery bound if an external write bypasses the application.
 
 ## API and operational endpoints
 

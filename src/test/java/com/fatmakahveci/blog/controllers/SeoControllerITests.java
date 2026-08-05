@@ -2,6 +2,8 @@ package com.fatmakahveci.blog.controllers;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -10,10 +12,12 @@ import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.cache.CacheManager;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fatmakahveci.blog.model.Post;
@@ -32,11 +36,19 @@ class SeoControllerITests {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private CacheManager cacheManager;
+
     @MockitoBean
     private PostService postService;
 
     @MockitoBean
     private TagService tagService;
+
+    @BeforeEach
+    void clearSitemapCache() {
+        cacheManager.getCache("seo-sitemap").clear();
+    }
 
     @Test
     void robotsAllowsPublicPagesAndAdvertisesSitemap() throws Exception {
@@ -68,5 +80,17 @@ class SeoControllerITests {
                         "<loc>https://blog.example.com/tags/7</loc>")))
                 .andExpect(content().string(org.hamcrest.Matchers.not(containsString("draft-post"))))
                 .andExpect(content().string(org.hamcrest.Matchers.not(containsString("/tags/8"))));
+    }
+
+    @Test
+    void sitemapUsesTheConfiguredCache() throws Exception {
+        given(postService.findPublished()).willReturn(List.of());
+        given(tagService.findByPostStatus(PostStatus.PUBLISHED)).willReturn(List.of());
+
+        mockMvc.perform(get("/sitemap.xml")).andExpect(status().isOk());
+        mockMvc.perform(get("/sitemap.xml")).andExpect(status().isOk());
+
+        verify(postService, times(1)).findPublished();
+        verify(tagService, times(1)).findByPostStatus(PostStatus.PUBLISHED);
     }
 }

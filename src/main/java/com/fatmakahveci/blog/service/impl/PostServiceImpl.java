@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,6 +29,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
+    @CacheEvict(cacheNames = "seo-sitemap", allEntries = true)
     public Post save(Post post) {
         post.setSlug(slugGenerator.fromTitle(post.getTitle()));
         Optional<Post> postWithTitle = findByTitle(post.getTitle());
@@ -75,6 +77,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
+    @CacheEvict(cacheNames = "seo-sitemap", allEntries = true)
     public Optional<Post> deleteById(Integer id) {
         Optional<Post> post = postRepository.findById(id);
         postRepository.deleteById(id);
