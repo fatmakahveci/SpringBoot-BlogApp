@@ -22,28 +22,34 @@ import com.fatmakahveci.blog.service.TagService;
 @Profile("dev")
 public class DevelopmentSampleDataConfig {
 
+    private static final Set<String> LEGACY_TOPICS =
+            Set.of("Spring Boot", "Getting Started", "Security", "Testing");
+
     private static final List<SamplePost> SAMPLE_POSTS = List.of(
             new SamplePost(
                     "Getting Started with Spring Blog",
-                    "Learn how to explore articles, create an account, and publish your first post.",
-                    "Spring Blog keeps the writing workflow intentionally simple. Browse the public feed, "
-                            + "register as an author, create a draft, and publish it when it is ready. "
-                            + "Topics make related articles easier for readers to discover.",
-                    Set.of("Spring Boot", "Getting Started")),
+                    "A Slow Sunday Morning at Home",
+                    "Coffee, an open window, and the small rituals that make a quiet morning feel special.",
+                    "I left my phone in the bedroom and started the day with fresh coffee and warm toast. "
+                            + "The windows were open, the street was quiet, and there was nowhere I needed to be. "
+                            + "Sometimes the best plan for a Sunday is simply to slow down and notice the day.",
+                    Set.of("Daily Life", "Wellbeing")),
             new SamplePost(
                     "Secure Defaults for Spring Boot Applications",
-                    "A practical checklist for authentication, validation, secrets, and production health checks.",
-                    "Start with deny-by-default authorization, CSRF protection, strong password validation, "
-                            + "and secrets supplied through environment variables. Add structured logs, separate "
-                            + "readiness and liveness probes, and automated dependency scanning before deployment.",
-                    Set.of("Spring Boot", "Security")),
+                    "My Favorite Easy Weeknight Dinner",
+                    "A colorful roasted vegetable pasta that is simple enough for a busy evening.",
+                    "On busy weekdays I roast whatever vegetables are in the fridge while the pasta cooks. "
+                            + "A little olive oil, lemon, garlic, and parmesan bring everything together. "
+                            + "It is quick, comforting, and leaves enough for lunch the next day.",
+                    Set.of("Daily Life", "Food")),
             new SamplePost(
                     "Testing Spring MVC from Repository to Browser",
-                    "Combine focused unit tests, SQLite integration tests, MockMvc, and browser-level checks.",
-                    "A stable test suite uses the smallest useful layer for each behavior. Unit tests describe "
-                            + "business rules, repository tests exercise real queries, MockMvc verifies HTTP contracts, "
-                            + "and Playwright protects the critical user journey across responsive layouts.",
-                    Set.of("Testing", "Spring Boot")));
+                    "A Weekend Walk by the Sea",
+                    "Notes from a breezy afternoon spent walking, talking, and watching the waves.",
+                    "We took the train without making a detailed plan and followed the path beside the water. "
+                            + "The wind was strong, the cafés were busy, and the horizon seemed endless. "
+                            + "By sunset we were tired, happy, and already planning another small trip.",
+                    Set.of("Travel", "Wellbeing")));
 
     @Bean
     ApplicationRunner developmentSampleData(
@@ -62,21 +68,29 @@ public class DevelopmentSampleDataConfig {
                 .forEach(name -> topics.put(name, tagService.findByName(name)
                         .orElseGet(() -> tagService.createByName(name))));
 
-        SAMPLE_POSTS.stream()
-                .filter(sample -> postService.findByTitle(sample.title()).isEmpty())
-                .map(sample -> sample.toPost(topics))
-                .forEach(postService::save);
+        SAMPLE_POSTS.forEach(sample -> {
+            if (postService.findByTitle(sample.title()).isPresent()) {
+                return;
+            }
+            Post post = postService.findByTitle(sample.legacyTitle()).orElseGet(Post::new);
+            sample.applyTo(post, topics);
+            postService.save(post);
+        });
+
+        LEGACY_TOPICS.stream()
+                .map(tagService::findByName)
+                .flatMap(java.util.Optional::stream)
+                .forEach(tag -> tagService.deleteById(tag.getId()));
     }
 
-    private record SamplePost(String title, String summary, String content, Set<String> topics) {
-        Post toPost(Map<String, Tag> availableTopics) {
-            Post post = new Post();
+    private record SamplePost(String legacyTitle, String title, String summary, String content, Set<String> topics) {
+        void applyTo(Post post, Map<String, Tag> availableTopics) {
             post.setTitle(title);
             post.setSummary(summary);
             post.setContent(content);
             post.setStatus(PostStatus.PUBLISHED);
+            post.setTags(Set.of());
             topics.stream().map(availableTopics::get).forEach(post::addTag);
-            return post;
         }
     }
 }

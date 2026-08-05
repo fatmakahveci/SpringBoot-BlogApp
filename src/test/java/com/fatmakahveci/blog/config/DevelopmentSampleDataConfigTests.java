@@ -46,9 +46,14 @@ class DevelopmentSampleDataConfigTests {
                     assertThat(post.getSummary()).isNotBlank();
                     assertThat(post.getContent()).isNotBlank();
                     assertThat(post.getTags()).isNotEmpty();
-                });
+                })
+                .extracting(Post::getTitle)
+                .containsExactlyInAnyOrder(
+                        "A Slow Sunday Morning at Home",
+                        "My Favorite Easy Weeknight Dinner",
+                        "A Weekend Walk by the Sea");
         assertThat(createdTags).extracting(Tag::getName)
-                .containsExactlyInAnyOrder("Spring Boot", "Getting Started", "Security", "Testing");
+                .containsExactlyInAnyOrder("Daily Life", "Food", "Travel", "Wellbeing");
     }
 
     @Test
