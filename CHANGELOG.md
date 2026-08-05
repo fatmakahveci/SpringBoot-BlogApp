@@ -2,6 +2,58 @@
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and releases use [Semantic Versioning](https://semver.org/).
 
+## [1.2.0](https://github.com/fatmakahveci/SpringBoot-BlogApp/compare/v1.1.0...v1.2.0) (2026-08-05)
+
+
+### Features
+
+* add administrator audit logging ([#38](https://github.com/fatmakahveci/SpringBoot-BlogApp/issues/38)) ([b0fc584](https://github.com/fatmakahveci/SpringBoot-BlogApp/commit/b0fc58425a37e12678b78c5960b44d28030e5b03))
+* add branded browser favicon ([#47](https://github.com/fatmakahveci/SpringBoot-BlogApp/issues/47)) ([b25df95](https://github.com/fatmakahveci/SpringBoot-BlogApp/commit/b25df95fbf557b27ea4a5b357d4d563ab44fdda9))
+* add correlated request observability ([#34](https://github.com/fatmakahveci/SpringBoot-BlogApp/issues/34)) ([2b9feb1](https://github.com/fatmakahveci/SpringBoot-BlogApp/commit/2b9feb1adbafaae7879500fc24052ab927684d84))
+* add explicit topic management actions ([#35](https://github.com/fatmakahveci/SpringBoot-BlogApp/issues/35)) ([cff1f63](https://github.com/fatmakahveci/SpringBoot-BlogApp/commit/cff1f6333f1066faf3fd47aef3794fcb60366760))
+* add predictable optional Redis caching ([#40](https://github.com/fatmakahveci/SpringBoot-BlogApp/issues/40)) ([2e3a616](https://github.com/fatmakahveci/SpringBoot-BlogApp/commit/2e3a616a139a0e9651a7b0028b8361ad393db26e))
+* add secure topic editing ([#25](https://github.com/fatmakahveci/SpringBoot-BlogApp/issues/25)) ([694e5bf](https://github.com/fatmakahveci/SpringBoot-BlogApp/commit/694e5bfa7f5e7d50015ac9c5955765ab11ab5c42))
+* enforce role-aware request limits ([#39](https://github.com/fatmakahveci/SpringBoot-BlogApp/issues/39)) ([ff5a0ab](https://github.com/fatmakahveci/SpringBoot-BlogApp/commit/ff5a0ab9de9966af21dbc1b746800be0231e68ff))
+* enrich request observability context ([#44](https://github.com/fatmakahveci/SpringBoot-BlogApp/issues/44)) ([a77fc62](https://github.com/fatmakahveci/SpringBoot-BlogApp/commit/a77fc62b76342add9c4029132f591c353d146e86))
+* improve search engine optimization ([6bb4e65](https://github.com/fatmakahveci/SpringBoot-BlogApp/commit/6bb4e653dea421f1342227e12792956f90f00de4))
+* modernize blog security and user experience ([efb88a6](https://github.com/fatmakahveci/SpringBoot-BlogApp/commit/efb88a60e651cdfafe6d89988414c9d648ee3412))
+* refine colors and typography ([#26](https://github.com/fatmakahveci/SpringBoot-BlogApp/issues/26)) ([64fc032](https://github.com/fatmakahveci/SpringBoot-BlogApp/commit/64fc032daff8870d3adfb291991589fc51cd047e))
+* require TOTP MFA for administrators ([#37](https://github.com/fatmakahveci/SpringBoot-BlogApp/issues/37)) ([a49c5b3](https://github.com/fatmakahveci/SpringBoot-BlogApp/commit/a49c5b3f34c1453999edfb896da39936c012914f))
+* separate production health probes ([96f2347](https://github.com/fatmakahveci/SpringBoot-BlogApp/commit/96f2347bd0e43beeec2e5141f188f2429ec75640))
+* **ui:** complete branding assets and refresh demo ([#48](https://github.com/fatmakahveci/SpringBoot-BlogApp/issues/48)) ([6030414](https://github.com/fatmakahveci/SpringBoot-BlogApp/commit/6030414c132662344e6cce7508a1297f54da74c0))
+
+
+### Bug Fixes
+
+* allow isolated SQLite native execution ([fd086d2](https://github.com/fatmakahveci/SpringBoot-BlogApp/commit/fd086d29a550000bf0866273ff52d86a7145681c))
+* assign hardened tmpfs ownership ([0ff1e41](https://github.com/fatmakahveci/SpringBoot-BlogApp/commit/0ff1e4194460439de991a422d3bac666d3ece9e0))
+* configure hardened policy smoke test ([ca9924a](https://github.com/fatmakahveci/SpringBoot-BlogApp/commit/ca9924a5384ac451c17e1587db9734e6c76769e3))
+* eliminate slug generation ReDoS risk ([3e6ff34](https://github.com/fatmakahveci/SpringBoot-BlogApp/commit/3e6ff34fa2718af4f9527996d547a2a8f4c926fb))
+* enforce severity threshold for SARIF scans ([4b6b0e7](https://github.com/fatmakahveci/SpringBoot-BlogApp/commit/4b6b0e7f57b69ac812fa06be072c81b8f2bb5947))
+* isolate SQLite native runtime mount ([8d1141b](https://github.com/fatmakahveci/SpringBoot-BlogApp/commit/8d1141b90f6c487ce1321c1e4e395100de2140d2))
+* keep footer at viewport bottom ([#23](https://github.com/fatmakahveci/SpringBoot-BlogApp/issues/23)) ([fda7c04](https://github.com/fatmakahveci/SpringBoot-BlogApp/commit/fda7c04fa81c8e0614c720b5dcff23d79ad794f1))
+* make browse posts navigation visible ([#27](https://github.com/fatmakahveci/SpringBoot-BlogApp/issues/27)) ([b7f00df](https://github.com/fatmakahveci/SpringBoot-BlogApp/commit/b7f00df09920a2061770a934603be8590e74633a))
+* make full topic rows clickable ([#29](https://github.com/fatmakahveci/SpringBoot-BlogApp/issues/29)) ([05e2f6c](https://github.com/fatmakahveci/SpringBoot-BlogApp/commit/05e2f6ce31fbcf4c38a4323f9900fa0562fee186))
+* patch container runtime packages ([7f7278d](https://github.com/fatmakahveci/SpringBoot-BlogApp/commit/7f7278d101858385f366259de47f9aec13d2598b))
+* patch runtime image packages ([8b1ecc7](https://github.com/fatmakahveci/SpringBoot-BlogApp/commit/8b1ecc7c09e5b9755fc27833ac85b32b581bf7e7))
+* pin footer to viewport bottom ([#28](https://github.com/fatmakahveci/SpringBoot-BlogApp/issues/28)) ([1d9aa4e](https://github.com/fatmakahveci/SpringBoot-BlogApp/commit/1d9aa4ecae6288b04a1511908ba56571c5305e0f))
+* restore post creation and navigation ([47e7c02](https://github.com/fatmakahveci/SpringBoot-BlogApp/commit/47e7c025ce583e68a20cfff7d7007de1dc629078))
+* use glibc runtime for SQLite ([bd2e345](https://github.com/fatmakahveci/SpringBoot-BlogApp/commit/bd2e3450e270e2ea92d7372b9e447f0b27772fe0))
+* use valid Trivy action release ([41cb875](https://github.com/fatmakahveci/SpringBoot-BlogApp/commit/41cb87555af7553afbe286ed1e370c89f651cac6))
+* version stylesheet across all pages ([#30](https://github.com/fatmakahveci/SpringBoot-BlogApp/issues/30)) ([f9b2880](https://github.com/fatmakahveci/SpringBoot-BlogApp/commit/f9b28803b1295e423270b30c5c53d77fd177e57c))
+
+
+### Performance Improvements
+
+* eliminate post tag N plus one queries ([#41](https://github.com/fatmakahveci/SpringBoot-BlogApp/issues/41)) ([2dadce1](https://github.com/fatmakahveci/SpringBoot-BlogApp/commit/2dadce1e2faa683d1b60e7ff37c9c46be26439f6))
+
+
+### Documentation
+
+* add production operations runbook ([#45](https://github.com/fatmakahveci/SpringBoot-BlogApp/issues/45)) ([59167a7](https://github.com/fatmakahveci/SpringBoot-BlogApp/commit/59167a7bd51b5e6036907fc019e5925daff72895))
+* add project governance guides ([#31](https://github.com/fatmakahveci/SpringBoot-BlogApp/issues/31)) ([106f1d1](https://github.com/fatmakahveci/SpringBoot-BlogApp/commit/106f1d1a29b2cc661191552d359ae39b2c507c8b))
+* refresh README and security badges ([#22](https://github.com/fatmakahveci/SpringBoot-BlogApp/issues/22)) ([19b7a1f](https://github.com/fatmakahveci/SpringBoot-BlogApp/commit/19b7a1fe539d05b343f26312f743ed1ded07affa))
+
 ## [1.1.0](https://github.com/fatmakahveci/SpringBoot-BlogApp/compare/v1.0.0...v1.1.0) (2026-08-05)
 
 
