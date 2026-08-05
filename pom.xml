@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>com.fatmakahveci</groupId>
 	<artifactId>blog</artifactId>
-	<version>1.2.1</version>
+	<version>1.2.2-SNAPSHOT</version>
 	<name>Spring Boot Blog</name>
 	<description>Secure, server-rendered blog platform built with Spring Boot, Thymeleaf, and SQLite.</description>
 	<url>https://github.com/fatmakahveci/SpringBoot-BlogApp</url>
