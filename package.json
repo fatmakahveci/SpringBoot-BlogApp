@@ -9,6 +9,6 @@
     "@playwright/test": "1.62.1",
     "@vitest/coverage-v8": "4.1.10",
     "jsdom": "30.0.1",
-    "vitest": "4.1.10"
+    "vitest": "4.1.11"
   }
 }
