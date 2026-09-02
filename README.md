@@ -153,3 +153,10 @@ The repository requires build, frontend/E2E, dependency, CodeQL, container, and 
 ## License
 
 Licensed under the [Apache License 2.0](LICENSE.md).
+
+## Project Resources
+
+- [Changelog](CHANGELOG.md)
+- [Contributing guide](.github/CONTRIBUTING.md)
+- [Security policy](.github/SECURITY.md)
+- [License](LICENSE.md)
