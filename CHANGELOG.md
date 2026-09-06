@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and releases use [Semantic Versioning](https://semver.org/).
 
+## [1.2.2](https://github.com/fatmakahveci/SpringBoot-BlogApp/compare/v1.2.1...v1.2.2) (2026-09-05)
+
+
+### Documentation
+
+* professionalize README ([#80](https://github.com/fatmakahveci/SpringBoot-BlogApp/issues/80)) ([2076454](https://github.com/fatmakahveci/SpringBoot-BlogApp/commit/2076454ff09817071156ea5d70e35e8a3d14ce49))
+
 ## [1.2.1](https://github.com/fatmakahveci/SpringBoot-BlogApp/compare/v1.2.0...v1.2.1) (2026-08-05)
 
 
