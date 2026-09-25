@@ -1,8 +1,7 @@
 name: Release
 
 on:
-  push:
-    branches: [ "main" ]
+  # Run explicitly when a new release branch is needed.
   workflow_dispatch:
 
 permissions:
